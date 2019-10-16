@@ -1,0 +1,95 @@
+require "./termbox_bindings"
+require "./widget"
+
+def debug(text : String)
+  File.open("/tmp/debug.txt", "a", &.puts(text))
+end
+
+def debug(obj)
+  File.open("/tmp/debug.txt", "a", &.puts(obj.inspect))
+end
+
+module TextUi
+  class Ui < Widget
+    @focused_widget : Widget?
+
+    def initialize(color_mode = ColorMode::Just256Colors)
+      @event = TermboxBindings::Event.new(type: 0, mod: 0, key: 0, ch: 0, w: 0, x: 0, y: 0)
+      @shutdown = false
+      super(self)
+
+      init_termbox(color_mode)
+
+      at_exit { TermboxBindings.tb_shutdown }
+    end
+
+    def shutdown!
+      @shutdown = true
+    end
+
+    def focus(widget : Widget)
+      @focused_widget = widget
+    end
+
+    def render
+    end
+
+    def main_loop
+      raise "No key input handled found!" if @on_key_input.nil?
+
+      handle_resize(TermboxBindings.tb_width, TermboxBindings.tb_height)
+      e = @event
+      loop do
+        render_children
+        TermboxBindings.tb_present
+        TermboxBindings.tb_poll_event(pointerof(e))
+
+        case e.type
+        when TermboxBindings::EVENT_KEY then handle_key_input(e.ch.chr, e.key)
+        when TermboxBindings::EVENT_MOUSE
+        when TermboxBindings::EVENT_RESIZE then handle_resize(e.w, e.x)
+        end
+
+        break if @shutdown
+      end
+    end
+
+    def on_resize(proc : (Int32, Int32) ->)
+      @on_resize = proc
+    end
+
+    def on_key_input(proc : (Char, UInt16) ->)
+      @on_key_input = proc
+    end
+
+    private def init_termbox(color_mode)
+      error = TermboxBindings.tb_init
+      if error == TermboxBindings::E_UNSUPPORTED_TERMINAL
+        raise "Terminal is unsupported."
+      elsif error == TermboxBindings::E_FAILED_TO_OPEN_TTY
+        raise "Failed to open terminal."
+      elsif error == TermboxBindings::E_PIPE_TRAP_ERROR
+        raise "Pipe trap error."
+      end
+
+      TermboxBindings.tb_select_output_mode(color_mode)
+    end
+
+    private def handle_resize(width, height)
+      self.width = width
+      self.height = height
+      TermboxBindings.tb_clear
+      invalidate
+      callback = @on_resize
+      callback.call(width, height) if callback
+    end
+
+    def handle_key_input(chr : Char, key : UInt16)
+      focused_widget = @focused_widget
+      focused_widget.handle_key_input(chr, key) unless focused_widget.nil?
+
+      callback = @on_key_input
+      callback.call(chr, key) if callback
+    end
+  end
+end
