@@ -271,8 +271,8 @@ module TextUi
     Grey30            = 254 # #e4e4e4
     Grey31            = 255 # #eeeeee
 
-    def |(attr)
-      to_i | attr.to_i
+    def |(attr : Attr) : UInt16
+      to_u16 | attr.to_u16
     end
   end
 end

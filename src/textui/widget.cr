@@ -28,7 +28,7 @@ module TextUi
           break if stop_on_lf
           next
         end
-        TermboxBindings.tb_change_cell(xx, yy, ' '.ord, foreground, background)
+        Terminal.change_cell(xx, yy, ' ', foreground, background)
       end
     end
 
@@ -45,7 +45,7 @@ module TextUi
           chr = '↵'
           limit_reached = true
         end
-        TermboxBindings.tb_change_cell(xx, yy, chr.ord, foreground, background)
+        Terminal.change_cell(xx, yy, chr, foreground, background)
         break if limit_reached
       end
     end
@@ -71,10 +71,10 @@ module TextUi
       end
     end
 
-    def putc(x, y, chr : Char, foreground = 33, background = 0)
+    def putc(x : Int32, y : Int32, chr : Char, foreground = @foregroundColor, background = @backgroundColor)
       x += @x + @parent.x
       y += @y + @parent.y
-      TermboxBindings.tb_change_cell(x, y, chr.ord, foreground, background)
+      Terminal.change_cell(x, y, chr, foreground, background)
     end
 
     protected def render_children

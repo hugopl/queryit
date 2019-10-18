@@ -11,19 +11,6 @@ lib TermboxBindings
   INPUT_ALT     = 2
   INPUT_MOUSE   = 4
 
-  # Event
-  EVENT_KEY    = 1
-  EVENT_RESIZE = 2
-  EVENT_MOUSE  = 3
-
-  alias Char = LibC::Char
-  alias Int = LibC::Int
-  alias UInt = LibC::UInt
-  alias Long = LibC::Long
-  alias ULong = LibC::ULong
-  alias SizeT = LibC::SizeT
-  alias Double = LibC::Double
-
   # Cell struct
   struct Cell
     ch : UInt32

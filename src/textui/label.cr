@@ -66,7 +66,7 @@ module TextUi
           break
         end
       end
-      TermboxBindings.tb_set_cursor(cursor_x, cursor_y)
+      Terminal.set_cursor(cursor_x, cursor_y)
     end
 
     def render
