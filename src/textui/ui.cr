@@ -16,8 +16,6 @@ module TextUi
       super(self)
 
       Terminal.init(color_mode)
-
-      at_exit { Terminal.shutdown }
     end
 
     def shutdown!
@@ -49,6 +47,7 @@ module TextUi
 
         break if @shutdown
       end
+      Terminal.shutdown
     end
 
     def on_resize(proc : (Int32, Int32) ->)

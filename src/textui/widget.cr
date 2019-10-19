@@ -33,9 +33,8 @@ module TextUi
     end
 
     def puts(x, y, text : String, foreground = @foregroundColor, background = @backgroundColor, stop_on_lf = false, limit = 0)
-      i = 0
       each_char_pos(x, y, text) do |xx, yy, chr|
-        limit_reached = limit > 0 && xx > limit
+        limit_reached = limit > 0 && xx >= limit
         if limit_reached
           xx -= 1
           chr = '…'
