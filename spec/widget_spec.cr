@@ -23,6 +23,12 @@ describe TextUi::Widget do
       ui.puts(0, 0, "123456", stop_on_lf: true, limit: 4)
       Terminal.to_s.should eq("123…\n")
     end
+
+    it "does not prints ellipsis if the text is exact the limti size" do
+      ui = init_ui(4, 1)
+      ui.puts(0, 0, "1234", stop_on_lf: true, limit: 4)
+      Terminal.to_s.should eq("1234\n")
+    end
   end
 
   context "when rendering children" do
@@ -40,6 +46,26 @@ describe TextUi::Widget do
                               "  ││╭─ box3 ───╮││\n" \
                               "  │││          │││\n" \
                               "  │││    Hi    │││\n" \
+                              "  │││          │││\n" \
+                              "  ││╰──────────╯││\n" \
+                              "  │╰────────────╯│\n" \
+                              "  ╰──────────────╯\n")
+    end
+
+    it "prints ellipsis on nested children" do
+      ui = init_ui(18, 11)
+      box1 = TextUi::Box.new(ui, 2, 2, 16, 9, "box1")
+      box2 = TextUi::Box.new(box1, 1, 1, 14, 7, "box2")
+      box3 = TextUi::Box.new(box2, 1, 1, 12, 5, "box3")
+      ui.render
+      box3.puts(5, 2, "123456789", limit: 6)
+      Terminal.to_s.should eq("                  \n" \
+                              "                  \n" \
+                              "  ╭─ box1 ───────╮\n" \
+                              "  │╭─ box2 ─────╮│\n" \
+                              "  ││╭─ box3 ───╮││\n" \
+                              "  │││          │││\n" \
+                              "  │││    12345…│││\n" \
                               "  │││          │││\n" \
                               "  ││╰──────────╯││\n" \
                               "  │╰────────────╯│\n" \

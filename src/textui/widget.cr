@@ -49,11 +49,12 @@ module TextUi
     end
 
     def puts(x, y, text : String, foreground = @foregroundColor, background = @backgroundColor, stop_on_lf = false, limit = 0)
-      limit += x + absolute_x if limit != 0
+      count = 0
+      limit = 0 if text.size <= limit # Turn off limit if the string fits
       each_char_pos(x, y, text) do |xx, yy, chr|
-        limit_reached = limit > 0 && xx >= limit
+        count += 1
+        limit_reached = count >= limit if limit != 0
         if limit_reached
-          xx -= 1
           chr = '…'
         elsif chr == '\n'
           next unless stop_on_lf
