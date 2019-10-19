@@ -14,16 +14,23 @@ class App
     @label.cursor = @label.text.size
     @ui.focus(@label)
 
+    @database_list_box = TextUi::Box.new(@ui, "Databases")
+
     @result_box = TextUi::Box.new(@ui, "Results")
     @table = TextUi::Table.new(@result_box, 1, 1)
     @status = TextUi::Label.new(@ui, 0, 0, "status bar")
   end
 
   private def handle_resize(width, height)
-    @query_box.width = width
+    @query_box.width = width - 19
     @query_box.height = height//2
     @label.width = @query_box.width - 2
     @label.height = @query_box.height - 2
+
+    @database_list_box.width = 20
+    @database_list_box.height = height//2
+    @database_list_box.right_of(@query_box)
+
     @result_box.y = @query_box.height
     @result_box.width = width
     @result_box.height = height - @query_box.height - 1
