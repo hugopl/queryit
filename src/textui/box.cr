@@ -10,10 +10,15 @@ module TextUi
       Right
     end
 
+    @docking = Docking::None
+    @borderColor = Color::Teal
+
     def initialize(parent, @title : String)
       super(parent)
-      @docking = Docking::None
-      @borderColor = Color::Teal
+    end
+
+    def initialize(parent, x, y, width, height, @title : String)
+      super(parent, x, y, width, height)
     end
 
     def right_of(another : Box)

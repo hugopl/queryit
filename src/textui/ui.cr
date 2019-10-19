@@ -26,7 +26,24 @@ module TextUi
       @focused_widget = widget
     end
 
+    def absolute_x
+      0
+    end
+
+    def absolute_y
+      0
+    end
+
+    def absolute_width
+      width
+    end
+
+    def absolute_height
+      height
+    end
+
     def render
+      render_children
     end
 
     def main_loop

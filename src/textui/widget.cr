@@ -32,7 +32,24 @@ module TextUi
       end
     end
 
+    def absolute_x
+      @parent.absolute_x + @x
+    end
+
+    def absolute_y
+      @parent.absolute_y + @y
+    end
+
+    def absolute_width
+      @parent.absolute_width + @width
+    end
+
+    def absolute_height
+      @parent.absolute_height + @height
+    end
+
     def puts(x, y, text : String, foreground = @foregroundColor, background = @backgroundColor, stop_on_lf = false, limit = 0)
+      limit += x + absolute_x if limit != 0
       each_char_pos(x, y, text) do |xx, yy, chr|
         limit_reached = limit > 0 && xx >= limit
         if limit_reached
@@ -50,10 +67,10 @@ module TextUi
     end
 
     def each_char_pos(x, y, text : String)
-      origin_x = x + @x + @parent.x
+      origin_x = x + absolute_x
       x_limit = @width + origin_x - 1
       x = origin_x
-      y += @y + @parent.y
+      y += absolute_y
       text.each_char do |chr|
         yield(x, y, chr)
         if chr == '\n'
@@ -71,8 +88,8 @@ module TextUi
     end
 
     def putc(x : Int32, y : Int32, chr : Char, foreground = @foregroundColor, background = @backgroundColor)
-      x += @x + @parent.x
-      y += @y + @parent.y
+      x += absolute_x
+      y += absolute_y
       Terminal.change_cell(x, y, chr, foreground, background)
     end
 
