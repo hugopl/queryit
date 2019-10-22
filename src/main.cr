@@ -20,7 +20,10 @@ def parse_options
   OptionParser.parse! do |parser|
     parser.banner = "Usage: queryit [arguments]"
     parser.on("--uri=URI", "Database server URI, e.g. postgres://localhost/database") { |db_uri| uri = db_uri }
-    parser.on("-h", "--help", "Show this help.") { puts parser }
+    parser.on("-h", "--help", "Show this help.") do
+      puts parser
+      exit
+    end
   end
   {uri: uri}
 end
