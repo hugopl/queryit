@@ -1,7 +1,5 @@
-require "db"
 require "option_parser"
 require "yaml"
-require "pg"
 
 require "./app"
 
@@ -30,10 +28,9 @@ end
 def main
   options = parse_options
 
-  uri = options[:uri].empty? ? detect_rails_database : options[:uri]
+  uri = URI.parse(options[:uri].empty? ? detect_rails_database : options[:uri])
 
-  db = DB.open(uri)
-  app = App.new(db)
+  app = App.new(uri)
   app.main_loop
 rescue e : Exception
   puts e.message

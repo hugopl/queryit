@@ -1,9 +1,16 @@
 require "./textui/*"
+require "pg"
+require "uri"
 
 class App
   delegate main_loop, to: @ui
 
-  def initialize(@db : DB::Database)
+  @db : DB::Database
+  @current_database : String
+
+  def initialize(uri : URI)
+    @current_database = uri.path[1..-1]
+    @db = DB.open(uri)
     @ui = TextUi::Ui.new
     @ui.on_resize(->handle_resize(Int32, Int32))
     @ui.on_key_input(->handle_key_input(Char, UInt16))
@@ -16,6 +23,7 @@ class App
 
     @database_list_box = TextUi::Box.new(@ui, "Databases")
     @database_list = TextUi::List.new(@database_list_box, 1, 1, populate_database_list)
+    @database_list.select(@current_database)
     @database_list.width = 18
 
     @result_box = TextUi::Box.new(@ui, "Results")
