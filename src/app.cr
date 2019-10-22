@@ -15,6 +15,8 @@ class App
     @ui.focus(@label)
 
     @database_list_box = TextUi::Box.new(@ui, "Databases")
+    @database_list = TextUi::List.new(@database_list_box, 1, 1, populate_database_list)
+    @database_list.width = 18
 
     @result_box = TextUi::Box.new(@ui, "Results")
     @table = TextUi::Table.new(@result_box, 1, 1)
@@ -30,6 +32,7 @@ class App
     @database_list_box.width = 20
     @database_list_box.height = height//2
     @database_list_box.right_of(@query_box)
+    @database_list.height = @database_list_box.height - 2
 
     @result_box.y = @query_box.height
     @result_box.width = width
@@ -66,5 +69,15 @@ class App
   rescue e : PQ::PQError
     @status.backgroundColor = TextUi::Color::Red
     @status.text = e.message.to_s
+  end
+
+  private def populate_database_list
+    databases = [] of String
+    @db.query("SELECT datname FROM pg_database") do |rs|
+      rs.each do
+        databases << rs.read(String)
+      end
+    end
+    databases
   end
 end
