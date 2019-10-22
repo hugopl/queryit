@@ -3,6 +3,8 @@ require "yaml"
 
 require "./app"
 
+VERSION = "0.1.0"
+
 def detect_rails_database
   config = YAML.parse(File.read("./config/database.yml"))
   env = "development"
@@ -19,7 +21,11 @@ def parse_options
   uri = ""
   OptionParser.parse! do |parser|
     parser.banner = "Usage: queryit [arguments]"
-    parser.on("--uri=URI", "Database server URI, e.g. postgres://localhost/database") { |db_uri| uri = db_uri }
+    parser.on("--uri=URI", "Database server URI, e.g. postgres://localhost/database.") { |db_uri| uri = db_uri }
+    parser.on("--version", "Show queryit version and exit.") do
+      puts "queryit version #{VERSION}"
+      exit
+    end
     parser.on("-h", "--help", "Show this help.") do
       puts parser
       exit
