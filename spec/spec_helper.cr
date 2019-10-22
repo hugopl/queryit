@@ -59,6 +59,11 @@ module TextUi
       @@cells[y][x] = Cell.new(chr, foreground.to_i, background.to_i)
     end
 
+    # ## All method bellow are not part of Terminal interface ## #
+    def self.cursor
+      @@cursor
+    end
+
     def self.resize(width, height)
       @@width = width
       @@height = height

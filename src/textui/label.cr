@@ -15,6 +15,13 @@ module TextUi
       @input ||= TextUi::InputBuffer.new(@text)
     end
 
+    def cursor
+      input = @input
+      return 0 if input.nil?
+
+      input.cursor
+    end
+
     def cursor=(cursor)
       input = @input
       return if input.nil?
@@ -36,7 +43,10 @@ module TextUi
       @text = text
 
       input = @input
-      input.buffer = text unless input.nil?
+      return if input.nil?
+
+      input.buffer = text
+      input.cursor = text.size if input.cursor > text.size
     end
 
     private def render_cursor
@@ -44,27 +54,19 @@ module TextUi
       return if input.nil?
 
       cursor = input.cursor
-      i = 0
-      cursor_x = @parent.x + x
-      cursor_y = @parent.y + y
-      origin_x = cursor_x
-      limit_x = @width + origin_x - 1
-      each_char_pos(0, 0, @text) do |x, y, chr|
-        i += 1
-        if i == cursor
-          if chr == '\n'
-            cursor_x = origin_x
-            cursor_y += 1
-          else
-            cursor_x = x + 1
-            cursor_y = y
-          end
-          if cursor_x > limit_x
-            cursor_x = origin_x
-            cursor_y += 1
-          end
+      cursor_x = absolute_x
+      cursor_y = absolute_y
+      idx = 0
+      last_idx = -1
+      debug("Text: #{@text.inspect}, cursor: #{cursor}")
+      loop do
+        idx = @text.index('\n', last_idx + 1)
+        if idx.nil? || idx >= cursor
+          cursor_x += cursor - last_idx - 1
           break
         end
+        last_idx = idx
+        cursor_y += 1
       end
       Terminal.set_cursor(cursor_x, cursor_y)
     end
