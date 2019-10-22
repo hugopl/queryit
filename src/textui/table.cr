@@ -26,9 +26,6 @@ module TextUi
 
     def render
       clear_table_display
-      debug("table render")
-      debug(column_names)
-      debug(rows)
       column_sizes = calculate_column_sizes
       debug(column_sizes)
       x = 0
