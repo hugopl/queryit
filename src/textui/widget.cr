@@ -6,6 +6,7 @@ module TextUi
     property height
     property foregroundColor
     property backgroundColor
+    setter key_input_handler : Proc(Char, UInt16, Nil)?
 
     delegate :<<, to: @children
     getter children
@@ -107,6 +108,8 @@ module TextUi
     abstract def render
 
     def handle_key_input(chr : Char, key : UInt16)
+      callback = @key_input_handler
+      callback.call(chr, key) if callback
     end
 
     def invalidate

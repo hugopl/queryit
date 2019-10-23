@@ -31,6 +31,7 @@ module TextUi
     end
 
     def handle_key_input(chr : Char, key : UInt16)
+      super
       input = @input
       return if input.nil?
       input.handle_key_input(chr, key)

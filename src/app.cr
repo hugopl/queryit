@@ -13,7 +13,7 @@ class App
     @db = DB.open(uri)
     @ui = TextUi::Ui.new
     @ui.on_resize(->handle_resize(Int32, Int32))
-    @ui.on_key_input(->handle_key_input(Char, UInt16))
+    @ui.key_input_handler = ->handle_key_input(Char, UInt16)
 
     @query_box = TextUi::Box.new(@ui, "Query")
     @label = TextUi::Label.new(@query_box, 1, 1, "SELECT E'123456';")
@@ -29,6 +29,8 @@ class App
     @result_box = TextUi::Box.new(@ui, "Results")
     @table = TextUi::Table.new(@result_box, 1, 1)
     @status = TextUi::Label.new(@ui, 0, 0, "status bar")
+
+    setup_shortcuts
   end
 
   private def handle_resize(width, height)
@@ -51,7 +53,13 @@ class App
     @status.width = width
   end
 
-  private def handle_key_input(_chr, key)
+  private def setup_shortcuts
+    @ui.add_focus_shortcut(TextUi::KEY_F2, @label)
+    @ui.add_focus_shortcut(TextUi::KEY_F3, @database_list)
+    @ui.add_focus_shortcut(TextUi::KEY_F4, @result_box)
+  end
+
+  private def handle_key_input(_chr, key) : Nil
     case key
     when TextUi::KEY_CTRL_C then @ui.shutdown!
     when TextUi::KEY_F5     then execute_query(@label.text)

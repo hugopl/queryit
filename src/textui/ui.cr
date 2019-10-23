@@ -17,6 +17,7 @@ module TextUi
     def initialize(color_mode = ColorMode::Just256Colors)
       @event = Terminal::Event.new(type: 0, mod: 0, key: 0, ch: 0, w: 0, x: 0, y: 0)
       @shutdown = false
+      @shortcuts = Hash(Int32, Widget).new
       super(self)
 
       Terminal.init(color_mode)
@@ -28,6 +29,10 @@ module TextUi
 
     def focus(widget : Widget)
       @focused_widget = widget
+    end
+
+    def add_focus_shortcut(key : Int32, widget : Widget)
+      @shortcuts[key] = widget
     end
 
     def absolute_x
@@ -51,8 +56,6 @@ module TextUi
     end
 
     def main_loop
-      raise "No key input handled found!" if @on_key_input.nil?
-
       handle_resize(Terminal.width, Terminal.height)
       e = @event
       loop do
@@ -61,7 +64,7 @@ module TextUi
         Terminal.poll_event(pointerof(e))
 
         case e.type
-        when Terminal::EVENT_KEY then handle_key_input(e.ch.chr, e.key)
+        when Terminal::EVENT_KEY then handle_key_event(e.ch.chr, e.key)
         when Terminal::EVENT_MOUSE
         when Terminal::EVENT_RESIZE then handle_resize(e.w, e.x)
         end
@@ -75,10 +78,6 @@ module TextUi
       @on_resize = proc
     end
 
-    def on_key_input(proc : (Char, UInt16) ->)
-      @on_key_input = proc
-    end
-
     private def handle_resize(width, height)
       self.width = width
       self.height = height
@@ -88,12 +87,23 @@ module TextUi
       callback.call(width, height) if callback
     end
 
-    def handle_key_input(chr : Char, key : UInt16)
-      focused_widget = @focused_widget
-      focused_widget.handle_key_input(chr, key) unless focused_widget.nil?
+    def handle_key_event(chr : Char, key : UInt16)
+      widget = @shortcuts[key]?
+      if widget
+        focus(widget)
+        return
+      end
 
-      callback = @on_key_input
-      callback.call(chr, key) if callback
+      widget = @focused_widget
+      widget.handle_key_input(chr, key) if widget
+      handle_key_input(chr, key) # Always call the main key input handler
     end
+
+    {% if !flag?(:release) %}
+      def handle_key_input(chr : Char, key : UInt16)
+        raise "No key input handler defined for Ui object" if @key_input_handler.nil?
+        super
+      end
+    {% end %}
   end
 end
