@@ -61,6 +61,8 @@ module TextUi
 
           chr = '↵'
           limit_reached = true
+        elsif chr == '\r'
+          chr = '␍'
         end
         Terminal.change_cell(xx, yy, chr, foreground, background)
         break if limit_reached

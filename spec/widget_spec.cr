@@ -18,6 +18,12 @@ describe TextUi::Widget do
                               "            \n")
     end
 
+    it "replaces \\r by ␍" do
+      ui = init_ui(7, 1)
+      ui.puts(0, 0, "CR\rhere")
+      Terminal.to_s.should eq("CR␍here\n")
+    end
+
     it "prints ellipsis if the text is too long" do
       ui = init_ui(4, 1)
       ui.puts(0, 0, "123456", stop_on_lf: true, limit: 4)
