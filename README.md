@@ -1,22 +1,36 @@
-# queryit
+# Queryit
 
-TODO: Write a description here
+A very basic setupless terminal based SQL query runner meant to be used as a developer
+tool to test queries against a project database.
 
 ## Installation
 
-TODO: Write installation instructions here
+You need termbox C library installed on your system, plus the crystal compiler.
+
+```
+$ shards build
+./bin/queryit
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+\# On a rails project directory just run it.
+$ queryit
+```
+
+Or specify the database URI
+```
+$ queryit --uri postgres://localhost/database
+```
 
 ## Development
 
-TODO: Write development instructions here
+All this still in a very early development stage and still not so far from useless.
 
 ## Contributing
 
-1. Fork it (<https://github.com/your-github-user/queryit/fork>)
+1. Fork it (<https://github.com/hugopl/queryit/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -24,4 +38,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [Hugo Parente Lima](https://github.com/your-github-user) - creator and maintainer
+- [Hugo Parente Lima](https://github.com/hugopl) - creator and maintainer
