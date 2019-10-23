@@ -70,7 +70,6 @@ class App
           row << rs.read.to_s
         end
         @table.rows << row
-        debug(row)
       end
     end
     @status.backgroundColor = TextUi::Color::Black

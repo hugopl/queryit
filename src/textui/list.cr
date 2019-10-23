@@ -17,7 +17,6 @@ module TextUi
 
     def render
       items.each_with_index do |item, i|
-        debug("#{i} - #{item}, #{item.size} vs #{width} - height: #{height}")
         break if i >= height
 
         if i == selected_item

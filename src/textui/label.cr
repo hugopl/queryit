@@ -58,7 +58,6 @@ module TextUi
       cursor_y = absolute_y
       idx = 0
       last_idx = -1
-      debug("Text: #{@text.inspect}, cursor: #{cursor}")
       loop do
         idx = @text.index('\n', last_idx + 1)
         if idx.nil? || idx >= cursor
