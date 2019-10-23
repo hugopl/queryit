@@ -19,7 +19,6 @@ $ sudo make install
 ## Usage
 
 On a rails project directory just run it.
-
 ```
 $ queryit
 ```
@@ -31,7 +30,23 @@ $ queryit --uri postgres://localhost/database
 
 ## Development
 
-All this still in a very early development stage and still not so far from useless.
+All this still in a very early development stage and still not so far from useless. Above is a todo list in no specific order:
+
+- [x] Basic query execution/show results.
+- [ ] Save results to CSV.
+- [ ] Help screen.
+- [ ] Change database.
+- [ ] Navigate through results.
+- [ ] Syntax highlight.
+- [ ] SQL beautifier.
+- [ ] SQL auto complete.
+- [ ] Improved copy/paste support.
+- [x] Install script/instructions.
+- [ ] ArchLinux package.
+- [ ] Move TextUI code to their own shard.
+- [ ] Do not block UI when executing queries.
+- [ ] Have a manpage.
+- [ ] Display nice useless charts about the server like pgAdmin4 does.
 
 ## Contributing
 
