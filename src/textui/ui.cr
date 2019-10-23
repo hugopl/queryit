@@ -2,6 +2,10 @@ def debug(text : String)
   File.open("/tmp/debug.txt", "a", &.puts(text))
 end
 
+def debug(floats : Array(Float64))
+  debug(floats.map(&.humanize))
+end
+
 def debug(obj)
   File.open("/tmp/debug.txt", "a", &.puts(obj.inspect))
 end

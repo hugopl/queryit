@@ -26,19 +26,21 @@ module TextUi
 
     def render
       clear_table_display
-      column_sizes = calculate_column_sizes
-      debug(column_sizes)
+      widths = calculate_column_widths
+
       x = 0
-      column_sizes.each_with_index do |size, i|
-        puts(x, 0, @column_names[i], Color::White | Attr::Bold)
+      widths.each_with_index do |size, i|
+        size = width - x if x + size > width
+        puts(x, 0, @column_names[i], Color::White | Attr::Bold, limit: size)
         x += size + 1
       end
 
       y = 1
       @rows.each do |row|
         x = 0
-        column_sizes.each_with_index do |size, i|
-          puts(x, y, row[i], Color::Grey, stop_on_lf: true, limit: column_sizes[i])
+        widths.each_with_index do |size, i|
+          size = width - x if x + size > width
+          puts(x, y, row[i], Color::Grey, stop_on_lf: true, limit: size)
           x += size + 1
         end
         y += 1
@@ -46,22 +48,43 @@ module TextUi
       end
     end
 
-    private def calculate_column_sizes
-      sizes = Array(Int32).new(@column_names.size) do |i|
-        calculate_column_size(i)
+    private def calculate_column_widths
+      widths = calculate_column_max_widths
+      sum = widths.sum + @column_names.size - 1
+      return widths if sum <= width
+
+      extra_chars = sum - width
+      averages = calculate_column_averages
+      averages.each do |(index, avg)|
+        next if @column_names[index] == "id"
+
+        extra_chars -= (widths[index] - avg)
+        avg += -extra_chars if extra_chars < 0
+        widths[index] = avg
+        break if extra_chars <= 0
       end
-      sum = sizes.sum + @column_names.size - 1
-      sizes
+
+      widths
     end
 
-    private def calculate_column_size(i)
-      max_rows = @rows.empty? ? 0 : @rows.each.map(&.[](i).size).max
-      {max_rows, @column_names[i].size}.max
-    end
-
-    private def column_densities
+    private def calculate_column_max_widths
       Array(Int32).new(@column_names.size) do |i|
+        max_rows = @rows.empty? ? 0 : @rows.each.map(&.[](i).size).max
+        {max_rows, @column_names[i].size}.max
       end
+    end
+
+    private def calculate_column_averages
+      averages = Array(Array(Int32)).new(@column_names.size) do |i|
+        avg = if @rows.empty?
+                @column_names.size
+              else
+                (@column_names[i].size + @rows.each.map(&.[](i).size).sum)//(@rows.size + 1)
+              end
+        [i, avg]
+      end
+
+      averages.sort! { |a, b| b[1] <=> a[1] }
     end
   end
 end
