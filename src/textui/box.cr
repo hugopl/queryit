@@ -13,11 +13,11 @@ module TextUi
     @docking = Docking::None
     @borderColor = Color::Teal
 
-    def initialize(parent, @title : String)
+    def initialize(parent, @title : String, @shortcut : String = "")
       super(parent)
     end
 
-    def initialize(parent, x, y, width, height, @title : String)
+    def initialize(parent, x, y, width, height, @title : String, @shortcut : String = "")
       super(parent, x, y, width, height)
     end
 
@@ -32,7 +32,10 @@ module TextUi
       # Top
       putc(1, 0, style[:horizontal], @borderColor)
       puts(3, 0, @title)
-      (width - @title.size - 5).times { |i| putc(@title.size + 4 + i, 0, style[:horizontal], @borderColor) }
+      puts(@title.size + 4, 0, @shortcut, @borderColor | Attr::Reverse | Attr::Bold)
+      (width - @title.size - @shortcut.size - 5).times do |i|
+        putc(@title.size + @shortcut.size + 4 + i, 0, style[:horizontal], @borderColor)
+      end
       # Left
       (height - 2).times { |i| putc(0, i + 1, style[:vertical], @borderColor) } unless @docking == Docking::Right
       # Bottom

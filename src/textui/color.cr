@@ -276,3 +276,9 @@ module TextUi
     end
   end
 end
+
+struct UInt16
+  def |(attr : TextUi::Attr) : UInt16
+    self | attr.to_u16
+  end
+end
