@@ -5,17 +5,22 @@ tool to test queries against a project database.
 
 ## Installation
 
-You need termbox C library installed on your system, plus the crystal compiler.
+You need the project dependencies installed on your system:
+
+ * Termbox C library - https://github.com/nsf/termbox
+ * Crystal language compiler
+ * Shards, the crystal language package manager
 
 ```
-$ shards build
-./bin/queryit
+$ make
+$ sudo make install
 ```
 
 ## Usage
 
+On a rails project directory just run it.
+
 ```
-\# On a rails project directory just run it.
 $ queryit
 ```
 
