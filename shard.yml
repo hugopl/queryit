@@ -4,9 +4,16 @@ version: 0.1.0
 authors:
   - Hugo Parente Lima <hugo.pl@gmail.com>
 
+description: |
+  A very basic setupless terminal based SQL query runner meant to be used as a
+  developer tool to test queries against a project database.
+
 targets:
   queryit:
     main: src/main.cr
+
+libraries:
+  libtermbox: '*'
 
 dependencies:
   pg:
