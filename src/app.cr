@@ -25,6 +25,7 @@ class App
     @database_list = TextUi::List.new(@database_list_box, 1, 1, populate_database_list)
     @database_list.select(@current_database)
     @database_list.width = 18
+    @database_list.on_select = ->change_database(String)
 
     @result_box = TextUi::Box.new(@ui, "Results", "F4")
     @table = TextUi::Table.new(@result_box, 1, 1)
@@ -94,5 +95,9 @@ class App
       end
     end
     databases
+  end
+
+  private def change_database(database_name : String)
+    debug("TODO: Change database to #{database_name}")
   end
 end

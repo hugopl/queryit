@@ -6,6 +6,7 @@ module TextUi
     property height
     property foregroundColor
     property backgroundColor
+    setter focused : Bool
     setter key_input_handler : Proc(Char, UInt16, Nil)?
 
     delegate :<<, to: @children
@@ -15,6 +16,7 @@ module TextUi
       @foregroundColor = Color::Silver
       @backgroundColor = Color::Black
       @children = [] of Widget
+      @focused = false
       @render_pending = true
       @parent << self if @parent != self
     end
@@ -31,6 +33,18 @@ module TextUi
         end
         Terminal.change_cell(xx, yy, ' ', foreground, background)
       end
+    end
+
+    def clear_text(x, y, n : Int32, foreground = @foregroundColor, background = @backgroundColor, stop_on_lf = false)
+      x += absolute_x
+      y += absolute_y
+      n.times do |i|
+        Terminal.change_cell(x + i, y, ' ', foreground, background)
+      end
+    end
+
+    def focused?
+      @focused
     end
 
     def set_cursor(x, y)

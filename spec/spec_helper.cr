@@ -77,19 +77,23 @@ module TextUi
       @@events.clear
     end
 
-    def self.to_s
+    def self.to_s(colors = false)
       String.build do |io|
-        print(io, info: false)
+        print(io, info: false, colors: colors)
       end
     end
 
-    def self.print(io = STDOUT, info = true)
+    def self.print(io = STDOUT, info = true, colors = false)
       io.puts("\nScreen size: #{width}x#{height}, cursor at #{@@cursor.inspect}") if info
       height.times do |y|
-        @@cells[y].each do |cell|
-          io.print cell.chr
+        line = @@cells[y].map do |cell|
+          colors ? "#{((cell.fg << 16) | cell.bg).to_s(32)}" : cell.chr
         end
-        io.puts
+        if colors
+          io.puts(line.join('-'))
+        else
+          io.puts(line.join)
+        end
       end
     end
   end

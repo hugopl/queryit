@@ -27,8 +27,18 @@ module TextUi
       @shutdown = true
     end
 
-    def focus(widget : Widget)
+    def focus(widget : Widget?) : Nil
+      old_widget = @focused_widget
+      if old_widget
+        old_widget.focused = false
+        old_widget.invalidate
+      end
       @focused_widget = widget
+      if widget
+        widget.focused = true
+        widget.invalidate
+      end
+      set_cursor(-1, -1)
     end
 
     def add_focus_shortcut(key : Int32, widget : Widget)
