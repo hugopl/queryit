@@ -13,16 +13,19 @@ describe TextUi::Label do
 
       label.text = "\n\n\n"
       label.cursor = 2
+      ui.invalidate
       ui.render
       Terminal.cursor.should eq({x: 2, y: 4})
 
       label.text = "123456789"
       label.cursor = 5
+      ui.invalidate
       ui.render
       Terminal.cursor.should eq({x: 7, y: 2})
 
       label.text = "1234\n\n\n\n901"
       label.cursor = 10
+      ui.invalidate
       ui.render
       Terminal.cursor.should eq({x: 4, y: 6})
     end
