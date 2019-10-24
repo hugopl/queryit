@@ -50,13 +50,13 @@ module TextUi
       input.cursor = text.size if input.cursor > text.size
     end
 
-    private def render_cursor
+    def render_cursor
       input = @input
       return if input.nil?
 
       cursor = input.cursor
-      cursor_x = absolute_x
-      cursor_y = absolute_y
+      cursor_x = 0
+      cursor_y = 0
       idx = 0
       last_idx = -1
       loop do
@@ -68,13 +68,12 @@ module TextUi
         last_idx = idx
         cursor_y += 1
       end
-      Terminal.set_cursor(cursor_x, cursor_y)
+      set_cursor(cursor_x, cursor_y)
     end
 
     def render
       clear_text(0, 0, @old_text) unless @old_text.empty?
       puts(0, 0, @text)
-      render_cursor
 
       @old_text = ""
     end

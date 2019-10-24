@@ -33,6 +33,10 @@ module TextUi
       end
     end
 
+    def set_cursor(x, y)
+      Terminal.set_cursor(absolute_x + x, absolute_y + y)
+    end
+
     def absolute_x
       @parent.absolute_x + @x
     end
@@ -106,6 +110,9 @@ module TextUi
     end
 
     abstract def render
+
+    def render_cursor
+    end
 
     def handle_key_input(chr : Char, key : UInt16)
       callback = @key_input_handler

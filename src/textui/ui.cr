@@ -53,13 +53,15 @@ module TextUi
 
     def render
       render_children
+      widget = @focused_widget
+      widget.render_cursor if widget
     end
 
     def main_loop
       handle_resize(Terminal.width, Terminal.height)
       e = @event
       loop do
-        render_children
+        render
         Terminal.present
         Terminal.poll_event(pointerof(e))
 

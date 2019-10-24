@@ -7,6 +7,7 @@ describe TextUi::Label do
       label = TextUi::Label.new(ui, 2, 2, "")
       label.accept_input
       label.cursor = 0
+      ui.focus(label)
       ui.render
       Terminal.cursor.should eq({x: 2, y: 2})
 
@@ -27,7 +28,7 @@ describe TextUi::Label do
     end
 
     it "ignores cursor larger than text" do
-      ui = init_ui(10, 1)
+      ui = init_ui(10, 3)
       label = TextUi::Label.new(ui, 2, 2, "Foo")
       label.accept_input
       label.cursor = 1
@@ -38,11 +39,13 @@ describe TextUi::Label do
     end
 
     it "move cursor if label text shrink" do
-      ui = init_ui(20, 1)
+      ui = init_ui(20, 3)
       label = TextUi::Label.new(ui, 2, 2, "Long Text is Long")
       label.accept_input
       label.cursor = label.text.size
       label.text = "Hi"
+      ui.focus(label)
+      ui.render
       label.cursor.should eq(2)
     end
   end
