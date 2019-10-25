@@ -15,7 +15,7 @@ module TextUi
       idx = @items.index(item)
       return if idx.nil?
 
-      @selected_item = idx
+      @cursor = @selected_item = idx
     end
 
     def render
