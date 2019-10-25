@@ -1,16 +1,16 @@
 require "./textui/*"
 require "pg"
+require "mysql"
+require "sqlite3"
 require "uri"
 
 class App
   delegate main_loop, to: @ui
 
   @db : DB::Database
-  @current_database : String
 
-  def initialize(uri : URI)
-    @current_database = uri.path[1..-1]
-    @db = DB.open(uri)
+  def initialize(@db_uri : URI)
+    @db = DB.open(@db_uri)
     @ui = TextUi::Ui.new
     @ui.on_resize(->handle_resize(Int32, Int32))
     @ui.key_input_handler = ->handle_key_input(Char, UInt16)
@@ -23,7 +23,7 @@ class App
 
     @database_list_box = TextUi::Box.new(@ui, "Databases", "F3")
     @database_list = TextUi::List.new(@database_list_box, 1, 1, populate_database_list)
-    @database_list.select(@current_database)
+    @database_list.select(current_database_name)
     @database_list.width = 18
     @database_list.on_select = ->change_database(String)
 
@@ -32,6 +32,10 @@ class App
     @status = TextUi::Label.new(@ui, 0, 0, "status bar")
 
     setup_shortcuts
+  end
+
+  private def current_database_name
+    @db_uri.path[1..-1]
   end
 
   private def handle_resize(width, height)
@@ -70,7 +74,6 @@ class App
   private def execute_query(query)
     debug(query)
     @db.query(query) do |rs|
-      @status.text = "#{rs.rows_affected} rows affected."
       @table.clear
       @table.column_names = rs.column_names
       rs.each do
@@ -89,7 +92,15 @@ class App
 
   private def populate_database_list
     databases = [] of String
-    @db.query("SELECT datname FROM pg_database") do |rs|
+    debug @db_uri.scheme
+    query = case @db_uri.scheme
+            when "postgres", "postgresql" then "SELECT datname FROM pg_database"
+            when "sqlite"                 then return [current_database_name]
+            when "mysql"                  then "SHOW DATABASES"
+            else
+              raise "Database not supported, please, file a bug."
+            end
+    @db.query(query) do |rs|
       rs.each do
         databases << rs.read(String)
       end
@@ -97,7 +108,9 @@ class App
     databases
   end
 
-  private def change_database(database_name : String)
-    debug("TODO: Change database to #{database_name}")
+  private def change_database(database_name : String) : Nil
+    @db_uri.path = "/#{database_name}"
+    @db.close
+    @db = DB.open(@db_uri)
   end
 end

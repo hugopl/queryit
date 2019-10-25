@@ -35,7 +35,7 @@ All this still in a very early development stage and still not so far from usele
 - [x] Basic query execution/show results.
 - [ ] Save results to CSV.
 - [ ] Help screen.
-- [ ] Change database.
+- [x] Change database.
 - [ ] Navigate through results.
 - [ ] Syntax highlight.
 - [ ] SQL beautifier.
