@@ -2,7 +2,7 @@ version: 1.0
 shards:
   db:
     github: crystal-lang/crystal-db
-    version: 0.7.0
+    commit: 2b95d69e685da6f44835439baad73977f27a3907
 
   mysql:
     github: crystal-lang/crystal-mysql
@@ -15,4 +15,8 @@ shards:
   sqlite3:
     github: crystal-lang/crystal-sqlite3
     version: 0.14.0
+
+  version:
+    github: hugopl/version.cr
+    version: 0.1.0
 

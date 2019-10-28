@@ -1,9 +1,10 @@
 require "option_parser"
 require "yaml"
+require "version"
 
 require "./app"
 
-VERSION = "0.1.0"
+Version.declare
 
 def detect_rails_database
   config = YAML.parse(File.read("./config/database.yml"))
