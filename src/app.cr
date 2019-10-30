@@ -85,9 +85,8 @@ class App
       end
     end
     @status.backgroundColor = TextUi::Color::Black
-  rescue e : PQ::PQError
-    @status.backgroundColor = TextUi::Color::Red
-    @status.text = e.message.to_s
+  rescue e
+    error(e.message.to_s)
   end
 
   private def populate_database_list
@@ -109,8 +108,19 @@ class App
   end
 
   private def change_database(database_name : String) : Nil
-    @db_uri.path = "/#{database_name}"
+    new_db_uri = @db_uri.dup
+    new_db_uri.path = "/#{database_name}"
+    new_db = DB.open(new_db_uri)
     @db.close
-    @db = DB.open(@db_uri)
+    @db = new_db
+    @db_uri = new_db_uri
+  rescue e : DB::ConnectionRefused
+    error("Unable to connect to #{database_name}!")
+    @database_list.select(current_database_name)
+  end
+
+  private def error(message : String) : Nil
+    @status.backgroundColor = TextUi::Color::Red
+    @status.text = message
   end
 end
