@@ -79,7 +79,8 @@ module TextUi
         avg = if @rows.empty?
                 @column_names.size
               else
-                (@column_names[i].size + @rows.each.map(&.[](i).size).sum)//(@rows.size + 1)
+                temp = @rows.each.map(&.[](i).size).sum//(@rows.size + 1)
+                {@column_names[i].size, temp}.max
               end
         [i, avg]
       end
