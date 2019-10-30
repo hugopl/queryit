@@ -69,21 +69,23 @@ module TextUi
 
     def main_loop
       handle_resize(Terminal.width, Terminal.height)
-      e = @event
       loop do
         render
         Terminal.present
-        Terminal.poll_event(pointerof(e))
-
-        case e.type
-        when Terminal::EVENT_KEY then handle_key_event(e.ch.chr, e.key)
-        when Terminal::EVENT_MOUSE
-        when Terminal::EVENT_RESIZE then handle_resize(e.w, e.x)
-        end
+        process_events
 
         break if @shutdown
       end
       Terminal.shutdown
+    end
+
+    def process_events
+      Terminal.poll_event(pointerof(@event))
+      case @event.type
+      when Terminal::EVENT_KEY then handle_key_event(@event.ch.chr, @event.key)
+      when Terminal::EVENT_MOUSE
+      when Terminal::EVENT_RESIZE then handle_resize(@event.w, @event.x)
+      end
     end
 
     def on_resize(proc : (Int32, Int32) ->)

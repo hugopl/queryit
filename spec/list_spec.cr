@@ -26,7 +26,7 @@ describe TextUi::List do
     ui = init_ui(7, 6)
     list = TextUi::List.new(ui, 2, 2, %w(one two three))
     list.width = 5
-    list.selected_item = 2
+    list.select(2)
     ui.render
     Terminal.to_s.should eq("       \n" \
                             "       \n" \
@@ -61,7 +61,7 @@ describe TextUi::List do
                                           "0-0-e000-e000-e000-e000-e000\n" \
                                           "0-0-e000-e000-e000-e000-e000\n" \
                                           "0-0-0-0-0-0-0\n")
-    list.selected_item = 0
+    list.select(0)
     ui.invalidate
     ui.render
     Terminal.to_s.should eq("       \n" \
@@ -85,5 +85,39 @@ describe TextUi::List do
                                           "0-0-e000-20e000-20e000-20e000-20e000\n" \
                                           "0-0-e000-e000-e000-e000-e000\n" \
                                           "0-0-0-0-0-0-0\n")
+  end
+
+  it "render list larger than viewport" do
+    ui = init_ui(5, 4)
+    list = TextUi::List.new(ui, 0, 0, %w(one two three four five six))
+    list.width = 5
+    list.height = 4
+    list.select(3)
+    ui.focus(list)
+    ui.render
+    Terminal.to_s.should eq(" one \n" \
+                            " two \n" \
+                            " thr…\n" \
+                            "🠺fo…▼\n")
+    Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+    ui.process_events
+    ui.render
+    Terminal.to_s.should eq(" two▲\n" \
+                            " thr…\n" \
+                            "🠺four\n" \
+                            " fi…▼\n")
+    Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+    ui.process_events
+    ui.render
+    Terminal.to_s.should eq(" th…▲\n" \
+                            "🠺four\n" \
+                            " five\n" \
+                            " six \n")
+    list.select("two")
+    ui.render
+    Terminal.to_s.should eq("🠺two▲\n" \
+                            " thr…\n" \
+                            " four\n" \
+                            " fi…▼\n")
   end
 end

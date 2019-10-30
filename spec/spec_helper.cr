@@ -45,6 +45,7 @@ module TextUi
     end
 
     def self.poll_event(event : Pointer(Event))
+      event.value = @@events.shift
     end
 
     def self.set_cursor(x, y)
@@ -77,6 +78,14 @@ module TextUi
       @@events.clear
     end
 
+    def self.inject_key_event(key = 0, ch = 0) : Nil
+      ev = Event.new
+      ev.type = EVENT_KEY
+      ev.ch = ch
+      ev.key = key
+      @@events << ev
+    end
+
     def self.to_s(colors = false)
       String.build do |io|
         print(io, info: false, colors: colors)
@@ -104,7 +113,9 @@ alias Terminal = TextUi::Terminal
 def init_ui(width = 20, height = 4)
   Terminal.resize(width, height)
   Terminal.clear_events
-  TextUi::Ui.new
+  ui = TextUi::Ui.new
+  ui.key_input_handler = ->(chr : Char, i : UInt16) {}
+  ui
 end
 
 def print_ui
