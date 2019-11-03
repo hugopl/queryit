@@ -31,8 +31,8 @@ module TextUi
       style = border_style
       # Top
       putc(1, 0, style[:horizontal], @borderColor)
-      puts(3, 0, @title)
-      puts(@title.size + 4, 0, @shortcut, @borderColor | Attr::Reverse | Attr::Bold)
+      print_line(3, 0, @title)
+      print_line(@title.size + 4, 0, @shortcut, @borderColor | Attr::Reverse | Attr::Bold)
       (width - @title.size - @shortcut.size - 5).times do |i|
         putc(@title.size + @shortcut.size + 4 + i, 0, style[:horizontal], @borderColor)
       end

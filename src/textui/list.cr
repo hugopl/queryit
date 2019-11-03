@@ -56,12 +56,12 @@ module TextUi
           putc(width - 1, i, i.zero? ? '▲' : '▼')
         end
 
-        puts(1, i, item, color, stop_on_lf: true, limit: limit)
-        clear_text(item.size + 1, i, limit - item.size, color)
+        print_line(1, i, item, color, width: limit)
       end
     end
 
     def handle_key_input(chr : Char, key : UInt16)
+      super
       case key
       when KEY_ARROW_UP   then @cursor -= 1
       when KEY_ARROW_DOWN then @cursor += 1

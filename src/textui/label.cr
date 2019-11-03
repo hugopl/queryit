@@ -73,7 +73,7 @@ module TextUi
 
     def render
       clear_text(0, 0, @old_text) unless @old_text.empty?
-      puts(0, 0, @text)
+      print_lines(0, 0, @text)
 
       @old_text = ""
     end

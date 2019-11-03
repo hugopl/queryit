@@ -4,7 +4,7 @@ describe TextUi::Widget do
   context "when printing strings" do
     it "obey alignment on line feed" do
       ui = init_ui(12, 3)
-      ui.puts(1, 1, "LineFeed\nHere")
+      ui.print_lines(1, 1, "LineFeed\nHere")
       Terminal.to_s.should eq("            \n" \
                               " LineFeed   \n" \
                               " Here       \n")
@@ -12,27 +12,29 @@ describe TextUi::Widget do
 
     it "prints line feed if stopped at it" do
       ui = init_ui(12, 3)
-      ui.puts(1, 1, "LineFeed\nHere", stop_on_lf: true)
+      ui.print_line(1, 1, "LineFeed\nHere", width: 11)
       Terminal.to_s.should eq("            \n" \
-                              " LineFeed↵  \n" \
+                              " LineFeed↵H…\n" \
                               "            \n")
     end
 
     it "replaces \\r by ␍" do
       ui = init_ui(7, 1)
-      ui.puts(0, 0, "CR\rhere")
+      ui.print_lines(0, 0, "CR\rhere")
       Terminal.to_s.should eq("CR␍here\n")
     end
 
     it "prints ellipsis if the text is too long" do
       ui = init_ui(4, 1)
-      ui.puts(0, 0, "123456", stop_on_lf: true, limit: 4)
+      ui.print_line(0, 0, "123456", width: 4)
       Terminal.to_s.should eq("123…\n")
     end
 
-    it "does not prints ellipsis if the text is exact the limti size" do
+    it "does not prints ellipsis if the text is exact the width size" do
       ui = init_ui(4, 1)
-      ui.puts(0, 0, "1234", stop_on_lf: true, limit: 4)
+      ui.print_line(0, 0, "1234", width: 4)
+      Terminal.to_s.should eq("1234\n")
+      ui.print_lines(0, 0, "1234", width: 4)
       Terminal.to_s.should eq("1234\n")
     end
   end
@@ -44,7 +46,7 @@ describe TextUi::Widget do
       box2 = TextUi::Box.new(box1, 1, 1, 14, 7, "box2")
       box3 = TextUi::Box.new(box2, 1, 1, 12, 5, "box3")
       ui.render
-      box3.puts(5, 2, "Hi")
+      box3.print_line(5, 2, "Hi")
       Terminal.to_s.should eq("                  \n" \
                               "                  \n" \
                               "  ╭─ box1 ───────╮\n" \
@@ -64,7 +66,7 @@ describe TextUi::Widget do
       box2 = TextUi::Box.new(box1, 1, 1, 14, 7, "box2")
       box3 = TextUi::Box.new(box2, 1, 1, 12, 5, "box3")
       ui.render
-      box3.puts(5, 2, "123456789", limit: 6)
+      box3.print_lines(5, 2, "123456789", width: 6)
       Terminal.to_s.should eq("                  \n" \
                               "                  \n" \
                               "  ╭─ box1 ───────╮\n" \

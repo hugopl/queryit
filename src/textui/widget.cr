@@ -67,19 +67,41 @@ module TextUi
       @parent.absolute_height + @height
     end
 
-    def puts(x, y, text : String, foreground = @foregroundColor, background = @backgroundColor, stop_on_lf = false, limit = 0)
+    def print_line(x : Int32, y : Int32, text : String, foreground = @foregroundColor, background = @backgroundColor, width = 0) : Nil
+      x += absolute_x
+      y += absolute_y
+      width_alert = width - 1
+
+      text.each_char_with_index do |chr, i|
+        break if width != 0 && i >= width
+
+        if i == width_alert && text.size != width
+          chr = '…'
+        elsif chr == '\n'
+          chr = '↵'
+        elsif chr == '\r'
+          chr = '␍'
+        end
+        Terminal.change_cell(x + i, y, chr, foreground, background)
+      end
+
+      # fill width with blanks
+      start_x = x + text.size
+      (width - text.size).times do |i|
+        Terminal.change_cell(start_x + i, y, ' ', foreground, background)
+      end
+    end
+
+    def print_lines(x, y, text : String, foreground = @foregroundColor, background = @backgroundColor, width = 0)
       count = 0
-      limit = 0 if text.size <= limit # Turn off limit if the string fits
+      width = 0 if text.size <= width # Turn off width if the string fits
       each_char_pos(x, y, text) do |xx, yy, chr|
         count += 1
-        limit_reached = count >= limit if limit != 0
+        limit_reached = count >= width if width != 0
         if limit_reached
           chr = '…'
         elsif chr == '\n'
-          next unless stop_on_lf
-
-          chr = '↵'
-          limit_reached = true
+          next
         elsif chr == '\r'
           chr = '␍'
         end
