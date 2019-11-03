@@ -61,7 +61,7 @@ class App
   private def setup_shortcuts
     @ui.add_focus_shortcut(TextUi::KEY_F2, @label)
     @ui.add_focus_shortcut(TextUi::KEY_F3, @database_list)
-    @ui.add_focus_shortcut(TextUi::KEY_F4, @result_box)
+    @ui.add_focus_shortcut(TextUi::KEY_F4, @table)
   end
 
   private def handle_key_input(_chr, key) : Nil

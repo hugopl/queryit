@@ -8,6 +8,10 @@ module TextUi
 
       @column_names = [] of String
       @rows = [] of Array(String)
+      @cursor_x = 0
+      @cursor_y = 1
+
+      @foregroundColor = Color::Grey
     end
 
     def clear
@@ -31,7 +35,7 @@ module TextUi
       x = 0
       widths.each_with_index do |size, i|
         size = width - x if x + size > width
-        puts(x, 0, @column_names[i], Color::White | Attr::Bold, limit: size)
+        print_line(x, 0, @column_names[i], Color::White | Attr::Bold, width: size)
         x += size + 1
       end
 
@@ -40,7 +44,11 @@ module TextUi
         x = 0
         widths.each_with_index do |size, i|
           size = width - x if x + size > width
-          puts(x, y, row[i], Color::Grey, stop_on_lf: true, limit: size)
+          if focused? && i == @cursor_x && y == @cursor_y
+            print_line(x, y, row[i], foregroundColor | Attr::Reverse, width: size)
+          else
+            print_line(x, y, row[i], foregroundColor, width: size)
+          end
           x += size + 1
         end
         y += 1
@@ -86,6 +94,20 @@ module TextUi
       end
 
       averages.sort! { |a, b| b[1] <=> a[1] }
+    end
+
+    def handle_key_input(chr : Char, key : UInt16)
+      super
+      case key
+      when KEY_ARROW_UP    then @cursor_y -= 1
+      when KEY_ARROW_DOWN  then @cursor_y += 1
+      when KEY_ARROW_LEFT  then @cursor_x -= 1
+      when KEY_ARROW_RIGHT then @cursor_x += 1
+      when KEY_ENTER
+      end
+      @cursor_x = 0 if @cursor_x < 0
+      @cursor_y = 1 if @cursor_y < 1
+      invalidate
     end
   end
 end
