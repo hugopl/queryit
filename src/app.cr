@@ -16,7 +16,7 @@ class App
     @ui.key_input_handler = ->handle_key_input(Char, UInt16)
 
     @query_box = TextUi::Box.new(@ui, "Query", "F2")
-    @label = TextUi::Label.new(@query_box, 1, 1, "SELECT E'123456';")
+    @label = TextUi::Label.new(@query_box, 1, 1, "SELECT * FROM users;")
     @label.accept_input
     @label.cursor = @label.text.size
     @ui.focus(@label)
