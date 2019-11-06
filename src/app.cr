@@ -29,7 +29,7 @@ class App
 
     @result_box = TextUi::Box.new(@ui, "Results", "F4")
     @table = TextUi::Table.new(@result_box, 1, 1)
-    @status = TextUi::Label.new(@ui, 0, 0, "status bar")
+    @shortcut_bar = TextUi::ShortcutBar.new(@ui)
 
     setup_shortcuts
   end
@@ -54,19 +54,26 @@ class App
     @result_box.height = height - @query_box.height - 1
     @table.width = @result_box.width - 2
     @table.height = @result_box.height - 2
-    @status.y = height - 1
-    @status.width = width
+    @shortcut_bar.y = height - 1
+    @shortcut_bar.width = width
   end
 
   private def setup_shortcuts
     @ui.add_focus_shortcut(TextUi::KEY_F2, @label)
     @ui.add_focus_shortcut(TextUi::KEY_F3, @database_list)
     @ui.add_focus_shortcut(TextUi::KEY_F4, @table)
+
+    @shortcut_bar.add_shortcut("^X", "Exit")
+    @shortcut_bar.add_shortcut("^C", "Copy Query")
+    @shortcut_bar.add_shortcut("^R", "Copy Results")
+    @shortcut_bar.add_shortcut("^B", "Beautify")
+    @shortcut_bar.add_shortcut("F12", "Save CSV")
+    @shortcut_bar.add_shortcut("F1", "Help")
   end
 
   private def handle_key_input(_chr, key) : Nil
     case key
-    when TextUi::KEY_CTRL_C then @ui.shutdown!
+    when TextUi::KEY_CTRL_X then @ui.shutdown!
     when TextUi::KEY_F5     then execute_query(@label.text)
     end
   end
@@ -84,7 +91,6 @@ class App
         @table.rows << row
       end
     end
-    @status.backgroundColor = TextUi::Color::Black
   rescue e
     error(e.message.to_s)
   end
@@ -120,7 +126,6 @@ class App
   end
 
   private def error(message : String) : Nil
-    @status.backgroundColor = TextUi::Color::Red
-    @status.text = message
+    debug(message)
   end
 end
