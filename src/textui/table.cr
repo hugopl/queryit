@@ -128,6 +128,8 @@ module TextUi
     end
 
     def handle_key_input(chr : Char, key : UInt16)
+      return if @rows.empty?
+
       super
       case key
       when KEY_ARROW_UP    then @cursor_y -= 1
