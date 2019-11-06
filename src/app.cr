@@ -4,6 +4,8 @@ require "mysql"
 require "sqlite3"
 require "uri"
 
+require "./results"
+
 class App
   delegate main_loop, to: @ui
 
@@ -27,8 +29,7 @@ class App
     @database_list.width = 18
     @database_list.on_select = ->change_database(String)
 
-    @result_box = TextUi::Box.new(@ui, "Results", "F4")
-    @table = TextUi::Table.new(@result_box, 1, 1)
+    @results = Results.new(@ui)
     @shortcut_bar = TextUi::ShortcutBar.new(@ui)
 
     setup_shortcuts
@@ -49,11 +50,10 @@ class App
     @database_list_box.right_of(@query_box)
     @database_list.height = @database_list_box.height - 2
 
-    @result_box.y = @query_box.height
-    @result_box.width = width
-    @result_box.height = height - @query_box.height - 1
-    @table.width = @result_box.width - 2
-    @table.height = @result_box.height - 2
+    @results.y = @query_box.height
+    @results.width = width
+    @results.height = height - @query_box.height - 1
+
     @shortcut_bar.y = height - 1
     @shortcut_bar.width = width
   end
@@ -61,7 +61,6 @@ class App
   private def setup_shortcuts
     @ui.add_focus_shortcut(TextUi::KEY_F2, @label)
     @ui.add_focus_shortcut(TextUi::KEY_F3, @database_list)
-    @ui.add_focus_shortcut(TextUi::KEY_F4, @table)
 
     @shortcut_bar.add_shortcut("^X", "Exit")
     @shortcut_bar.add_shortcut("^C", "Copy Query")
@@ -80,16 +79,16 @@ class App
 
   private def execute_query(query)
     debug(query)
+    rows = Array(Array(String)).new
     @db.query(query) do |rs|
-      @table.clear
-      @table.column_names = rs.column_names
+      @results.clear
+      rows << rs.column_names
       rs.each do
         row = [] of String
-        rs.column_count.times do
-          row << rs.read.to_s
-        end
-        @table.rows << row
+        rs.column_count.times { row << rs.read.to_s }
+        rows << row
       end
+      @results.set_data(rows)
     end
   rescue e
     error(e.message.to_s)

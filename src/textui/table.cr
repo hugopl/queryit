@@ -1,7 +1,7 @@
 module TextUi
   class Table < Widget
-    property column_names
-    property rows
+    getter column_names
+    getter rows
 
     def initialize(parent, x, y)
       super
@@ -22,6 +22,12 @@ module TextUi
       @column_widths.clear
       @rows.clear
       invalidate
+    end
+
+    # First line is considered the header
+    def set_data(rows : Array(Array(String))) : Nil
+      @column_names = rows.shift
+      @rows = rows
     end
 
     def clear_table_display
