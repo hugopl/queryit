@@ -1,7 +1,6 @@
 require "csv"
 
-class Results
-  delegate :y=, to: @box
+class ResultsControl
   delegate clear, to: @table
   delegate set_data, to: @table
 
@@ -24,13 +23,12 @@ class Results
     end
   end
 
-  def width=(width)
+  def handle_resize(width, height)
+    half_screen = height//2
+    @box.y = half_screen
     @box.width = width
     @table.width = width - 2
-  end
-
-  def height=(height)
-    @box.height = height
-    @table.height = height - 2
+    @box.height = height - half_screen - 1
+    @table.height = @box.height - 2
   end
 end
