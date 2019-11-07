@@ -42,7 +42,7 @@ All this still in a very early development stage and still not so far from usele
 - [ ] SQL auto complete.
 - [x] Improved copy/paste support.
 - [x] Install script/instructions.
-- [ ] ArchLinux package.
+- [x] ArchLinux package.
 - [ ] Move TextUI code to their own shard.
 - [ ] Do not block UI when executing queries.
 - [ ] Have a manpage.

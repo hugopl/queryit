@@ -1,3 +1,5 @@
-## [Unreleased]
+## [0.1.0] - 2019-11-07
 
-- Initial release.
+- First release, only basic things working but still useful.
+- Support for SQLite and MySQL is there, but never tested.
+- Postgres is the only one tested for now.
