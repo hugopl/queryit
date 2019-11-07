@@ -76,6 +76,7 @@ module TextUi
 
         break if @shutdown
       end
+    ensure
       Terminal.shutdown
     end
 
