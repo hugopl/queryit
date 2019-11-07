@@ -64,12 +64,14 @@ class App
 
   private def copy_query
     copy_to_clipboard(@query_ctl.query)
+    info("Results copied to clipboard!")
   end
 
   private def copy_results
     return if @results_ctl.empty?
 
     copy_to_clipboard(@results_ctl.to_csv.to_s)
+    info("Results copied to clipboard!")
   end
 
   private def copy_to_clipboard(contents : String)
