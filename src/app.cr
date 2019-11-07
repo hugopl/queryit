@@ -100,11 +100,10 @@ class App
   end
 
   private def show_help
-    error("not implemnted yet")
+    info("Visit http://www.google.com ;-)")
   end
 
   private def execute_query(query)
-    debug(query)
     rows = Array(Array(String)).new
     @db.query(query) do |rs|
       @results_ctl.clear
