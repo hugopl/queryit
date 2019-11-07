@@ -1,9 +1,21 @@
+[![Build Status](https://travis-ci.org/hugopl/queryit.svg?branch=master)](https://travis-ci.org/hugopl/queryit)
+
 # Queryit
 
 A very basic setupless terminal based SQL query runner meant to be used as a developer
 tool to test queries against a project database.
 
 ## Installation
+
+### if ArchLinux
+
+There's an [AUR package](https://aur.archlinux.org/packages/queryit/) for it.
+
+```
+$ yay -S queryit
+```
+
+### Else
 
 You need the project dependencies installed on your system:
 
