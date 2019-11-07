@@ -62,6 +62,8 @@ module TextUi
 
     def handle_key_input(chr : Char, key : UInt16)
       super
+      return if @items.empty?
+
       case key
       when KEY_ARROW_UP   then @cursor -= 1
       when KEY_ARROW_DOWN then @cursor += 1
