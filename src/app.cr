@@ -9,6 +9,7 @@ require "./query_control"
 
 class App
   delegate main_loop, to: @ui
+  delegate error, info, to: @status_bar
 
   @db : DB::Database
 
@@ -21,7 +22,7 @@ class App
     @query_ctl = QueryControl.new(@ui)
     @query_ctl.on_database_selected = ->change_database(String)
     @results_ctl = ResultsControl.new(@ui)
-    @shortcut_bar = TextUi::ShortcutBar.new(@ui)
+    @status_bar = TextUi::StatusBar.new(@ui)
 
     setup_shortcuts
     populate_database_list
@@ -35,18 +36,18 @@ class App
     @query_ctl.handle_resize(width, height)
     @results_ctl.handle_resize(width, height)
 
-    @shortcut_bar.y = height - 1
-    @shortcut_bar.width = width
+    @status_bar.y = height - 1
+    @status_bar.width = width
   end
 
   private def setup_shortcuts
-    @shortcut_bar.add_shortcut("^X", "Exit")
-    @shortcut_bar.add_shortcut("^C", "Copy Query")
-    @shortcut_bar.add_shortcut("^R", "Copy Results")
-    @shortcut_bar.add_shortcut("^B", "Beautify")
-    @shortcut_bar.add_shortcut("F5", "Execute")
-    @shortcut_bar.add_shortcut("^S", "Save CSV")
-    @shortcut_bar.add_shortcut("F1", "Help")
+    @status_bar.add_shortcut("^X", "Exit")
+    @status_bar.add_shortcut("^C", "Copy Query")
+    @status_bar.add_shortcut("^R", "Copy Results")
+    @status_bar.add_shortcut("^B", "Beautify")
+    @status_bar.add_shortcut("F5", "Execute")
+    @status_bar.add_shortcut("^S", "Save CSV")
+    @status_bar.add_shortcut("F1", "Help")
   end
 
   private def handle_key_input(_chr, key) : Nil
@@ -76,29 +77,30 @@ class App
     # TODO: Do a tiny OS abstraction for this
     Process.run("xclip", %w(-selection clipboard -in), input: input)
   rescue
-    debug("xclip not found")
+    error("xclip not found")
   end
 
   private def beautify
-    debug("not implemnted yet")
+    error("not implemnted yet")
   end
 
   private def save_csv
     contents = @results_ctl.to_csv
     i = 0
+    filename = "results.csv"
     loop do
-      suffix = "_#{i}" if i > 0
-      filename = "results#{suffix}.csv"
+      filename = "results_#{i}.csv" if i > 0
       i += 1
       next if File.exists?(filename)
 
       File.write(filename, contents)
       break
     end
+    info("Results saved to #{filename}.")
   end
 
   private def show_help
-    debug("not implemnted yet")
+    error("not implemnted yet")
   end
 
   private def execute_query(query)
@@ -146,9 +148,5 @@ class App
   rescue e : DB::ConnectionRefused
     error("Unable to connect to #{database_name}!")
     @query_ctl.selected_database = current_database_name
-  end
-
-  private def error(message : String) : Nil
-    debug(message)
   end
 end

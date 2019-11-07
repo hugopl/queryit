@@ -1,10 +1,10 @@
 module TextUi
-  class ShortcutBar < Widget
-    @shortcuts : Hash(String, String)
-
+  class StatusBar < Widget
     def initialize(parent)
       super(parent, 0, parent.height - 1, parent.width, 1)
 
+      @message = ""
+      @message_color = foregroundColor
       @shortcuts = {} of String => String
     end
 
@@ -12,11 +12,28 @@ module TextUi
       @shortcuts[shortcut] = label
     end
 
+    def info(message : String)
+      @message = message
+      @message_color = Color::Blue
+      invalidate
+    end
+
+    def error(message : String)
+      @message = message
+      @message_color = Color::Red
+      invalidate
+    end
+
     def render
+      if !@message.empty?
+        print_line(0, 0, @message, @message_color, width: width)
+        @message = ""
+        invalidate
+        return
+      end
+
       step = width//@shortcuts.size
 
-      debug("width: #{width}")
-      debug("step: #{step}")
       x = 0
       @shortcuts.each do |shortcut, label|
         print_line(x, 0, shortcut, foregroundColor | Attr::Reverse)
@@ -24,8 +41,6 @@ module TextUi
         putc(x, 0, ' ')
         x += 1
         remain = step - shortcut.size - 1
-        debug("#{shortcut} - #{label}")
-        debug("#{remain} = #{step} - #{shortcut.size} - 1 - #{label.size}")
         print_line(x, 0, label, width: remain)
         x += remain
       end

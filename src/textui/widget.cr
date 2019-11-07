@@ -11,6 +11,7 @@ module TextUi
 
     delegate :<<, to: @children
     getter children
+    protected property? render_pending
 
     def initialize(@parent : Widget, @x = 0, @y = 0, @width = 0, @height = 0)
       @foregroundColor = Color::Silver
@@ -19,10 +20,6 @@ module TextUi
       @focused = false
       @render_pending = true
       @parent << self if @parent != self
-    end
-
-    def render_pending?
-      @render_pending
     end
 
     def clear_text(x, y, text, foreground = @foregroundColor, background = @backgroundColor, stop_on_lf = false)
@@ -139,10 +136,12 @@ module TextUi
 
     protected def render_children
       @children.each do |child|
-        child.render if child.render_pending?
+        if child.render_pending?
+          child.render_pending = false
+          child.render
+        end
         child.render_children
       end
-      @render_pending = false
     end
 
     abstract def render
