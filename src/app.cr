@@ -66,15 +66,61 @@ class App
     @shortcut_bar.add_shortcut("^C", "Copy Query")
     @shortcut_bar.add_shortcut("^R", "Copy Results")
     @shortcut_bar.add_shortcut("^B", "Beautify")
-    @shortcut_bar.add_shortcut("F12", "Save CSV")
+    @shortcut_bar.add_shortcut("F5", "Execute")
+    @shortcut_bar.add_shortcut("^S", "Save CSV")
     @shortcut_bar.add_shortcut("F1", "Help")
   end
 
   private def handle_key_input(_chr, key) : Nil
     case key
     when TextUi::KEY_CTRL_X then @ui.shutdown!
+    when TextUi::KEY_CTRL_C then copy_query
+    when TextUi::KEY_CTRL_R then copy_results
+    when TextUi::KEY_CTRL_B then beautify
+    when TextUi::KEY_CTRL_S then save_csv
+    when TextUi::KEY_F1     then show_help
     when TextUi::KEY_F5     then execute_query(@label.text)
     end
+  end
+
+  private def copy_query
+    copy_to_clipboard(@label.text)
+  end
+
+  private def copy_results
+    return if @results.empty?
+
+    copy_to_clipboard(@results.to_csv.to_s)
+  end
+
+  private def copy_to_clipboard(contents : String)
+    input = IO::Memory.new(contents)
+    # TODO: Do a tiny OS abstraction for this
+    Process.run("xclip", %w(-selection clipboard -in), input: input)
+  rescue
+    debug("xclip not found")
+  end
+
+  private def beautify
+    debug("not implemnted yet")
+  end
+
+  private def save_csv
+    contents = @results.to_csv
+    i = 0
+    loop do
+      suffix = "_#{i}" if i > 0
+      filename = "results#{suffix}.csv"
+      i += 1
+      next if File.exists?(filename)
+
+      File.write(filename, contents)
+      break
+    end
+  end
+
+  private def show_help
+    debug("not implemnted yet")
   end
 
   private def execute_query(query)

@@ -33,14 +33,14 @@ $ queryit --uri postgres://localhost/database
 All this still in a very early development stage and still not so far from useless. Above is a todo list in no specific order:
 
 - [x] Basic query execution/show results.
-- [ ] Save results to CSV.
+- [x] Save results to CSV.
 - [ ] Help screen.
 - [x] Change database.
-- [ ] Navigate through results.
+- [x] Navigate through results.
 - [ ] Syntax highlight.
 - [ ] SQL beautifier.
 - [ ] SQL auto complete.
-- [ ] Improved copy/paste support.
+- [x] Improved copy/paste support.
 - [x] Install script/instructions.
 - [ ] ArchLinux package.
 - [ ] Move TextUI code to their own shard.
