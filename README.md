@@ -5,6 +5,8 @@
 A very basic setupless terminal based SQL query runner meant to be used as a developer
 tool to test queries against a project database.
 
+![Screenshot](./doc/queryit.png)
+
 ## Installation
 
 ### if ArchLinux
