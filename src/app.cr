@@ -121,11 +121,11 @@ class App
     error(e.message.to_s)
   end
 
-  private def populate_database_list
+  private def fetch_database_list
     databases = [] of String
     query = case @db_uri.scheme
             when "postgres", "postgresql" then "SELECT datname FROM pg_database"
-            when "sqlite"                 then return [current_database_name]
+            when "sqlite3"                then return [current_database_name]
             when "mysql"                  then "SHOW DATABASES"
             else
               raise "Database not supported, please, file a bug."
@@ -135,11 +135,17 @@ class App
         databases << rs.read(String)
       end
     end
-    @query_ctl.available_databases = databases
+    return databases
+  end
+
+  private def populate_database_list
+    @query_ctl.available_databases = fetch_database_list
     @query_ctl.selected_database = current_database_name
   end
 
   private def change_database(database_name : String) : Nil
+    return if current_database_name == database_name
+
     new_db_uri = @db_uri.dup
     new_db_uri.path = "/#{database_name}"
     new_db = DB.open(new_db_uri)

@@ -2,6 +2,9 @@
 ### Added
 - Detect Amber project configuration.
 
+### Fix
+- SQLite3 databases now works.
+
 ## [0.1.0] - 2019-11-07
 
 - First release, only basic things working but still useful.
