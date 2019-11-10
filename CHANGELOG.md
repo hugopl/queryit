@@ -1,3 +1,7 @@
+## Unreleased
+### Added
+- Detect Amber project configuration.
+
 ## [0.1.0] - 2019-11-07
 
 - First release, only basic things working but still useful.

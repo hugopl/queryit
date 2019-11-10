@@ -15,7 +15,14 @@ def detect_rails_database
 
   "#{adapter}://#{hostname}/#{database}"
 rescue e : Errno
-  raise "Could not find rails database configuration."
+  nil
+end
+
+def detect_amber_database
+  config = YAML.parse(File.read("./config/environments/development.yml"))
+  config["database_url"].to_s
+rescue
+  nil
 end
 
 def parse_options
@@ -35,10 +42,20 @@ def parse_options
   {uri: uri}
 end
 
+def detect_database
+  uri = detect_rails_database
+  return uri unless uri.nil?
+
+  uri = detect_amber_database
+  return uri unless uri.nil?
+
+  raise "Could not find rails or amber database configuration."
+end
+
 def main
   options = parse_options
 
-  uri = URI.parse(options[:uri].empty? ? detect_rails_database : options[:uri])
+  uri = URI.parse(options[:uri].empty? ? detect_database : options[:uri])
 
   app = App.new(uri)
   app.main_loop
