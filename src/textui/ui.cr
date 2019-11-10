@@ -18,6 +18,7 @@ module TextUi
       @event = Terminal::Event.new(type: 0, mod: 0, key: 0, ch: 0, w: 0, x: 0, y: 0)
       @shutdown = false
       @shortcuts = Hash(Int32, Widget).new
+      @main_loop_running = false
       super(self)
 
       Terminal.init(color_mode)
@@ -25,6 +26,7 @@ module TextUi
 
     def shutdown!
       @shutdown = true
+      Terminal.shutdown unless @main_loop_running
     end
 
     def focus(widget : Widget?) : Nil
@@ -68,6 +70,7 @@ module TextUi
     end
 
     def main_loop
+      @main_loop_running = true
       handle_resize(Terminal.width, Terminal.height)
       loop do
         render
@@ -77,6 +80,8 @@ module TextUi
         break if @shutdown
       end
     ensure
+      @main_loop_running = false
+      @shutdown = false
       Terminal.shutdown
     end
 

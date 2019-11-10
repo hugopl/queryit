@@ -8,7 +8,6 @@ require "./results_control"
 require "./query_control"
 
 class App
-  delegate main_loop, to: @ui
   delegate error, info, to: @status_bar
 
   @db : DB::Database
@@ -25,7 +24,13 @@ class App
     @status_bar = TextUi::StatusBar.new(@ui)
 
     setup_shortcuts
+  end
+
+  def main_loop
     populate_database_list
+    @ui.main_loop
+  rescue
+    @ui.shutdown!
   end
 
   private def current_database_name

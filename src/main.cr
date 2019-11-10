@@ -59,8 +59,14 @@ def main
 
   app = App.new(uri)
   app.main_loop
+rescue DB::ConnectionRefused
+  puts "Database connection to #{uri} refused, are you sure this database exists?"
 rescue e : Exception
-  puts e.message
+  if e.message.nil?
+    puts "An error without a nice description: #{e.class.name}"
+  else
+    puts e.message
+  end
 end
 
 main
