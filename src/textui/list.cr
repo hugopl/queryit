@@ -73,11 +73,8 @@ module TextUi
         on_select.call(@items[@selected_item]) if on_select
       end
 
-      if @cursor < 0
-        @cursor = 0
-      elsif @cursor >= @items.size - 1
-        @cursor = @items.size - 1
-      end
+      @cursor = @cursor.clamp(0, @items.size - 1)
+
       if @cursor - @viewport >= height
         @viewport += 1
       elsif @cursor < @viewport

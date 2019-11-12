@@ -145,16 +145,8 @@ module TextUi
       when KEY_ENTER
       end
 
-      if @cursor_x < 0
-        @cursor_x = 0
-      elsif @cursor_x >= @column_names.size
-        @cursor_x = @column_names.size - 1
-      end
-      if @cursor_y < 0
-        @cursor_y = 0
-      elsif @cursor_y >= @rows.size
-        @cursor_x = @rows.size - 1
-      end
+      @cursor_x = @cursor_x.clamp(0, @column_names.size - 1)
+      @cursor_y = @cursor_y.clamp(0, @rows.size - 1)
 
       if @cursor_y - @viewport_y >= height - 1
         @viewport_y += 1
