@@ -69,7 +69,7 @@ class App
 
   private def copy_query
     copy_to_clipboard(@query_ctl.query)
-    info("Results copied to clipboard!")
+    info("Query copied to clipboard!")
   end
 
   private def copy_results
