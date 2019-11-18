@@ -2,6 +2,8 @@ module TextUi
   class Table < Widget
     getter column_names
     getter rows
+    property cursor_x
+    property cursor_y
 
     def initialize(parent, x, y)
       super
@@ -11,7 +13,8 @@ module TextUi
       @rows = [] of Array(String)
       @cursor_x = 0
       @cursor_y = 0
-      @viewport_x = 0
+
+      @viewport_x = 0..0
       @viewport_y = 0
 
       @foregroundColor = Color::Grey
@@ -24,10 +27,20 @@ module TextUi
       invalidate
     end
 
+    def width=(value)
+      super
+      calc_viewport_x
+    end
+
     # First line is considered the header
     def set_data(rows : Array(Array(String))) : Nil
       @column_names = rows.shift
       @rows = rows
+
+      @cursor_x = 0
+      @cursor_y = 0
+      @viewport_y = 0
+      calc_viewport_x
     end
 
     def clear_table_display
@@ -40,57 +53,56 @@ module TextUi
 
     def render
       clear_table_display
+      return if rows.empty?
+
       @column_widths = calculate_column_widths if @column_widths.empty?
 
       render_headers
 
       # Render table body
-      viewport_height = height - 1 # table headers are always show
-      has_scrollup = @viewport_y > 0
-      has_scrolldown = @rows.size + 1 - @viewport_y > viewport_height
-
       y = 1
-      (height - 1).times do |i|
-        row_idx = i + @viewport_y
-        break if i >= height || row_idx >= @rows.size
+      last_row = @viewport_y + height > @rows.size ? @rows.size : @viewport_y + height - 1
+      last_row -= 1
+      highlight_color = foregroundColor | Attr::Reverse
+      @viewport_y.upto(last_row) do |row_idx|
         row = @rows[row_idx]
-
-        x = 0
-
-        @column_widths.size.times do |i|
-          col_idx = i + @viewport_x
-          break if col_idx >= @column_widths.size
-
-          col_width = @column_widths[col_idx]
-          col_width = width - x if x + col_width > width
-          color = if focused? && row_idx == @cursor_y && col_idx == @cursor_x
-                    foregroundColor | Attr::Reverse
-                  else
-                    foregroundColor
-                  end
-
-          print_line(x, y, row[col_idx], color, width: col_width)
-          x += col_width + 1
-
-          break if x >= width
-        end
-
+        highlight_at = row_idx == @cursor_y ? @cursor_x : -1
+        render_row(row, y, foregroundColor, highlight_color, highlight_at)
         y += 1
       end
     end
 
-    private def render_headers
-      x = 0
-      @column_names.size.times do |i|
-        col_idx = i + @viewport_x
-        break if col_idx >= @column_names.size
+    private def render_row(row, y, color, highlight_color = color, highlight_at = -1)
+      abs_x = 0 # X in table coordinates, subtract from viewport to get widget coordinates
+      @column_widths.each_with_index do |col_width, col_idx|
+        next_abs_x = abs_x + col_width + 1
+        # Skip out of screen entries
+        if abs_x >= @viewport_x.end
+          break
+        elsif next_abs_x < @viewport_x.begin
+          abs_x = next_abs_x
+          next
+        end
 
-        col_width = @column_widths[col_idx]
-        col_width = width - x if x + col_width > width
-        print_line(x, 0, @column_names[col_idx], Color::White | Attr::Bold, width: col_width)
-        x += col_width + 1
-        break if x >= width
+        row_color = col_idx == highlight_at ? highlight_color : color
+        content = row[col_idx]
+        x = abs_x - @viewport_x.begin
+
+        if abs_x < @viewport_x.begin && abs_x + col_width <= @viewport_x.end && x.abs < content.size # half leftmost column
+          putc(0, y, '…', row_color)
+          print_line(1, y, content.byte_slice(1 + x.abs), row_color, width: col_width) # FIXME: Avoid the string copy
+        elsif abs_x >= @viewport_x.begin && abs_x + col_width <= @viewport_x.end       # all good
+          print_line(x, y, content, row_color, width: col_width)
+        elsif abs_x > @viewport_x.begin && next_abs_x > @viewport_x.end # half rightmost column
+          col_width = width - x
+          print_line(x, y, content, row_color, width: col_width)
+        end
+        abs_x = next_abs_x
       end
+    end
+
+    private def render_headers
+      render_row(@column_names, 0, Color::White | Attr::Bold)
     end
 
     private def calculate_column_widths
@@ -134,7 +146,7 @@ module TextUi
     end
 
     def handle_key_input(chr : Char, key : UInt16)
-      return if @rows.empty?
+      return if @rows.empty? || @column_widths.empty?
 
       super
       case key
@@ -154,22 +166,31 @@ module TextUi
         @viewport_y -= 1
       end
 
-      viewport_last_column = 0
-      viewport_width = 0
-      @column_widths.each(within: @viewport_x..-1) do |col_width|
-        viewport_width += col_width
-        break if viewport_width >= width
-
-        viewport_last_column += 1
-      end
-
-      if @viewport_x < @column_names.size && viewport_width > width && @cursor_x - @viewport_x >= viewport_last_column
-        @viewport_x += 1
-      elsif @viewport_x != 0 && @cursor_x < @viewport_x
-        @viewport_x -= 1
-      end
+      calc_viewport_x
 
       invalidate
+    end
+
+    private def calc_viewport_x
+      cursor_x_range = calc_cursor_x_range
+
+      if cursor_x_range.begin <= @viewport_x.begin
+        @viewport_x = cursor_x_range.begin..(cursor_x_range.begin + width)
+      elsif cursor_x_range.end > @viewport_x.end
+        @viewport_x = (cursor_x_range.end - width)..cursor_x_range.end
+      end
+    end
+
+    private def calc_cursor_x_range : Range
+      x = 0
+      @column_widths.each_with_index do |col_width, i|
+        x += col_width
+        return ((x - col_width)..x) if i == @cursor_x
+
+        x += 1
+      end
+
+      0..0
     end
   end
 end
