@@ -71,6 +71,8 @@ module TextUi
       clear
       event = Event.new
       event.type = EVENT_RESIZE
+      event.w = width
+      event.x = height
       @@events << event
     end
 
@@ -112,9 +114,9 @@ alias Terminal = TextUi::Terminal
 
 def init_ui(width = 20, height = 4)
   Terminal.resize(width, height)
-  Terminal.clear_events
   ui = TextUi::Ui.new
   ui.key_input_handler = ->(chr : Char, i : UInt16) {}
+  ui.process_events # Process the resize event.
   ui
 end
 
