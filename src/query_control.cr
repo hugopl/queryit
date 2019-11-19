@@ -1,7 +1,11 @@
 class QueryControl
   def initialize(ui : TextUi::Ui)
+    default_query = ""
+    {% if !flag?(:release) %}
+      default_query = "SELECT * FROM users;"
+    {% end %}
     @query_box = TextUi::Box.new(ui, "Query", "F2")
-    @label = TextUi::Label.new(@query_box, 1, 1, "SELECT * FROM users;")
+    @label = TextUi::Label.new(@query_box, 1, 1, default_query)
     @label.accept_input
     @label.cursor = @label.text.size
     ui.focus(@label)
