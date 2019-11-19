@@ -43,16 +43,8 @@ module TextUi
       calc_viewport_x
     end
 
-    def clear_table_display
-      width.times do |x|
-        height.times do |y|
-          putc(x, y, ' ', Color::White, Color::Black)
-        end
-      end
-    end
-
     def render
-      clear_table_display
+      erase
       return if rows.empty?
 
       @column_widths = calculate_column_widths if @column_widths.empty?

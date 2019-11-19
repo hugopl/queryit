@@ -6,6 +6,7 @@ module TextUi
     property height
     property foregroundColor
     property backgroundColor
+    property? visible : Bool
     setter focused : Bool
     setter key_input_handler : Proc(Char, UInt16, Nil)?
 
@@ -18,6 +19,7 @@ module TextUi
       @backgroundColor = Color::Black
       @children = [] of Widget
       @focused = false
+      @visible = true
       @render_pending = true
       @parent << self if @parent != self
     end
@@ -37,6 +39,14 @@ module TextUi
       y += absolute_y
       n.times do |i|
         Terminal.change_cell(x + i, y, ' ', foreground, background)
+      end
+    end
+
+    def erase
+      width.times do |x|
+        height.times do |y|
+          putc(x, y, ' ', Color::White, Color::Black)
+        end
       end
     end
 
@@ -138,7 +148,7 @@ module TextUi
       @children.each do |child|
         if child.render_pending?
           child.render_pending = false
-          child.render
+          child.render if child.visible?
         end
         child.render_children
       end

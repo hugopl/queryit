@@ -123,7 +123,7 @@ class App
       @results_ctl.set_data(rows)
     end
   rescue e
-    error(e.message.to_s)
+    @results_ctl.show_error(e.message.to_s)
   end
 
   private def fetch_database_list
