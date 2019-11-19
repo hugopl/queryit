@@ -17,7 +17,7 @@ There's an [AUR package](https://aur.archlinux.org/packages/queryit/) for it.
 $ yay -S queryit
 ```
 
-### Else
+### else
 
 You need the project dependencies installed on your system:
 
@@ -44,7 +44,7 @@ $ queryit --uri postgres://localhost/database
 
 ## Development
 
-All this still in a very early development stage and still not so far from useless. Above is a todo list in no specific order:
+All this still in a very early development stage. Above is a todo list in no specific order:
 
 - [x] Basic query execution/show results.
 - [x] Save results to CSV.

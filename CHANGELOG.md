@@ -1,9 +1,11 @@
-## Unreleased
+## [0.2.0] - 2019-11-18
 ### Added
 - Detect Amber project configuration.
 
 ### Fix
 - SQLite3 databases now works.
+- Results table navigation should work.
+- Show SQL errors on results table instead of the status bar.
 - Let the SQL editor empty when at start.
 
 ## [0.1.0] - 2019-11-07
