@@ -1,5 +1,5 @@
 name: queryit
-version: 0.2.0
+version: 0.2.1
 
 authors:
   - Hugo Parente Lima <hugo.pl@gmail.com>
@@ -16,8 +16,9 @@ libraries:
   libtermbox: '*'
 
 dependencies:
-  version:
-    github: hugopl/version.cr
+  version_from_shard:
+    github: hugopl/version_from_shard
+    version: '~> 1.0.0'
   pg:
     github: will/crystal-pg
   mysql:

@@ -1,4 +1,5 @@
-## Unreleased
+## [0.2.1] - 2019-11-18
+- User version_from_shard v1.0.0.
 
 ## [0.2.0] - 2019-11-18
 ### Added

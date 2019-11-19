@@ -16,7 +16,7 @@ shards:
     github: crystal-lang/crystal-sqlite3
     version: 0.14.0
 
-  version:
-    github: hugopl/version.cr
-    version: 0.1.0
+  version_from_shard:
+    github: hugopl/version_from_shard
+    version: 1.0.0
 
