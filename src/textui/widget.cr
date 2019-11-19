@@ -7,7 +7,7 @@ module TextUi
     property foregroundColor
     property backgroundColor
     property? visible : Bool
-    setter focused : Bool
+    property? focused : Bool
     setter key_input_handler : Proc(Char, UInt16, Nil)?
 
     delegate :<<, to: @children
@@ -48,10 +48,6 @@ module TextUi
           putc(x, y, ' ', Color::White, Color::Black)
         end
       end
-    end
-
-    def focused?
-      @focused
     end
 
     def set_cursor(x, y)
