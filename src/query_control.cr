@@ -1,26 +1,25 @@
 class QueryControl
   def initialize(ui : TextUi::Ui)
     default_query = ""
-    {% if !flag?(:release) %}
-      default_query = "SELECT * FROM users;"
-    {% end %}
     @query_box = TextUi::Box.new(ui, "Query", "F2")
-    @label = TextUi::Label.new(@query_box, 1, 1, default_query)
-    @label.accept_input
-    @label.cursor = @label.text.size
-    ui.focus(@label)
+    @editor = TextUi::TextEditor.new(@query_box, 1, 1, 0, 0)
+    @editor.show_line_numbers = true
+    {% if !flag?(:release) %}
+      @editor.document.contents = "SELECT * FROM users;"
+    {% end %}
+    ui.focus(@editor)
 
     @dbs_box = TextUi::Box.new(ui, "Databases", "F3")
     @dbs_list = TextUi::List.new(@dbs_box, 1, 1)
     @dbs_list.width = 18
     # @dbs_list.on_select = ->(db : String) { ui.change_database(db) }
 
-    ui.add_focus_shortcut(TextUi::KEY_F2, @label)
+    ui.add_focus_shortcut(TextUi::KEY_F2, @editor)
     ui.add_focus_shortcut(TextUi::KEY_F3, @dbs_list)
   end
 
   def query
-    @label.text
+    @editor.document.contents
   end
 
   def on_database_selected=(proc)
@@ -38,8 +37,8 @@ class QueryControl
   def handle_resize(width, height)
     @query_box.width = width - 19
     @query_box.height = height//2
-    @label.width = @query_box.width - 2
-    @label.height = @query_box.height - 2
+    @editor.width = @query_box.width - 2
+    @editor.height = @query_box.height - 2
 
     @dbs_box.width = 20
     @dbs_box.height = height//2

@@ -86,6 +86,10 @@ module TextUi
       @@events.clear
     end
 
+    def self.inject_key_event(chr : Char) : Nil
+      inject_key_event(0, chr.ord)
+    end
+
     def self.inject_key_event(key = 0, ch = 0) : Nil
       ev = Event.new
       ev.type = EVENT_KEY
