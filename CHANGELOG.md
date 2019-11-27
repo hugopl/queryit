@@ -1,3 +1,7 @@
+## Unreleased
+### Added
+- Show EXPLAIN queries as a text, not a table.
+
 ## [0.2.1] - 2019-11-18
 - User version_from_shard v1.0.0.
 

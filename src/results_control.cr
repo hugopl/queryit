@@ -43,10 +43,18 @@ class ResultsControl
   end
 
   def show_error(message : String)
+    show_text(message, TextUi::Color::Red)
+  end
+
+  def explain(sql_explain : String)
+    show_text(sql_explain, TextUi::Color::White)
+  end
+
+  private def show_text(text : String, color : TextUi::Color)
     @table.clear # clear old data
     @table.erase
-    @label.text = message
-    @label.foregroundColor = TextUi::Color::Red
+    @label.text = text
+    @label.foregroundColor = color
     @label.visible = true
     @table.visible = false
   end

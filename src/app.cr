@@ -120,7 +120,12 @@ class App
         rs.column_count.times { row << rs.read.to_s }
         rows << row
       end
-      @results_ctl.set_data(rows)
+
+      if query =~ /\A\s*explain\s+/i
+        @results_ctl.explain(rows.map(&.first).join("\n"))
+      else
+        @results_ctl.set_data(rows)
+      end
     end
   rescue e
     @results_ctl.show_error(e.message.to_s)
