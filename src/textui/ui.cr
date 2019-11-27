@@ -19,6 +19,7 @@ module TextUi
       @shutdown = false
       @shortcuts = Hash(Int32, Widget).new
       @main_loop_running = false
+      @need_rendering = false # Used to flag that we processed some events and we should render something.
       super(self)
 
       Terminal.init(color_mode)
@@ -64,6 +65,7 @@ module TextUi
     end
 
     def render
+      @need_rendering = false
       render_children
       widget = @focused_widget
       widget.render_cursor if widget
@@ -73,6 +75,7 @@ module TextUi
       @main_loop_running = true
       handle_resize(Terminal.width, Terminal.height)
       loop do
+        process_queued_events
         render
         Terminal.present
         process_events
@@ -85,13 +88,24 @@ module TextUi
       Terminal.shutdown
     end
 
+    def process_queued_events
+      while Terminal.peek_event(pointerof(@event), 0)
+        handle_event
+      end
+    end
+
     def process_events
       Terminal.poll_event(pointerof(@event))
+      handle_event
+    end
+
+    def handle_event
       case @event.type
       when Terminal::EVENT_KEY then handle_key_event(@event.ch.chr, @event.key)
       when Terminal::EVENT_MOUSE
       when Terminal::EVENT_RESIZE then handle_resize(@event.w, @event.x)
       end
+      @need_rendering = true
     end
 
     def on_resize(proc : (Int32, Int32) ->)

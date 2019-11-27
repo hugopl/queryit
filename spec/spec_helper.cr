@@ -48,6 +48,12 @@ module TextUi
       event.value = @@events.shift
     end
 
+    def self.peek_event(event : Pointer(Event), timeout : Int32 = 0) : Bool
+      ev = @@events.shift?
+      event.value = ev unless ev.nil?
+      !ev.nil?
+    end
+
     def self.set_cursor(x, y)
       @@cursor = {x: x, y: y}
     end
