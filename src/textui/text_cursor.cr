@@ -20,12 +20,17 @@ module TextUi
       block = current_block
 
       case key
-      when KEY_ARROW_UP    then @line -= 1
-      when KEY_ARROW_DOWN  then @line += 1
-      when KEY_ARROW_LEFT  then @col -= 1
-      when KEY_ARROW_RIGHT then @col += 1
-      when KEY_END         then @col = block.size
-      when KEY_HOME        then @col = 0
+      when KEY_ARROW_UP   then @line -= 1
+      when KEY_ARROW_DOWN then @line += 1
+      when KEY_ARROW_LEFT then @col -= 1
+      when KEY_ARROW_RIGHT
+        @col += 1
+        if @col > block.size && @line < @document.blocks.size - 1
+          @line += 1
+          @col = 0
+        end
+      when KEY_END  then @col = block.size
+      when KEY_HOME then @col = 0
       else
         handle_text_modification(chr, key, block)
       end

@@ -109,6 +109,34 @@ describe TextUi::TextEditor do
       ui.process_queued_events
       cursor.col.should eq(2) # On end of "fo"
     end
+
+    it "go to next line on right arrow at end of a line" do
+      ui = init_ui(20, 4)
+      editor = TextUi::TextEditor.new(ui, 0, 0, 20, 4)
+      ui.focus(editor)
+      cursor = editor.cursor
+
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      ui.process_queued_events
+      cursor.line.should eq(0)
+      cursor.col.should eq(0)
+
+      editor.document.contents = "Line1\nLine2"
+      Terminal.inject_key_event(key: TextUi::KEY_END)
+      ui.process_queued_events
+      cursor.col.should eq(5)
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_RIGHT)
+      ui.process_queued_events
+      cursor.line.should eq(1)
+      cursor.col.should eq(0)
+
+      editor.document.contents = "Line"
+      cursor.move(0, 4)
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_RIGHT)
+      ui.process_queued_events
+      cursor.line.should eq(0)
+      cursor.col.should eq(4)
+    end
   end
 
   context "when modifying contents" do
