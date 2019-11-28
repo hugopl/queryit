@@ -67,6 +67,7 @@ module TextUi
       elsif key == KEY_BACKSPACE || key == KEY_BACKSPACE2
         if @col == 0 && @line > 0
           previous_block = @document.blocks[@line - 1]
+          @col = previous_block.size
           previous_block.text = previous_block.text + block.text
           @document.remove(@line)
           @line -= 1

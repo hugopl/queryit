@@ -201,16 +201,23 @@ describe TextUi::TextEditor do
                               "~                   \n" \
                               "~                   \n")
 
-      editor.document.contents = "\nBug"
+      editor.document.contents = "A\nBug"
       editor.cursor.move(1, 0)
+      Terminal.inject_key_event(key: TextUi::KEY_BACKSPACE)
+      ui.process_queued_events
+      ui.render
+      Terminal.to_s.should eq("ABug                \n" \
+                              "~                   \n" \
+                              "~                   \n")
+      editor.cursor.line.should eq(0)
+      editor.cursor.col.should eq(1)
+
       Terminal.inject_key_event(key: TextUi::KEY_BACKSPACE)
       ui.process_queued_events
       ui.render
       Terminal.to_s.should eq("Bug                 \n" \
                               "~                   \n" \
                               "~                   \n")
-      editor.cursor.line.should eq(0)
-      editor.cursor.col.should eq(0)
 
       Terminal.inject_key_event(key: TextUi::KEY_BACKSPACE)
       ui.process_queued_events
