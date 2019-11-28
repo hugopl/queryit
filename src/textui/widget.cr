@@ -51,7 +51,11 @@ module TextUi
     end
 
     def set_cursor(x, y)
-      Terminal.set_cursor(absolute_x + x, absolute_y + y)
+      if x < 0 || y < 0 || x >= width || y >= height
+        Terminal.set_cursor(-1, -1)
+      else
+        Terminal.set_cursor(x + absolute_x, y + absolute_y)
+      end
     end
 
     def absolute_x

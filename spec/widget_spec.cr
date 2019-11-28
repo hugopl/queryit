@@ -79,5 +79,17 @@ describe TextUi::Widget do
                               "  │╰────────────╯│\n" \
                               "  ╰──────────────╯\n")
     end
+
+    it "does not render cursor out of widget area" do
+      ui = init_ui(18, 11)
+      box1 = TextUi::Box.new(ui, 2, 2, 16, 9, "box1")
+      box2 = TextUi::Box.new(box1, 1, 1, 14, 7, "box2")
+      box2.set_cursor(0, 0)
+      Terminal.cursor.should eq({x: 3, y: 3})
+      box2.set_cursor(0, -1)
+      Terminal.cursor.should eq({x: -1, y: -1})
+      box2.set_cursor(20, 30)
+      Terminal.cursor.should eq({x: -1, y: -1})
+    end
   end
 end

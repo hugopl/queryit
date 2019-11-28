@@ -5,6 +5,8 @@ describe TextUi::Label do
     it "render cursor ok on a sequence of line feed" do
       ui = init_ui(12, 10)
       label = TextUi::Label.new(ui, 2, 2, "")
+      label.width = 10
+      label.height = 10
       label.accept_input
       label.cursor = 0
       ui.focus(label)
