@@ -22,7 +22,12 @@ module TextUi
       case key
       when KEY_ARROW_UP   then @line -= 1
       when KEY_ARROW_DOWN then @line += 1
-      when KEY_ARROW_LEFT then @col -= 1
+      when KEY_ARROW_LEFT
+        @col -= 1
+        if @col < 0 && @line > 0
+          @line -= 1
+          @col = @document.blocks[@line].size
+        end
       when KEY_ARROW_RIGHT
         @col += 1
         if @col > block.size && @line < @document.blocks.size - 1
@@ -37,7 +42,6 @@ module TextUi
 
       @last_col = @col if key != KEY_ARROW_UP && key != KEY_ARROW_DOWN
 
-      @line -= 1 if @col < 0
       @line = @line.clamp(0, @document.blocks.size - 1)
       @col = {@col, @last_col}.max.clamp(0, current_block.size)
     end

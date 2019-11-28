@@ -49,14 +49,16 @@ describe TextUi::TextEditor do
       editor.cursors.size.should eq(1)
     end
 
-    it "go to line above on left key at column zero" do
+    it "go to end of line above on left key at column zero" do
       ui = init_ui(20, 6)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 6)
-      editor.open("spec/fixtures/query.sql")
-      cursor = editor.cursor
+      editor.document.contents = "Line1\n\n\n"
       ui.focus(editor)
+      cursor = editor.cursor
+      cursor.move(2, 0)
       ui.render
-      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_LEFT)
       ui.process_events
       cursor.line.should eq(1)
       cursor.col.should eq(0)
@@ -64,12 +66,7 @@ describe TextUi::TextEditor do
       Terminal.inject_key_event(key: TextUi::KEY_ARROW_LEFT)
       ui.process_events
       cursor.line.should eq(0)
-      cursor.col.should eq(0)
-
-      Terminal.inject_key_event(key: TextUi::KEY_ARROW_LEFT)
-      ui.process_events
-      cursor.line.should eq(0)
-      cursor.col.should eq(0)
+      cursor.col.should eq(5)
     end
 
     it "preserve cursor column navigating on lines with different length" do
