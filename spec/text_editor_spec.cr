@@ -53,7 +53,7 @@ describe TextUi::TextEditor do
       ui = init_ui(20, 6)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 6)
       editor.open("spec/fixtures/query.sql")
-      cursor = editor.create_cursor
+      cursor = editor.cursor
       ui.focus(editor)
       ui.render
       Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
@@ -70,6 +70,44 @@ describe TextUi::TextEditor do
       ui.process_events
       cursor.line.should eq(0)
       cursor.col.should eq(0)
+    end
+
+    it "preserve cursor column navigating on lines with different length" do
+      ui = init_ui(20, 4)
+      editor = TextUi::TextEditor.new(ui, 0, 0, 20, 4)
+      editor.open("spec/fixtures/10_lines.sql")
+      ui.focus(editor)
+      cursor = editor.cursor
+
+      ui.render
+      Terminal.to_s.should eq("one                 \n" \
+                              "two                 \n" \
+                              "three               \n" \
+                              "four                \n")
+
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      Terminal.inject_key_event(key: TextUi::KEY_END)
+      ui.process_queued_events
+      cursor.col.should eq(5) # On end of "three"
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      ui.process_queued_events
+      cursor.col.should eq(4) # On end of "four"
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_UP)
+      ui.process_queued_events
+      cursor.col.should eq(5) # On end of "three"
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_UP)
+      ui.process_queued_events
+      cursor.col.should eq(3) # On end of "two"
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_LEFT)
+      ui.process_queued_events
+      cursor.col.should eq(2) # On end of "tw"
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      ui.process_queued_events
+      cursor.col.should eq(2) # On end of "th"
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      ui.process_queued_events
+      cursor.col.should eq(2) # On end of "fo"
     end
   end
 

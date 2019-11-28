@@ -6,6 +6,7 @@ module TextUi
     def initialize(@document : TextDocument)
       @line = 0
       @col = 0
+      @last_col = 0
     end
 
     def move(@line = 0, @col = 0)
@@ -29,9 +30,11 @@ module TextUi
         handle_text_modification(chr, key, block)
       end
 
+      @last_col = @col if key != KEY_ARROW_UP && key != KEY_ARROW_DOWN
+
       @line -= 1 if @col < 0
       @line = @line.clamp(0, @document.blocks.size - 1)
-      @col = @col.clamp(0, current_block.size)
+      @col = {@col, @last_col}.max.clamp(0, current_block.size)
     end
 
     def handle_text_modification(chr, key, block) : Nil
