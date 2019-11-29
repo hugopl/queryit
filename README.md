@@ -52,7 +52,7 @@ All this still in a very early development stage. Above is a todo list in no spe
 - [x] Change database.
 - [x] Navigate through results.
 - [ ] Syntax highlight.
-- [ ] SQL beautifier.
+- [x] SQL beautifier.
 - [ ] SQL auto complete.
 - [x] Improved copy/paste support.
 - [x] Install script/instructions.

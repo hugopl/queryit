@@ -2,6 +2,7 @@
 ### Added
 - Show EXPLAIN queries as a text, not a table.
 - Improved query editor.
+- SQL beautifier implemented, still not perfect, but helps!
 
 ## [0.2.1] - 2019-11-18
 - User version_from_shard v1.0.0.

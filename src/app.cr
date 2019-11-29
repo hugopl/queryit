@@ -6,6 +6,7 @@ require "uri"
 
 require "./results_control"
 require "./query_control"
+require "./sql_beautifier/sql_beautifier"
 
 class App
   delegate error, info, to: @status_bar
@@ -88,7 +89,9 @@ class App
   end
 
   private def beautify
-    error("not implemnted yet")
+    @query_ctl.query = SQLBeautifier.beautify(@query_ctl.query)
+  rescue
+    error("Can't beautify this query, sorry :-(")
   end
 
   private def save_csv

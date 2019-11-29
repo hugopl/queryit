@@ -22,6 +22,10 @@ class QueryControl
     @editor.text
   end
 
+  def query=(sql)
+    @editor.text = sql
+  end
+
   def on_database_selected=(proc)
     @dbs_list.on_select = proc
   end
