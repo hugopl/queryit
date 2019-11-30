@@ -38,7 +38,7 @@ module TextUi
       @shortcuts.each do |shortcut, label|
         print_line(x, 0, shortcut, foregroundColor | Attr::Reverse)
         x += shortcut.size
-        putc(x, 0, ' ')
+        print_char(x, 0, ' ')
         x += 1
         remain = step - shortcut.size - 1
         print_line(x, 0, label, width: remain)

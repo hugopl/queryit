@@ -81,7 +81,7 @@ module TextUi
         x = abs_x - @viewport_x.begin
 
         if abs_x < @viewport_x.begin && abs_x + col_width <= @viewport_x.end && x.abs < content.size # half leftmost column
-          putc(0, y, '…', row_color)
+          print_char(0, y, '…', row_color)
           print_line(1, y, content.byte_slice(1 + x.abs), row_color, width: col_width) # FIXME: Avoid the string copy
         elsif abs_x >= @viewport_x.begin && abs_x + col_width <= @viewport_x.end       # all good
           print_line(x, y, content, row_color, width: col_width)

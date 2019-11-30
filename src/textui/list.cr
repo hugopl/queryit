@@ -47,13 +47,13 @@ module TextUi
         color = foregroundColor
 
         arrow = item_idx == @selected_item ? '🠺' : ' '
-        putc(0, i, arrow, color)
+        print_char(0, i, arrow, color)
 
         color |= Attr::Reverse if item_idx == @cursor && focused?
 
         if (i == 0 && has_scrollup) || (has_scrolldown && i == height - 1)
           limit -= 1
-          putc(width - 1, i, i.zero? ? '▲' : '▼')
+          print_char(width - 1, i, i.zero? ? '▲' : '▼')
         end
 
         print_line(1, i, item, color, width: limit)

@@ -45,7 +45,7 @@ module TextUi
     def erase
       width.times do |x|
         height.times do |y|
-          putc(x, y, ' ', Color::White, Color::Black)
+          print_char(x, y, ' ', Color::White, Color::Black)
         end
       end
     end
@@ -138,7 +138,7 @@ module TextUi
       end
     end
 
-    def putc(x : Int32, y : Int32, chr : Char, foreground = @foregroundColor, background = @backgroundColor)
+    def print_char(x : Int32, y : Int32, chr : Char, foreground = @foregroundColor, background = @backgroundColor)
       x += absolute_x
       y += absolute_y
       Terminal.change_cell(x, y, chr, foreground, background)
