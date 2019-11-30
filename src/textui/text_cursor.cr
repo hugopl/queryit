@@ -2,14 +2,21 @@ module TextUi
   class TextCursor
     getter line : Int32
     getter col : Int32
+    getter? valid : Bool
 
     def initialize(@document : TextDocument)
       @line = 0
       @col = 0
       @last_col = 0
+      @valid = true
+    end
+
+    def invalidate
+      @valid = false
     end
 
     def move(@line = 0, @col = 0)
+      @last_col = 0
     end
 
     def current_block
@@ -17,6 +24,8 @@ module TextUi
     end
 
     def handle_key_input(chr : Char, key : UInt16) : Nil
+      return unless valid?
+
       block = current_block
 
       case key

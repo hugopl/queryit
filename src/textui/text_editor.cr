@@ -1,12 +1,12 @@
 module TextUi
   class TextEditor < Widget
-    getter document : TextDocument
     getter cursors : Array(TextCursor)
     property? show_line_numbers : Bool
     property? wrap_lines : Bool
     property viewport_x : Int32
 
     delegate open, to: @document
+    delegate save, to: @document
 
     def initialize(parent, x, y, width, height)
       super
@@ -17,6 +17,17 @@ module TextUi
       @show_line_numbers = false
       # Viewport
       @viewport_x = 0
+    end
+
+    def text=(text) : Nil
+      @document.contents = text
+
+      @cursors.first.move(0, 0)
+      @cursors.delete_at(1..-1).each(&.invalidate)
+    end
+
+    def text
+      @document.contents
     end
 
     def create_cursor(x = 0, y = 0) : TextCursor
@@ -51,7 +62,7 @@ module TextUi
       line_tag_format = @show_line_numbers ? "%#{border_width - 1}d│" : ""
 
       y = 0
-      document.blocks.each_with_index do |block, line|
+      @document.blocks.each_with_index do |block, line|
         if @show_line_numbers
           line_tag = line_tag_format % (line + 1)
           print_line(0, y, line_tag, Color::Grey2)

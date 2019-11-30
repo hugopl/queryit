@@ -14,6 +14,25 @@ describe TextUi::TextEditor do
                             "~                   \n")
   end
 
+  it "invalidate extra cursors when text is replaced" do
+    ui = init_ui(20, 6)
+    editor = TextUi::TextEditor.new(ui, 0, 0, 20, 6)
+    editor.open("spec/fixtures/query.sql")
+    cursor1 = editor.cursor
+    cursor1.move(1, 1)
+    cursor2 = editor.create_cursor(2, 2)
+
+    cursor1.valid?.should eq(true)
+    cursor2.valid?.should eq(true)
+
+    editor.text = ":-)"
+    cursor1.valid?.should eq(true)
+    cursor1.line.should eq(0)
+    cursor1.col.should eq(0)
+    cursor2.valid?.should eq(false)
+    editor.cursors.should eq([cursor1])
+  end
+
   it "can show line numbers" do
     ui = init_ui(20, 6)
     editor = TextUi::TextEditor.new(ui, 0, 0, 20, 6)
@@ -52,7 +71,7 @@ describe TextUi::TextEditor do
     it "go to end of line above on left key at column zero" do
       ui = init_ui(20, 6)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 6)
-      editor.document.contents = "Line1\n\n\n"
+      editor.text = "Line1\n\n\n"
       ui.focus(editor)
       cursor = editor.cursor
       cursor.move(2, 0)
@@ -118,7 +137,7 @@ describe TextUi::TextEditor do
       cursor.line.should eq(0)
       cursor.col.should eq(0)
 
-      editor.document.contents = "Line1\nLine2"
+      editor.text = "Line1\nLine2"
       Terminal.inject_key_event(key: TextUi::KEY_END)
       ui.process_queued_events
       cursor.col.should eq(5)
@@ -127,7 +146,7 @@ describe TextUi::TextEditor do
       cursor.line.should eq(1)
       cursor.col.should eq(0)
 
-      editor.document.contents = "Line"
+      editor.text = "Line"
       cursor.move(0, 4)
       Terminal.inject_key_event(key: TextUi::KEY_ARROW_RIGHT)
       ui.process_queued_events
@@ -137,12 +156,6 @@ describe TextUi::TextEditor do
   end
 
   context "when modifying contents" do
-    it "the document always have at least one text block" do
-      ui = init_ui(20, 6)
-      editor = TextUi::TextEditor.new(ui, 0, 0, 20, 6)
-      editor.document.blocks.size.should eq(1)
-    end
-
     it "it can insert/delete letters and lines" do
       ui = init_ui(20, 3)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 3)
@@ -201,7 +214,7 @@ describe TextUi::TextEditor do
                               "~                   \n" \
                               "~                   \n")
 
-      editor.document.contents = "A\nBug"
+      editor.text = "A\nBug"
       editor.cursor.move(1, 0)
       Terminal.inject_key_event(key: TextUi::KEY_BACKSPACE)
       ui.process_queued_events
@@ -226,7 +239,7 @@ describe TextUi::TextEditor do
                               "~                   \n" \
                               "~                   \n")
 
-      editor.document.contents = ""
+      editor.text = ""
       editor.cursor.move(0, 0)
       Terminal.inject_key_event(key: TextUi::KEY_DELETE)
       ui.process_queued_events
@@ -246,7 +259,7 @@ describe TextUi::TextEditor do
       Terminal.inject_key_event('B')
       ui.process_queued_events
       contents = String.build do |str|
-        editor.document.save(str)
+        editor.save(str)
       end
       contents.should eq("A\nBSELECT column1, column2\n" \
                          "  FROM fancy_table\n" \

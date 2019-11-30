@@ -5,7 +5,7 @@ class QueryControl
     @editor = TextUi::TextEditor.new(@query_box, 1, 1, 0, 0)
     @editor.show_line_numbers = true
     {% if !flag?(:release) %}
-      @editor.document.contents = "SELECT * FROM users;"
+      @editor.text = "SELECT * FROM users;"
     {% end %}
     ui.focus(@editor)
 
@@ -19,7 +19,7 @@ class QueryControl
   end
 
   def query
-    @editor.document.contents
+    @editor.text
   end
 
   def on_database_selected=(proc)
