@@ -2,13 +2,14 @@ module TextUi
   class TextCursor
     getter line : Int32
     getter col : Int32
+    property col_hint : Int32
     property? insert_mode : Bool
     getter? valid : Bool
 
     def initialize(@document : TextDocument)
       @line = 0
       @col = 0
-      @last_col = 0
+      @col_hint = 0
       @insert_mode = false
       @valid = true
     end
@@ -17,8 +18,17 @@ module TextUi
       @valid = false
     end
 
-    def move(@line = 0, @col = 0)
-      @last_col = 0
+    def move(line, col) : Nil
+      self.line = line
+      self.col = col
+    end
+
+    def line=(line)
+      @line = line.clamp(0, @document.blocks.size - 1)
+    end
+
+    def col=(col)
+      @col = col.clamp(0, current_block.size)
     end
 
     def current_block
@@ -28,34 +38,11 @@ module TextUi
     def handle_key_input(chr : Char, key : UInt16) : Nil
       return unless valid?
 
-      block = current_block
-
-      case key
-      when KEY_INSERT     then @insert_mode = !@insert_mode
-      when KEY_ARROW_UP   then @line -= 1
-      when KEY_ARROW_DOWN then @line += 1
-      when KEY_ARROW_LEFT
-        @col -= 1
-        if @col < 0 && @line > 0
-          @line -= 1
-          @col = @document.blocks[@line].size
-        end
-      when KEY_ARROW_RIGHT
-        @col += 1
-        if @col > block.size && @line < @document.blocks.size - 1
-          @line += 1
-          @col = 0
-        end
-      when KEY_END  then @col = block.size
-      when KEY_HOME then @col = 0
+      if key == KEY_INSERT
+        @insert_mode = !@insert_mode
       else
-        handle_text_modification(chr, key, block)
+        handle_text_modification(chr, key, current_block)
       end
-
-      @last_col = @col if key != KEY_ARROW_UP && key != KEY_ARROW_DOWN && key != KEY_INSERT
-
-      @line = @line.clamp(0, @document.blocks.size - 1)
-      @col = {@col, @last_col}.max.clamp(0, current_block.size)
     end
 
     def handle_text_modification(chr, key, block) : Nil
@@ -66,7 +53,7 @@ module TextUi
         key = 0
       elsif key == KEY_ENTER
         new_line = block.text[@col..-1]
-        block.text = block.text[0...col]
+        block.text = block.text[0...@col]
         @document.insert(@line, new_line)
         @line += 1
         @col = 0
@@ -108,6 +95,8 @@ module TextUi
         end
       end
       block.text = buffer
+      @col_hint = @col
+      move(@line, @col) # Just to fix out of range values
     end
   end
 end

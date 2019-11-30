@@ -105,6 +105,7 @@ describe TextUi::TextEditor do
       Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
       Terminal.inject_key_event(key: TextUi::KEY_END)
       ui.process_queued_events
+      cursor.line.should eq(2)
       cursor.col.should eq(5) # On end of "three"
       Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
       ui.process_queued_events
@@ -154,6 +155,171 @@ describe TextUi::TextEditor do
       ui.process_queued_events
       cursor.line.should eq(0)
       cursor.col.should eq(4)
+    end
+
+    it "don't loose the cursor when word-wrap is enabled" do
+      ui = init_ui(20, 7)
+      editor = TextUi::TextEditor.new(ui, 0, 0, 20, 7)
+      ui.focus(editor)
+      editor.text = "Hi\nThis is a long line that span for 3 rows so I can test it.\n\nOk then."
+      editor.word_wrap = true
+      cursor = editor.cursor
+      ui.render
+      Terminal.to_s.should eq("Hi                  \n" \
+                              "This is a long line \n" \
+                              "that span for 3 rows\n" \
+                              " so I can test it.  \n" \
+                              "                    \n" \
+                              "Ok then.            \n" \
+                              "~                   \n")
+
+      # Put cursor at end of "so I can test it."
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      Terminal.inject_key_event(key: TextUi::KEY_END)
+      ui.process_queued_events
+      cursor.line.should eq(1)
+      cursor.col.should eq(58)
+      ui.render
+      Terminal.cursor.should eq({x: 18, y: 3})
+
+      # Put cursor at "w" of "that span for 3 rows"
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_UP)
+      ui.process_queued_events
+      cursor.line.should eq(1)
+      cursor.col.should eq(38)
+      ui.render
+      Terminal.cursor.should eq({x: 18, y: 2})
+
+      # Put cursor back at end of "so I can test it."
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      ui.process_queued_events
+      cursor.line.should eq(1)
+      cursor.col.should eq(58)
+      ui.render
+      Terminal.cursor.should eq({x: 18, y: 3})
+
+      # Turn on line number and see if cursors still in the same text position
+      editor.show_line_numbers = true
+      ui.render
+      Terminal.to_s.should eq("1│Hi                \n" \
+                              "2│This is a long    \n" \
+                              " │line that span for\n" \
+                              " │ 3 rows so I can  \n" \
+                              " │test it.          \n" \
+                              "3│                  \n" \
+                              "4│Ok then.          \n")
+      Terminal.cursor.should eq({x: 10, y: 4})
+
+      # Put cursor at the start of the empty line 3
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      ui.process_queued_events
+      ui.render
+      cursor.line.should eq(2)
+      cursor.col.should eq(0)
+      Terminal.cursor.should eq({x: 2, y: 5})
+
+      # Put cursor at the of "Ok then.""
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      ui.process_queued_events
+      ui.render
+      cursor.line.should eq(3)
+      cursor.col.should eq(8)
+      Terminal.cursor.should eq({x: 10, y: 6})
+
+      # Put cursor at last space of "This is a long "
+      cursor.move(1, 14)
+      ui.invalidate
+      ui.render
+      Terminal.cursor.should eq({x: 16, y: 1})
+
+      # Put cursor at "l" of "line that span"
+      cursor.move(1, 15)
+      ui.invalidate
+      ui.render
+      Terminal.cursor.should eq({x: 2, y: 2})
+    end
+
+    it "don't loose the cursor when word-wrap is enabled - second round" do
+      ui = init_ui(20, 7)
+      editor = TextUi::TextEditor.new(ui, 0, 0, 20, 7)
+      ui.focus(editor)
+      editor.text = "Hi\nThis is a long line that span for 3 rows so I can test it.\n\nOk then."
+      editor.word_wrap = true
+      editor.show_line_numbers = true
+      editor.text = "abcde fghijklmnopqrstuvxz 1234567890 abcdefghijklmnopqrstuvxz 1234567890ab the end!"
+      cursor = editor.cursor
+      Terminal.inject_key_event(key: TextUi::KEY_END)
+      ui.process_queued_events
+      ui.render
+      Terminal.to_s.should eq("1│abcde             \n" \
+                              " │fghijklmnopqrstuvx\n" \
+                              " │z 1234567890      \n" \
+                              " │abcdefghijklmnopqr\n" \
+                              " │stuvxz            \n" \
+                              " │1234567890ab the  \n" \
+                              " │end!              \n")
+      cursor.line.should eq(0)
+      cursor.col.should eq(83)
+      Terminal.cursor.should eq({x: 6, y: 6})
+
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_UP)
+      ui.process_queued_events
+      ui.render
+      cursor.line.should eq(0)
+      cursor.col.should eq(66)
+      Terminal.cursor.should eq({x: 6, y: 5})
+
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_UP)
+      ui.process_queued_events
+      ui.render
+      cursor.line.should eq(0)
+      cursor.col.should eq(59)
+      Terminal.cursor.should eq({x: 6, y: 4})
+
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_UP)
+      ui.process_queued_events
+      ui.render
+      cursor.line.should eq(0)
+      cursor.col.should eq(41)
+      Terminal.cursor.should eq({x: 6, y: 3})
+
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_UP)
+      ui.process_queued_events
+      ui.render
+      cursor.line.should eq(0)
+      cursor.col.should eq(28)
+      Terminal.cursor.should eq({x: 6, y: 2})
+
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_UP)
+      ui.process_queued_events
+      ui.render
+      cursor.line.should eq(0)
+      cursor.col.should eq(10)
+      Terminal.cursor.should eq({x: 6, y: 1})
+
+      2.times do
+        Terminal.inject_key_event(key: TextUi::KEY_ARROW_UP)
+        ui.process_queued_events
+        ui.render
+        cursor.line.should eq(0)
+        cursor.col.should eq(4)
+        Terminal.cursor.should eq({x: 6, y: 0})
+      end
+
+      Terminal.inject_key_event(key: TextUi::KEY_HOME)
+      ui.process_queued_events
+      ui.render
+      cursor.line.should eq(0)
+      cursor.col.should eq(0)
+      Terminal.cursor.should eq({x: 2, y: 0})
+
+      Terminal.inject_key_event(key: TextUi::KEY_END)
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      ui.process_queued_events
+      ui.render
+      cursor.line.should eq(0)
+      cursor.col.should eq(83)
+      Terminal.cursor.should eq({x: 6, y: 6})
     end
   end
 
@@ -309,7 +475,38 @@ describe TextUi::TextEditor do
     end
   end
 
-  pending "can wrap lines"
+  it "can wrap lines" do
+    ui = init_ui(20, 5)
+    editor = TextUi::TextEditor.new(ui, 0, 0, 20, 5)
+    editor.word_wrap = true
+    editor.show_line_numbers = true
+    ui.focus(editor)
+    editor.open("spec/fixtures/query.sql")
+    ui.render
+    Terminal.to_s.should eq("1│SELECT column1,   \n" \
+                            " │column2           \n" \
+                            "2│  FROM fancy_table\n" \
+                            "3│  WHERE foo > bar \n" \
+                            "~                   \n")
+
+    editor.text = "1234567890123456 78   90"
+    ui.render
+
+    Terminal.to_s.should eq("1│1234567890123456  \n" \
+                            " │78   90           \n" \
+                            "~                   \n" \
+                            "~                   \n" \
+                            "~                   \n")
+    Terminal.inject_key_event(key: TextUi::KEY_DELETE)
+    ui.process_queued_events
+    ui.render
+    Terminal.to_s.should eq("1│234567890123456 78\n" \
+                            " │   90             \n" \
+                            "~                   \n" \
+                            "~                   \n" \
+                            "~                   \n")
+  end
+
   pending "can have multiple cursors"
   pending "only render changed lines"
   pending "can select text with keyboard (not sure if termbox and general terminals will handle this)"

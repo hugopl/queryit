@@ -74,15 +74,23 @@ module TextUi
       @parent.absolute_height + @height
     end
 
-    def print_line(x : Int32, y : Int32, text : String, foreground = @foregroundColor, background = @backgroundColor, width = 0) : Nil
+    def print_line(x : Int32, y : Int32, text : String,
+                   foreground = @foregroundColor,
+                   background = @backgroundColor,
+                   offset = 0,
+                   count = text.size,
+                   width = 0,
+                   ellipsis = true) : Nil
       x += absolute_x
       y += absolute_y
       width_alert = width - 1
 
-      text.each_char_with_index do |chr, i|
-        break if width != 0 && i >= width
+      offset.upto(text.size - 1) do |char_idx|
+        chr = text[char_idx]
+        i = char_idx - offset
+        break if i == count || width != 0 && i >= width
 
-        if i == width_alert && text.size != width
+        if ellipsis && i == width_alert && text.size != width
           chr = '…'
         elsif chr == '\n'
           chr = '↵'
@@ -92,10 +100,12 @@ module TextUi
         Terminal.change_cell(x + i, y, chr, foreground, background)
       end
 
+      return if count >= width
+
       # fill width with blanks
-      start_x = x + text.size
-      (width - text.size).times do |i|
-        Terminal.change_cell(start_x + i, y, ' ', foreground, background)
+      start_x = x + count
+      (width - count).times do |ii|
+        Terminal.change_cell(start_x + ii, y, ' ', foreground, background)
       end
     end
 
