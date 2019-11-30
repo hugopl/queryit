@@ -1,14 +1,16 @@
-def debug(text : String)
-  File.open("/tmp/debug.txt", "a", &.puts(text))
-end
+{% if !flag?(:release) %}
+  def debug(text : String)
+    File.open("/tmp/debug.txt", "a", &.puts(text))
+  end
 
-def debug(floats : Array(Float64))
-  debug(floats.map(&.humanize))
-end
+  def debug(floats : Array(Float64))
+    debug(floats.map(&.humanize))
+  end
 
-def debug(obj)
-  File.open("/tmp/debug.txt", "a", &.puts(obj.inspect))
-end
+  def debug(obj)
+    File.open("/tmp/debug.txt", "a", &.puts(obj.inspect))
+  end
+{% end %}
 
 module TextUi
   class Ui < Widget
