@@ -2,12 +2,14 @@ module TextUi
   class TextCursor
     getter line : Int32
     getter col : Int32
+    property? insert_mode : Bool
     getter? valid : Bool
 
     def initialize(@document : TextDocument)
       @line = 0
       @col = 0
       @last_col = 0
+      @insert_mode = false
       @valid = true
     end
 
@@ -29,6 +31,7 @@ module TextUi
       block = current_block
 
       case key
+      when KEY_INSERT     then @insert_mode = !@insert_mode
       when KEY_ARROW_UP   then @line -= 1
       when KEY_ARROW_DOWN then @line += 1
       when KEY_ARROW_LEFT
@@ -49,7 +52,7 @@ module TextUi
         handle_text_modification(chr, key, block)
       end
 
-      @last_col = @col if key != KEY_ARROW_UP && key != KEY_ARROW_DOWN
+      @last_col = @col if key != KEY_ARROW_UP && key != KEY_ARROW_DOWN && key != KEY_INSERT
 
       @line = @line.clamp(0, @document.blocks.size - 1)
       @col = {@col, @last_col}.max.clamp(0, current_block.size)
@@ -71,7 +74,11 @@ module TextUi
       end
 
       if key == 0 && chr.ord != 0
-        buffer = buffer.insert(@col, chr)
+        if insert_mode? && @col < buffer.size
+          buffer = buffer.sub(@col, chr)
+        else
+          buffer = buffer.insert(@col, chr)
+        end
         @col += 1
       elsif key == KEY_BACKSPACE || key == KEY_BACKSPACE2
         if @col == 0 && @line > 0

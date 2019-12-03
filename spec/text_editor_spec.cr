@@ -109,6 +109,8 @@ describe TextUi::TextEditor do
       Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
       ui.process_queued_events
       cursor.col.should eq(4) # On end of "four"
+
+      Terminal.inject_key_event(key: TextUi::KEY_INSERT) # This should not change anything
       Terminal.inject_key_event(key: TextUi::KEY_ARROW_UP)
       ui.process_queued_events
       cursor.col.should eq(5) # On end of "three"
@@ -156,6 +158,45 @@ describe TextUi::TextEditor do
   end
 
   context "when modifying contents" do
+    it "has INSERT mode" do
+      ui = init_ui(20, 3)
+      editor = TextUi::TextEditor.new(ui, 0, 0, 20, 3)
+      editor.text = "12\n34"
+      ui.focus(editor)
+
+      Terminal.inject_key_event(key: TextUi::KEY_INSERT)
+      ui.process_queued_events
+      editor.cursor.insert_mode?.should eq(true)
+
+      Terminal.inject_key_event(key: TextUi::KEY_INSERT)
+      ui.process_queued_events
+      editor.cursor.insert_mode?.should eq(false)
+
+      Terminal.inject_key_event(key: TextUi::KEY_INSERT)
+      Terminal.inject_key_event('A')
+      ui.process_queued_events
+      ui.render
+      Terminal.to_s.should eq("A2                  \n" \
+                              "34                  \n" \
+                              "~                   \n")
+
+      Terminal.inject_key_event('b')
+      Terminal.inject_key_event('c')
+      ui.process_queued_events
+      ui.render
+      Terminal.to_s.should eq("Abc                 \n" \
+                              "34                  \n" \
+                              "~                   \n")
+
+      Terminal.inject_key_event(key: TextUi::KEY_ENTER)
+      Terminal.inject_key_event('d')
+      ui.process_queued_events
+      ui.render
+      Terminal.to_s.should eq("Abc                 \n" \
+                              "d                   \n" \
+                              "34                  \n")
+    end
+
     it "it can insert/delete letters and lines" do
       ui = init_ui(20, 3)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 3)
@@ -268,7 +309,6 @@ describe TextUi::TextEditor do
     end
   end
 
-  pending "has insert mode"
   pending "can wrap lines"
   pending "can have multiple cursors"
   pending "only render changed lines"
