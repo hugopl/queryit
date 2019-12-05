@@ -1,7 +1,7 @@
 module TextUi
   class TextEditor < Widget
     getter cursors : Array(TextCursor)
-    property? show_line_numbers : Bool
+    getter? show_line_numbers : Bool
     property? wrap_lines : Bool
     property viewport_x : Int32
 
@@ -19,11 +19,19 @@ module TextUi
       @viewport_x = 0
     end
 
+    def show_line_numbers=(value : Bool) : Nil
+      return if value == @show_line_numbers
+
+      @show_line_numbers = value
+      invalidate
+    end
+
     def text=(text) : Nil
       @document.contents = text
 
       @cursors.first.move(0, 0)
       @cursors.delete_at(1..-1).each(&.invalidate)
+      invalidate
     end
 
     def text
