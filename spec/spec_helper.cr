@@ -6,11 +6,10 @@ require "../src/sql_beautifier/*"
 module TextUi
   class Terminal
     class Cell
-      property chr
-      property fg
-      property bg
+      property chr : Char
+      property format : Format
 
-      def initialize(@chr = ' ', @fg = 0, @bg = 0)
+      def initialize(@chr = ' ', @format = Format.new(Color::Black))
       end
     end
 
@@ -59,12 +58,12 @@ module TextUi
       @@cursor = {x: x, y: y}
     end
 
-    def self.change_cell(x : Int32, y : Int32, chr : Char, foreground, background)
+    def self.change_cell(x : Int32, y : Int32, chr : Char, format : Format)
       if x >= width || y >= height
         puts "Tried to print #{chr.inspect} out of screen: #{x} >= #{width} or #{y} >= #{height}"
         return
       end
-      @@cells[y][x] = Cell.new(chr, foreground.to_i, background.to_i)
+      @@cells[y][x] = Cell.new(chr, format)
     end
 
     # ## All method bellow are not part of Terminal interface ## #
@@ -109,7 +108,11 @@ module TextUi
       io.puts("\nScreen size: #{width}x#{height}, cursor at #{@@cursor.inspect}") if info
       height.times do |y|
         line = @@cells[y].map do |cell|
-          colors ? "#{((cell.fg << 16) | cell.bg).to_s(32)}" : cell.chr
+          if colors
+            ((cell.format.foreground.to_i << 16) | cell.format.background.to_i).to_s(32)
+          else
+            cell.chr
+          end
         end
         if colors
           io.puts(line.join('-'))

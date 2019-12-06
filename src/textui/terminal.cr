@@ -52,8 +52,8 @@ module TextUi
       TermboxBindings.tb_set_cursor(x, y)
     end
 
-    def self.change_cell(x : Int32, y : Int32, chr : Char, foreground, background)
-      TermboxBindings.tb_change_cell(x, y, chr.ord, foreground, background)
+    def self.change_cell(x : Int32, y : Int32, chr : Char, format : Format)
+      TermboxBindings.tb_change_cell(x, y, chr.ord, format.foreground, format.background)
     end
   end
 end

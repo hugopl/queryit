@@ -3,6 +3,8 @@ module TextUi
     getter cursors : Array(TextCursor)
     getter? show_line_numbers : Bool
     getter? word_wrap : Bool
+    # Colors
+    property border_color : Format
 
     delegate open, to: @document
     delegate save, to: @document
@@ -14,6 +16,7 @@ module TextUi
       # Appearance
       @word_wrap = false
       @show_line_numbers = false
+      @border_color = Format.new(Color::Grey2)
       # Rendering
       @block_heights = [] of Int32
     end
@@ -162,7 +165,7 @@ module TextUi
       @document.blocks.each_with_index do |block, line|
         if @show_line_numbers
           line_tag = line_tag_format % (line + 1)
-          print_line(0, y, line_tag, Color::Grey2)
+          print_line(0, y, line_tag, @border_color)
         end
 
         text = block.text
@@ -170,7 +173,7 @@ module TextUi
           offset = 0
           line_tag = "#{" " * (border_width - 1)}│" if @show_line_numbers
           while y < height
-            print_line(0, y, line_tag, Color::Grey2) if @show_line_numbers && !offset.zero?
+            print_line(0, y, line_tag, @border_color) if @show_line_numbers && !offset.zero?
             count = count_chars_before_word_wrap(text, offset, width_available)
 
             print_line(border_width, y, text, width: width_available, ellipsis: false, offset: offset, count: count)

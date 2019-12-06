@@ -7,12 +7,6 @@ module TextUi
     Grayscale     = 4
   end
 
-  enum Attr
-    Bold      = 0x0100
-    Underline = 0x0200
-    Reverse   = 0x0400
-  end
-
   enum Color
     Black             =   0 # #000000
     Maroon            =   1 # #800000
@@ -270,15 +264,5 @@ module TextUi
     Grey29            = 253 # #dadada
     Grey30            = 254 # #e4e4e4
     Grey31            = 255 # #eeeeee
-
-    def |(attr : Attr) : UInt16
-      to_u16 | attr.to_u16
-    end
-  end
-end
-
-struct UInt16
-  def |(attr : TextUi::Attr) : UInt16
-    self | attr.to_u16
   end
 end

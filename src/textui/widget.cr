@@ -4,8 +4,7 @@ module TextUi
     property y
     property width
     property height
-    property foregroundColor
-    property backgroundColor
+    property default_format : Format
     property? visible : Bool
     property? focused : Bool
     setter key_input_handler : Proc(Char, UInt16, Nil)?
@@ -15,8 +14,7 @@ module TextUi
     protected property? render_pending
 
     def initialize(@parent : Widget, @x = 0, @y = 0, @width = 0, @height = 0)
-      @foregroundColor = Color::Silver
-      @backgroundColor = Color::Black
+      @default_format = Format.new(Color::Silver)
       @children = [] of Widget
       @focused = false
       @visible = true
@@ -24,28 +22,28 @@ module TextUi
       @parent << self if @parent != self
     end
 
-    def clear_text(x, y, text, foreground = @foregroundColor, background = @backgroundColor, stop_on_lf = false)
+    def clear_text(x, y, text : String, format : Format = @default_format, stop_on_lf = false)
       each_char_pos(x, y, text) do |xx, yy, chr|
         if chr == '\n'
           break if stop_on_lf
           next
         end
-        Terminal.change_cell(xx, yy, ' ', foreground, background)
+        Terminal.change_cell(xx, yy, ' ', format)
       end
     end
 
-    def clear_text(x, y, n : Int32, foreground = @foregroundColor, background = @backgroundColor, stop_on_lf = false)
+    def clear_text(x, y, n : Int32, format : Format = @default_format, stop_on_lf = false)
       x += absolute_x
       y += absolute_y
       n.times do |i|
-        Terminal.change_cell(x + i, y, ' ', foreground, background)
+        Terminal.change_cell(x + i, y, ' ', format)
       end
     end
 
     def erase
       width.times do |x|
         height.times do |y|
-          print_char(x, y, ' ', Color::White, Color::Black)
+          print_char(x, y, ' ', @default_format)
         end
       end
     end
@@ -75,8 +73,7 @@ module TextUi
     end
 
     def print_line(x : Int32, y : Int32, text : String,
-                   foreground = @foregroundColor,
-                   background = @backgroundColor,
+                   format : Format = @default_format,
                    offset = 0,
                    count = text.size,
                    width = 0,
@@ -97,7 +94,7 @@ module TextUi
         elsif chr == '\r'
           chr = '␍'
         end
-        Terminal.change_cell(x + i, y, chr, foreground, background)
+        Terminal.change_cell(x + i, y, chr, format)
       end
 
       return if count >= width
@@ -105,11 +102,11 @@ module TextUi
       # fill width with blanks
       start_x = x + count
       (width - count).times do |ii|
-        Terminal.change_cell(start_x + ii, y, ' ', foreground, background)
+        Terminal.change_cell(start_x + ii, y, ' ', format)
       end
     end
 
-    def print_lines(x, y, text : String, foreground = @foregroundColor, background = @backgroundColor, width = 0)
+    def print_lines(x, y, text : String, format : Format = @default_format, width = 0)
       count = 0
       width = 0 if text.size <= width # Turn off width if the string fits
       each_char_pos(x, y, text) do |xx, yy, chr|
@@ -122,7 +119,7 @@ module TextUi
         elsif chr == '\r'
           chr = '␍'
         end
-        Terminal.change_cell(xx, yy, chr, foreground, background)
+        Terminal.change_cell(xx, yy, chr, format)
         break if limit_reached
       end
     end
@@ -148,10 +145,10 @@ module TextUi
       end
     end
 
-    def print_char(x : Int32, y : Int32, chr : Char, foreground = @foregroundColor, background = @backgroundColor)
+    def print_char(x : Int32, y : Int32, chr : Char, format : Format = @default_format)
       x += absolute_x
       y += absolute_y
-      Terminal.change_cell(x, y, chr, foreground, background)
+      Terminal.change_cell(x, y, chr, format)
     end
 
     protected def render_children

@@ -4,11 +4,14 @@ module TextUi
     getter cursor : Int32
     setter on_select : Proc(String, Nil)?
 
+    property focused_format : Format
+
     def initialize(parent, x = 0, y = 0, @items = [] of String)
       super(parent, x, y, 4, @items.size)
       @selected_item = -1
       @cursor = 0
       @viewport = 0
+      @focused_format = @default_format.reverse
     end
 
     def select(item : String) : Nil
@@ -44,19 +47,17 @@ module TextUi
 
         item = @items[item_idx]
         limit = width - 1
-        color = foregroundColor
+        format = item_idx == @cursor && focused? ? @focused_format : default_format
 
         arrow = item_idx == @selected_item ? '🠺' : ' '
-        print_char(0, i, arrow, color)
-
-        color |= Attr::Reverse if item_idx == @cursor && focused?
+        print_char(0, i, arrow, default_format)
 
         if (i == 0 && has_scrollup) || (has_scrolldown && i == height - 1)
           limit -= 1
           print_char(width - 1, i, i.zero? ? '▲' : '▼')
         end
 
-        print_line(1, i, item, color, width: limit)
+        print_line(1, i, item, format, width: limit)
       end
     end
 

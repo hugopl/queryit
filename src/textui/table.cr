@@ -5,6 +5,9 @@ module TextUi
     property cursor_x
     property cursor_y
 
+    property header_format : Format
+    property highlight_format : Format
+
     def initialize(parent, x, y)
       super
 
@@ -17,7 +20,9 @@ module TextUi
       @viewport_x = 0..0
       @viewport_y = 0
 
-      @foregroundColor = Color::Grey
+      default_format = Format.new(Color::Grey)
+      @header_format = Format.new(Color::White, bold: true)
+      @highlight_format = default_format.reverse
     end
 
     def clear
@@ -55,16 +60,15 @@ module TextUi
       y = 1
       last_row = @viewport_y + height > @rows.size ? @rows.size : @viewport_y + height - 1
       last_row -= 1
-      highlight_color = foregroundColor | Attr::Reverse
       @viewport_y.upto(last_row) do |row_idx|
         row = @rows[row_idx]
         highlight_at = row_idx == @cursor_y ? @cursor_x : -1
-        render_row(row, y, foregroundColor, highlight_color, highlight_at)
+        render_row(row, y, default_format, highlight_at)
         y += 1
       end
     end
 
-    private def render_row(row, y, color, highlight_color = color, highlight_at = -1)
+    private def render_row(row, y, row_format : Format, highlight_at = -1)
       abs_x = 0 # X in table coordinates, subtract from viewport to get widget coordinates
       @column_widths.each_with_index do |col_width, col_idx|
         next_abs_x = abs_x + col_width + 1
@@ -76,25 +80,25 @@ module TextUi
           next
         end
 
-        row_color = col_idx == highlight_at ? highlight_color : color
+        format = col_idx == highlight_at ? @highlight_format : row_format
         content = row[col_idx]
         x = abs_x - @viewport_x.begin
 
         if abs_x < @viewport_x.begin && abs_x + col_width <= @viewport_x.end && x.abs < content.size # half leftmost column
-          print_char(0, y, '…', row_color)
-          print_line(1, y, content.byte_slice(1 + x.abs), row_color, width: col_width) # FIXME: Avoid the string copy
-        elsif abs_x >= @viewport_x.begin && abs_x + col_width <= @viewport_x.end       # all good
-          print_line(x, y, content, row_color, width: col_width)
+          print_char(0, y, '…', format)
+          print_line(1, y, content.byte_slice(1 + x.abs), format, width: col_width) # FIXME: Avoid the string copy
+        elsif abs_x >= @viewport_x.begin && abs_x + col_width <= @viewport_x.end    # all good
+          print_line(x, y, content, format, width: col_width)
         elsif abs_x > @viewport_x.begin && next_abs_x > @viewport_x.end # half rightmost column
           col_width = width - x
-          print_line(x, y, content, row_color, width: col_width)
+          print_line(x, y, content, format, width: col_width)
         end
         abs_x = next_abs_x
       end
     end
 
     private def render_headers
-      render_row(@column_names, 0, Color::White | Attr::Bold)
+      render_row(@column_names, 0, @header_format)
     end
 
     private def calculate_column_widths

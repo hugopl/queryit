@@ -2,7 +2,7 @@ require "./widget"
 
 module TextUi
   class Box < Widget
-    property borderColor
+    property border_color
 
     enum Docking
       None
@@ -11,7 +11,7 @@ module TextUi
     end
 
     @docking = Docking::None
-    @borderColor = Color::Teal
+    @border_color = Format.new(Color::Teal)
 
     def initialize(parent, @title : String, @shortcut : String = "")
       super(parent)
@@ -30,23 +30,23 @@ module TextUi
     def render
       style = border_style
       # Top
-      print_char(1, 0, style[:horizontal], @borderColor)
+      print_char(1, 0, style[:horizontal], @border_color)
       print_line(3, 0, @title)
-      print_line(@title.size + 4, 0, @shortcut, @borderColor | Attr::Reverse | Attr::Bold)
+      print_line(@title.size + 4, 0, @shortcut, @border_color.reverse.bold)
       (width - @title.size - @shortcut.size - 5).times do |i|
-        print_char(@title.size + @shortcut.size + 4 + i, 0, style[:horizontal], @borderColor)
+        print_char(@title.size + @shortcut.size + 4 + i, 0, style[:horizontal], @border_color)
       end
       # Left
-      (height - 2).times { |i| print_char(0, i + 1, style[:vertical], @borderColor) } unless @docking == Docking::Right
+      (height - 2).times { |i| print_char(0, i + 1, style[:vertical], @border_color) } unless @docking == Docking::Right
       # Bottom
-      (width - 2).times { |i| print_char(i + 1, height - 1, style[:horizontal], @borderColor) }
+      (width - 2).times { |i| print_char(i + 1, height - 1, style[:horizontal], @border_color) }
       # Right
-      (height - 2).times { |i| print_char(width - 1, i + 1, style[:vertical], @borderColor) }
+      (height - 2).times { |i| print_char(width - 1, i + 1, style[:vertical], @border_color) }
       # Corners
-      print_char(0, 0, style[:top_left], @borderColor)
-      print_char(width - 1, 0, style[:top_right], @borderColor)
-      print_char(0, height - 1, style[:bottom_left], @borderColor)
-      print_char(width - 1, height - 1, style[:bottom_right], @borderColor)
+      print_char(0, 0, style[:top_left], @border_color)
+      print_char(width - 1, 0, style[:top_right], @border_color)
+      print_char(0, height - 1, style[:bottom_left], @border_color)
+      print_char(width - 1, height - 1, style[:bottom_right], @border_color)
     end
 
     private def border_style
