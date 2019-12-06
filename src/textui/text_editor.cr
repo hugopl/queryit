@@ -1,5 +1,6 @@
 module TextUi
   class TextEditor < Widget
+    getter document : TextDocument
     getter cursors : Array(TextCursor)
     getter? show_line_numbers : Bool
     getter? word_wrap : Bool
@@ -8,6 +9,7 @@ module TextUi
 
     delegate open, to: @document
     delegate save, to: @document
+    delegate :syntax_highlighter=, to: @document
 
     def initialize(parent, x, y, width, height)
       super
@@ -168,6 +170,7 @@ module TextUi
         end
 
         text = block.text
+        formats = block.formats
         if @word_wrap && text.size > width_available
           offset = 0
           line_tag = "#{" " * (border_width - 1)}│" if @show_line_numbers
@@ -175,14 +178,14 @@ module TextUi
             print_line(0, y, line_tag, @border_color) if @show_line_numbers && !offset.zero?
             count = count_chars_before_word_wrap(text, offset, width_available)
 
-            print_line(border_width, y, text, width: width_available, ellipsis: false, offset: offset, count: count)
+            print_line(border_width, y, text, formats, width: width_available, ellipsis: false, offset: offset, count: count)
             offset += count
             break if offset >= text.size
 
             y += 1
           end
         else
-          print_line(border_width, y, text, width: width_available)
+          print_line(border_width, y, text, formats, width: width_available)
         end
         y += 1
 

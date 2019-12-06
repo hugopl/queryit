@@ -1,26 +1,47 @@
 module TextUi
   class TextBlock
-    property text : String
+    getter text : String
+    getter formats : Array(Format)
     delegate size, to: @text
 
-    def initialize(@text : String = "")
+    @formats = [] of Format
+
+    def initialize(@document : TextDocument, @text = "")
+      reset_format
+    end
+
+    def text=(@text : String)
+      reset_format
+      @document.highlight_block(self)
+    end
+
+    def reset_format
+      @formats = Array(Format).new(@text.size, Format::DEFAULT)
+    end
+
+    def apply_format(start : Int32, finish : Int32, format : Format)
+      (start...finish).each do |i|
+        @formats[i] = format
+      end
     end
   end
 
   class TextDocument
     getter blocks : Array(TextBlock)
+    delegate highlight_block, to: @syntax_highlighter
 
     @blocks = [] of TextBlock
     @filename = ""
+    @syntax_highlighter = PlainTextSyntaxHighlighter.new
 
-    def initialize(contents : String = "")
-      self.contents = contents
+    def initialize
+      @blocks = [TextBlock.new(self)]
     end
 
     def contents=(contents : String) : Nil
-      # FIXME: Emit a signal about document changed to reset cursors
-      @blocks = contents.lines.map { |line| TextBlock.new(line) }
-      @blocks << TextBlock.new if @blocks.empty?
+      @blocks = contents.lines.map { |line| TextBlock.new(self, line) }
+      @blocks << TextBlock.new(self) if @blocks.empty?
+      reset_syntaxhighlighting
     end
 
     def open(@filename : String)
@@ -39,12 +60,24 @@ module TextUi
     end
 
     def insert(line : Int32, text : String) : Nil
-      block = TextBlock.new(text)
+      block = TextBlock.new(self, text)
       @blocks.insert(line + 1, block)
+
+      highlight_block(block)
     end
 
     def remove(line : Int32) : Nil
       @blocks.delete_at(line)
+    end
+
+    def syntax_highlighter=(@syntax_highlighter : SyntaxHighlighter)
+      reset_syntaxhighlighting
+    end
+
+    def reset_syntaxhighlighting
+      @blocks.each do |block|
+        highlight_block(block)
+      end
     end
   end
 end

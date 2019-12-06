@@ -97,7 +97,7 @@ module TextUi
     end
 
     def print_line(x : Int32, y : Int32, text : String,
-                   format : Format = @default_format,
+                   format : Array(Format) | Format = @default_format,
                    offset = 0,
                    count = text.size,
                    width = 0,
@@ -118,15 +118,17 @@ module TextUi
         elsif chr == '\r'
           chr = '␍'
         end
-        Terminal.change_cell(x + i, y, chr, format)
+        fmt = format.is_a?(Format) ? format.as(Format) : format.as(Array(Format))[char_idx]? || Format::DEFAULT
+        Terminal.change_cell(x + i, y, chr, fmt)
       end
 
       return if count >= width
 
       # fill width with blanks
+      fmt = format.is_a?(Format) ? format : Format::DEFAULT
       start_x = x + count
       (width - count).times do |ii|
-        Terminal.change_cell(start_x + ii, y, ' ', format)
+        Terminal.change_cell(start_x + ii, y, ' ', fmt)
       end
     end
 

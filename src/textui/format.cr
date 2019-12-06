@@ -4,10 +4,12 @@ module TextUi
     UNDERLINE = 0x0200
     REVERSE   = 0x0400
 
+    DEFAULT = Format.new
+
     getter foreground : UInt16
     getter background : UInt16
 
-    def initialize(foreground : Color = Color::White, background : Color = Color::Black, bold = false, underline = false, reverse = false)
+    def initialize(foreground : Color = Color::Silver, background : Color = Color::Black, bold = false, underline = false, reverse = false)
       @foreground = foreground.to_u16
       @foreground |= BOLD if bold
       @foreground |= UNDERLINE if underline

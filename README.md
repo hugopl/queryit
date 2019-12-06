@@ -58,7 +58,7 @@ The application is already useful but still need some love. Above is a todo list
 - [x] Help screen.
 - [x] Change database.
 - [x] Navigate through results.
-- [ ] Syntax highlight.
+- [x] Syntax highlight.
 - [x] SQL beautifier.
 - [ ] SQL auto complete.
 - [x] Improved copy/paste support.

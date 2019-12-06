@@ -508,8 +508,6 @@ describe TextUi::TextEditor do
   end
 
   pending "can have multiple cursors"
-  pending "only render changed lines"
-  pending "can select text with keyboard (not sure if termbox and general terminals will handle this)"
+  pending "can select text with keyboard"
   pending "can undo/redo"
-  pending "can syntax highlight text"
 end

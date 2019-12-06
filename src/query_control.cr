@@ -1,8 +1,11 @@
+require "./sql_syntaxhighlighter"
+
 class QueryControl
   def initialize(ui : TextUi::Ui)
     @query_box = TextUi::Box.new(ui, "Query", "F2")
     @query_box.border_style = TextUi::Box::BorderStyle::Fancy
     @editor = TextUi::TextEditor.new(@query_box, 1, 1, 0, 0)
+    @editor.syntax_highlighter = SQLSyntaxHighlighter.new
     @editor.show_line_numbers = true
     @editor.word_wrap = true
     ui.focus(@editor)
