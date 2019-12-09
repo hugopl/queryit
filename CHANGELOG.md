@@ -1,7 +1,7 @@
-## Unreleased
+## [0.3.0] - 2019-12-09
 ### Added
-- Show EXPLAIN queries as a text, not a table.
-- Improved query editor.
+- Show EXPLAIN queries as a text in result box.
+- Improved query editor: Show line numbers, has word wrap and a decent cursor navigation.
 - SQL beautifier implemented, still not perfect, but helps!
 
 ## [0.2.1] - 2019-11-18
