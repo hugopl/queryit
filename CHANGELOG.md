@@ -1,3 +1,7 @@
+## Unreleased
+### Added
+- New fancy border box style.
+
 ## [0.3.0] - 2019-12-09
 ### Added
 - Show EXPLAIN queries as a text in result box.

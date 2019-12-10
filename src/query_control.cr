@@ -2,6 +2,7 @@ class QueryControl
   def initialize(ui : TextUi::Ui)
     default_query = ""
     @query_box = TextUi::Box.new(ui, "Query", "F2")
+    @query_box.border_style = TextUi::Box::BorderStyle::Fancy
     @editor = TextUi::TextEditor.new(@query_box, 1, 1, 0, 0)
     @editor.show_line_numbers = true
     @editor.word_wrap = true
@@ -11,6 +12,7 @@ class QueryControl
     ui.focus(@editor)
 
     @dbs_box = TextUi::Box.new(ui, "Databases", "F3")
+    @dbs_box.border_style = TextUi::Box::BorderStyle::Fancy
     @dbs_list = TextUi::List.new(@dbs_box, 1, 1)
     @dbs_list.width = 18
     # @dbs_list.on_select = ->(db : String) { ui.change_database(db) }

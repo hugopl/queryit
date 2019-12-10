@@ -3,6 +3,7 @@ require "./widget"
 module TextUi
   class Box < Widget
     property border_color
+    property border_style : BorderStyle
 
     enum Docking
       None
@@ -10,8 +11,14 @@ module TextUi
       Right
     end
 
+    enum BorderStyle
+      RoundedBorder
+      Fancy
+    end
+
     @docking = Docking::None
     @border_color = Format.new(Color::Teal)
+    @border_style = BorderStyle::RoundedBorder
 
     def initialize(parent, @title : String, @shortcut : String = "")
       super(parent)
@@ -28,6 +35,13 @@ module TextUi
     end
 
     def render
+      case @border_style
+      when BorderStyle::Fancy         then render_fancy_style
+      when BorderStyle::RoundedBorder then render_rounded_border_style
+      end
+    end
+
+    def render_rounded_border_style
       style = border_style
       # Top
       print_char(1, 0, style[:horizontal], @border_color)
@@ -56,6 +70,22 @@ module TextUi
                        {top: '╭', bottom: '╰'}
                      end
       {horizontal: '─', vertical: '│', top_right: '╮', bottom_right: '╯', bottom_left: left_corners[:bottom], top_left: left_corners[:top]}
+    end
+
+    private def render_fancy_style
+      print_line(0, 0, "██", @border_color)
+      print_line(2, 0, @title, @border_color.reverse)
+      print_line(2 + @title.size, 0, "┊", @border_color.reverse)
+      print_line(3 + @title.size, 0, @shortcut, @border_color.reverse)
+      title_bar_remain = width//3 - 3 - @title.size - @shortcut.size - 3
+      title_bar_remain.times do |i|
+        print_char(@title.size + @shortcut.size + 3 + i, 0, '█', @border_color)
+      end
+      title_bar_remain = 0 if title_bar_remain < 0
+      print_line(title_bar_remain + 3 + @title.size + @shortcut.size, 0, "▓▒░", @border_color)
+
+      (height - 2).times { |i| print_char(0, i + 1, '┃', @border_color) }
+      print_char(0, height - 2, '┇', @border_color)
     end
   end
 end
