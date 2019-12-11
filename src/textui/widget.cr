@@ -166,6 +166,17 @@ module TextUi
     def render_cursor
     end
 
+    def focus_changed(old_focus : Widget?, new_focus : Widget?)
+      invalidate if old_focus == self || new_focus == self
+      children.each(&.focus_changed(old_focus, new_focus))
+    end
+
+    def children?(widget : Widget) : Bool
+      return true if children.includes?(widget)
+
+      children.any?(&.children?(widget))
+    end
+
     def handle_key_input(chr : Char, key : UInt16)
       callback = @key_input_handler
       callback.call(chr, key) if callback

@@ -34,15 +34,10 @@ module TextUi
 
     def focus(widget : Widget?) : Nil
       old_widget = @focused_widget
-      if old_widget
-        old_widget.focused = false
-        old_widget.invalidate
-      end
+      old_widget.focused = false unless old_widget.nil?
       @focused_widget = widget
-      if widget
-        widget.focused = true
-        widget.invalidate
-      end
+      widget.focused = true unless widget.nil?
+      focus_changed(old_widget, widget)
       set_cursor(-1, -1)
     end
 

@@ -1,6 +1,7 @@
 ## Unreleased
 ### Added
 - New fancy border box style.
+- Render focused boxes with different colors.
 
 ## [0.3.0] - 2019-12-09
 ### Added
