@@ -8,7 +8,7 @@ class ResultsControl
     @box = TextUi::Box.new(ui, "Results", "F4")
     @box.border_style = TextUi::Box::BorderStyle::Fancy
     @table = TextUi::Table.new(@box, 1, 1)
-    @label = TextUi::Label.new(@box, 1, 1, "")
+    @label = TextUi::Label.new(@box, 1, 1)
     @label.visible = false
     ui.add_focus_shortcut(TextUi::KEY_F4, @table)
   end

@@ -4,6 +4,7 @@ describe TextUi::List do
   it "set the cursor to the selected item" do
     ui = init_ui(7, 6)
     list = TextUi::List.new(ui, 2, 2, %w(one two three))
+    list.resize(4, 3)
     list.cursor.should eq(0)
     list.select("two")
     list.cursor.should eq(1)
@@ -12,7 +13,7 @@ describe TextUi::List do
   it "render list without an arrow when there's no item selected" do
     ui = init_ui(7, 6)
     list = TextUi::List.new(ui, 2, 2, %w(one two three))
-    list.width = 5
+    list.resize(5, 3)
     ui.render
     Terminal.to_s.should eq("       \n" \
                             "       \n" \
@@ -25,7 +26,7 @@ describe TextUi::List do
   it "render an arrow on selected item" do
     ui = init_ui(7, 6)
     list = TextUi::List.new(ui, 2, 2, %w(one two three))
-    list.width = 5
+    list.resize(5, 3)
     list.select(2)
     ui.render
     Terminal.to_s.should eq("       \n" \
@@ -39,7 +40,7 @@ describe TextUi::List do
   it "render focused item highlighted" do
     ui = init_ui(7, 6)
     list = TextUi::List.new(ui, 2, 2, %w(one two three))
-    list.width = 5
+    list.resize(5, 3)
     ui.render
     Terminal.to_s.should eq("       \n" \
                             "       \n" \
@@ -90,8 +91,7 @@ describe TextUi::List do
   it "render list larger than viewport" do
     ui = init_ui(5, 4)
     list = TextUi::List.new(ui, 0, 0, %w(one two three four five six))
-    list.width = 5
-    list.height = 4
+    list.resize(5, 4)
     list.select(3)
     ui.focus(list)
     ui.render

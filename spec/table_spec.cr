@@ -3,7 +3,7 @@ require "./spec_helper"
 describe TextUi::Table do
   it "moves view port to right when needed" do
     ui = init_ui(12, 2)
-    table = TextUi::Table.new(ui, 0, 0)
+    table = TextUi::Table.new(ui)
     table.width = ui.width
     table.height = ui.height
     ui.focus(table)

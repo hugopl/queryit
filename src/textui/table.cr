@@ -8,21 +8,25 @@ module TextUi
     property header_format : Format
     property highlight_format : Format
 
+    @column_names = [] of String
+    @column_widths = [] of Int32
+    @rows = [] of Array(String)
+    @cursor_x = 0
+    @cursor_y = 0
+
+    @viewport_x = 0..0
+    @viewport_y = 0
+
+    default_format = Format.new(Color::Grey)
+    @header_format = Format.new(Color::White, bold: true)
+    @highlight_format = Format.new(Color::Silver).reverse
+
+    def initialize(parent)
+      super
+    end
+
     def initialize(parent, x, y)
       super
-
-      @column_names = [] of String
-      @column_widths = [] of Int32
-      @rows = [] of Array(String)
-      @cursor_x = 0
-      @cursor_y = 0
-
-      @viewport_x = 0..0
-      @viewport_y = 0
-
-      default_format = Format.new(Color::Grey)
-      @header_format = Format.new(Color::White, bold: true)
-      @highlight_format = default_format.reverse
     end
 
     def clear

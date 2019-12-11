@@ -26,6 +26,10 @@ module TextUi
       super(parent)
     end
 
+    def initialize(parent, x, y, @title : String, @shortcut : String = "")
+      super(parent, x, y)
+    end
+
     def initialize(parent, x, y, width, height, @title : String, @shortcut : String = "")
       super(parent, x, y, width, height)
     end

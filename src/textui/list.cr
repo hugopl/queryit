@@ -6,12 +6,17 @@ module TextUi
 
     property focused_format : Format
 
-    def initialize(parent, x = 0, y = 0, @items = [] of String)
-      super(parent, x, y, 4, @items.size)
-      @selected_item = -1
-      @cursor = 0
-      @viewport = 0
-      @focused_format = @default_format.reverse
+    @selected_item = -1
+    @cursor = 0
+    @viewport = 0
+    @focused_format = Format.new(Color::Silver).reverse
+
+    def initialize(parent, @items = [] of String)
+      super(parent)
+    end
+
+    def initialize(parent, x, y, @items = [] of String)
+      super(parent, x, y)
     end
 
     def select(item : String) : Nil

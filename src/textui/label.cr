@@ -2,9 +2,14 @@ module TextUi
   class Label < Widget
     property text
 
-    def initialize(parent, x, y, @text : String)
-      super(parent, x, y, @text.size, 1) # FIXME count linefeeds to specify real size
-      @old_text = ""
+    @old_text = ""
+
+    def initialize(parent, @text : String = "")
+      super(parent)
+    end
+
+    def initialize(parent, x, y, @text : String = "")
+      super(parent, x, y)
     end
 
     def text=(text)

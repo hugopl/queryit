@@ -13,13 +13,17 @@ module TextUi
     getter children
     protected property? render_pending
 
-    def initialize(@parent : Widget, @x = 0, @y = 0, @width = 0, @height = 0)
+    def initialize(@parent : Widget, @x = 0, @y = 0, @width = 1, @height = 1)
       @default_format = Format.new(Color::Silver)
       @children = [] of Widget
       @focused = false
       @visible = true
       @render_pending = true
       @parent << self if @parent != self
+    end
+
+    def resize(@width, @height)
+      invalidate
     end
 
     def clear_text(x, y, text : String, format : Format = @default_format, stop_on_lf = false)
