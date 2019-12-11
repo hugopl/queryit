@@ -11,6 +11,8 @@ class ResultsControl
     @label = TextUi::Label.new(@box, 1, 1)
     @label.visible = false
     ui.add_focus_shortcut(TextUi::KEY_F4, @table)
+
+    @table.enter_pressed.on(&->show_result_overlay(String))
   end
 
   def focusable_widgets
@@ -62,5 +64,19 @@ class ResultsControl
     @label.default_format = format
     @label.visible = true
     @table.visible = false
+  end
+
+  private def show_result_overlay(value)
+    ui = @box.ui
+    height = {value.count("\n") + 3, ui.height - 3}.min
+    line_max_width = value.each_line.map(&.size).max? || 0
+    width = {line_max_width + 2, ui.width}.min
+
+    dialog = TextUi::Dialog.new(ui, "Value")
+    dialog.resize(width, height)
+    label = TextUi::Label.new(dialog, 1, 1, value)
+    label.resize(width - 2, height - 2)
+    ui.focus(dialog)
+    dialog.dismissed.on { ui.focus(@table) }
   end
 end

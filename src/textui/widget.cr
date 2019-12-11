@@ -30,7 +30,15 @@ module TextUi
       end
     end
 
+    def destroy
+      parent.children.delete(self)
+    end
+
     def resize(@width, @height)
+      invalidate
+    end
+
+    def move(@x, @y)
       invalidate
     end
 

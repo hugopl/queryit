@@ -76,9 +76,11 @@ class App
 
   private def cycle_focus
     focus_next = false
-    focusable_widgets.each.cycle.each do |widget|
+    focusable_widgets.each.cycle.each_with_index do |widget, i|
       return @ui.focus(widget) if focus_next
       focus_next = widget.focused?
+
+      return @ui.focus(focusable_widgets.first) if i > focusable_widgets.size
     end
   end
 

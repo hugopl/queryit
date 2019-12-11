@@ -1,3 +1,5 @@
+require "cute"
+
 module TextUi
   class Table < Widget
     getter column_names
@@ -7,6 +9,8 @@ module TextUi
 
     property header_format : Format
     property highlight_format : Format
+
+    Cute.signal enter_pressed(value : String)
 
     @column_names = [] of String
     @column_widths = [] of Int32
@@ -155,6 +159,8 @@ module TextUi
       when KEY_ARROW_LEFT  then @cursor_x -= 1
       when KEY_ARROW_RIGHT then @cursor_x += 1
       when KEY_ENTER
+        enter_pressed.emit(@rows[@cursor_y][@cursor_x])
+        return
       end
 
       @cursor_x = @cursor_x.clamp(0, @column_names.size - 1)

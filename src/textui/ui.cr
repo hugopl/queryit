@@ -132,9 +132,9 @@ module TextUi
         return
       end
 
+      key_typed.emit(chr, key)
       widget = @focused_widget
       widget.handle_key_input(chr, key) if widget
-      key_typed.emit(chr, key)
     end
   end
 end

@@ -3,6 +3,7 @@
 - New fancy border box style.
 - Render focused boxes with different colors.
 - Cycle focus on TAB key.
+- Show full result value ENTER key on results table.
 
 ## [0.3.0] - 2019-12-09
 ### Added
