@@ -108,7 +108,7 @@ module TextUi
       line = 0
       y_acc = 0
 
-      block_heights.each_with_index do |height, i|
+      block_heights.each do |height|
         break if y_acc + height > y
         y_acc += height
         line += 1

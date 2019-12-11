@@ -39,7 +39,7 @@ module TextUi
 
     def self.clear
       @@cells.clear
-      height.times do |y|
+      height.times do
         @@cells << Array(Cell).new(width, Cell.new)
       end
     end
@@ -129,7 +129,7 @@ alias Terminal = TextUi::Terminal
 def init_ui(width = 20, height = 4)
   Terminal.resize(width, height)
   ui = TextUi::Ui.new
-  ui.key_input_handler = ->(chr : Char, i : UInt16) {}
+  ui.key_input_handler = ->(_chr : Char, _i : UInt16) {}
   ui.process_events # Process the resize event.
   ui
 end
