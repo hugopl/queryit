@@ -1,6 +1,5 @@
 class QueryControl
   def initialize(ui : TextUi::Ui)
-    default_query = ""
     @query_box = TextUi::Box.new(ui, "Query", "F2")
     @query_box.border_style = TextUi::Box::BorderStyle::Fancy
     @editor = TextUi::TextEditor.new(@query_box, 1, 1, 0, 0)

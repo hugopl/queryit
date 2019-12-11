@@ -106,7 +106,6 @@ module TextUi
 
     private def map_viewport_to_line_col(x, y)
       line = 0
-      col = 0
       y_acc = 0
 
       block_heights.each_with_index do |height, i|
@@ -263,9 +262,6 @@ module TextUi
     end
 
     def handle_line_change(cursor, key) : Nil
-      block = cursor.current_block
-      last_block_idx = @document.blocks.size - 1
-
       x, y = map_line_col_to_viewport(cursor.line, cursor.col)
       y += key == KEY_ARROW_UP ? -1 : 1
       y = 0 if y < 0
