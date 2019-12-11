@@ -13,6 +13,10 @@ class ResultsControl
     ui.add_focus_shortcut(TextUi::KEY_F4, @table)
   end
 
+  def focusable_widgets
+    [@table]
+  end
+
   def empty?
     @table.rows.empty?
   end

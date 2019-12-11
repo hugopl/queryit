@@ -2,6 +2,7 @@
 ### Added
 - New fancy border box style.
 - Render focused boxes with different colors.
+- Cycle focus on TAB key.
 
 ## [0.3.0] - 2019-12-09
 ### Added

@@ -12,6 +12,7 @@ class App
   delegate error, info, to: @status_bar
 
   @db : DB::Database
+  @focusable_widgets : Array(TextUi::Widget)?
 
   def initialize(@db_uri : URI)
     @db = DB.open(@db_uri)
@@ -65,6 +66,19 @@ class App
     when TextUi::KEY_CTRL_S then save_csv
     when TextUi::KEY_F1     then show_help
     when TextUi::KEY_F5     then execute_query(@query_ctl.query)
+    when TextUi::KEY_TAB    then cycle_focus
+    end
+  end
+
+  private def focusable_widgets : Array(TextUi::Widget)
+    @focusable_widgets ||= @query_ctl.focusable_widgets + @results_ctl.focusable_widgets
+  end
+
+  private def cycle_focus
+    focus_next = false
+    focusable_widgets.each.cycle.each do |widget|
+      return @ui.focus(widget) if focus_next
+      focus_next = widget.focused?
     end
   end
 

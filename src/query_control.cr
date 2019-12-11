@@ -21,6 +21,10 @@ class QueryControl
     ui.add_focus_shortcut(TextUi::KEY_F3, @dbs_list)
   end
 
+  def focusable_widgets
+    [@editor, @dbs_list]
+  end
+
   def query
     @editor.text
   end
