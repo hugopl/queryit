@@ -149,7 +149,6 @@ class App
   end
 
   private def fetch_database_list
-    databases = [] of String
     query = case @db_uri.scheme
             when "postgres", "postgresql" then "SELECT datname FROM pg_database"
             when "sqlite3"                then return [current_database_name]
@@ -157,12 +156,14 @@ class App
             else
               raise "Database not supported, please, file a bug."
             end
+
+    databases = [] of String
     @db.query(query) do |rs|
       rs.each do
         databases << rs.read(String)
       end
     end
-    return databases
+    databases
   end
 
   private def populate_database_list

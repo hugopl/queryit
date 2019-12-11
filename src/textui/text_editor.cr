@@ -206,7 +206,7 @@ module TextUi
           return idx - offset + 1 if text[idx].whitespace?
         end
       end
-      return width # if we can't find one, just cut the text
+      width # if we can't find one, just cut the text
     end
 
     private def calc_border_width

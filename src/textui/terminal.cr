@@ -45,7 +45,7 @@ module TextUi
     end
 
     def self.peek_event(event : Pointer(Event), timeout : Int32) : Bool
-      return TermboxBindings.tb_peek_event(event, timeout) > 0
+      TermboxBindings.tb_peek_event(event, timeout) > 0
     end
 
     def self.set_cursor(x, y)
