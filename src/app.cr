@@ -17,8 +17,8 @@ class App
   def initialize(@db_uri : URI)
     @db = DB.open(@db_uri)
     @ui = TextUi::Ui.new
-    @ui.on_resize(->handle_resize(Int32, Int32))
-    @ui.key_input_handler = ->handle_key_input(Char, UInt16)
+    @ui.resized.on(&->handle_resize(Int32, Int32))
+    @ui.key_typed.on(&->handle_key_input(Char, UInt16))
 
     @query_ctl = QueryControl.new(@ui)
     @query_ctl.on_database_selected = ->change_database(String)

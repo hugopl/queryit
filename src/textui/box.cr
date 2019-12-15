@@ -24,22 +24,24 @@ module TextUi
 
     def initialize(parent, @title : String, @shortcut : String = "")
       super(parent)
+      connect_signals
     end
 
     def initialize(parent, x, y, @title : String, @shortcut : String = "")
       super(parent, x, y)
+      connect_signals
     end
 
     def initialize(parent, x, y, width, height, @title : String, @shortcut : String = "")
       super(parent, x, y, width, height)
+      connect_signals
     end
 
-    def focused?
-      children.any?(&.focused?)
+    private def connect_signals
+      ui.focus_changed.on(&->focus_changed(Widget?, Widget?))
     end
 
-    def focus_changed(old_focus : Widget?, new_focus : Widget?)
-      super
+    private def focus_changed(old_focus : Widget?, new_focus : Widget?)
       invalidate if (!old_focus.nil? && children?(old_focus)) || (!new_focus.nil? && children?(new_focus))
     end
 
@@ -50,7 +52,7 @@ module TextUi
     end
 
     def render
-      color = focused? ? @focused_border_color : @border_color
+      color = focused? || children_focused? ? @focused_border_color : @border_color
       case @border_style
       when BorderStyle::Fancy         then render_fancy_style(color)
       when BorderStyle::RoundedBorder then render_rounded_border_style(color)

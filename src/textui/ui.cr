@@ -1,3 +1,5 @@
+require "cute"
+
 {% if !flag?(:release) %}
   def debug(text : String)
     File.open("/tmp/debug.txt", "a", &.puts(text))
@@ -15,6 +17,10 @@
 module TextUi
   class Ui < Widget
     @focused_widget : Widget?
+
+    Cute.signal resized(width : Int32, height : Int32)
+    Cute.signal key_typed(chr : Char, key : UInt16)
+    Cute.signal focus_changed(old_widget : Widget?, new_widget : Widget?)
 
     def initialize(color_mode = ColorMode::Just256Colors)
       @event = Terminal::Event.new(type: 0, mod: 0, key: 0, ch: 0, w: 0, x: 0, y: 0)
@@ -34,10 +40,16 @@ module TextUi
 
     def focus(widget : Widget?) : Nil
       old_widget = @focused_widget
-      old_widget.focused = false unless old_widget.nil?
+      unless old_widget.nil?
+        old_widget.focused = false
+        old_widget.invalidate
+      end
       @focused_widget = widget
-      widget.focused = true unless widget.nil?
-      focus_changed(old_widget, widget)
+      unless widget.nil?
+        widget.focused = true
+        widget.invalidate
+      end
+      focus_changed.emit(old_widget, widget)
       set_cursor(-1, -1)
     end
 
@@ -96,7 +108,7 @@ module TextUi
       handle_event
     end
 
-    def handle_event
+    private def handle_event
       case @event.type
       when Terminal::EVENT_KEY then handle_key_event(@event.ch.chr, @event.key)
       when Terminal::EVENT_MOUSE
@@ -105,20 +117,15 @@ module TextUi
       @need_rendering = true
     end
 
-    def on_resize(proc : (Int32, Int32) ->)
-      @on_resize = proc
-    end
-
     private def handle_resize(width, height)
       self.width = width
       self.height = height
       Terminal.clear
       invalidate
-      callback = @on_resize
-      callback.call(width, height) if callback
+      self.resized.emit(width, height)
     end
 
-    def handle_key_event(chr : Char, key : UInt16)
+    private def handle_key_event(chr : Char, key : UInt16)
       widget = @shortcuts[key]?
       if widget
         focus(widget)
@@ -127,14 +134,7 @@ module TextUi
 
       widget = @focused_widget
       widget.handle_key_input(chr, key) if widget
-      handle_key_input(chr, key) # Always call the main key input handler
+      key_typed.emit(chr, key)
     end
-
-    {% if !flag?(:release) %}
-      def handle_key_input(chr : Char, key : UInt16)
-        raise "No key input handler defined for Ui object" if @key_input_handler.nil?
-        super
-      end
-    {% end %}
   end
 end

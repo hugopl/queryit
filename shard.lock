@@ -1,5 +1,9 @@
 version: 1.0
 shards:
+  cute:
+    github: Papierkorb/cute
+    version: 0.3.1
+
   db:
     github: crystal-lang/crystal-db
     commit: 2b95d69e685da6f44835439baad73977f27a3907

@@ -7,10 +7,10 @@ module TextUi
     property default_format : Format
     property? visible : Bool
     property? focused : Bool
-    setter key_input_handler : Proc(Char, UInt16, Nil)?
 
     delegate :<<, to: @children
     getter children
+    getter parent
     protected property? render_pending
 
     def initialize(@parent : Widget, @x = 0, @y = 0, @width = 1, @height = 1)
@@ -22,8 +22,20 @@ module TextUi
       @parent << self if @parent != self
     end
 
+    def ui
+      parent = @parent
+      loop do
+        return parent if parent.is_a?(Ui)
+        parent = parent.parent
+      end
+    end
+
     def resize(@width, @height)
       invalidate
+    end
+
+    def children_focused?
+      children.any?(&.focused?)
     end
 
     def clear_text(x, y, text : String, format : Format = @default_format, stop_on_lf = false)
@@ -170,11 +182,6 @@ module TextUi
     def render_cursor
     end
 
-    def focus_changed(old_focus : Widget?, new_focus : Widget?)
-      invalidate if old_focus == self || new_focus == self
-      children.each(&.focus_changed(old_focus, new_focus))
-    end
-
     def children?(widget : Widget) : Bool
       return true if children.includes?(widget)
 
@@ -182,8 +189,6 @@ module TextUi
     end
 
     def handle_key_input(chr : Char, key : UInt16)
-      callback = @key_input_handler
-      callback.call(chr, key) if callback
     end
 
     def invalidate
