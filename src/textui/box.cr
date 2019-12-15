@@ -63,7 +63,9 @@ module TextUi
       style = border_style
       # Top
       print_char(1, 0, style[:horizontal], color)
+      print_char(2, 0, ' ')
       print_line(3, 0, @title)
+      print_char(@title.size + 3, 0, ' ')
       print_line(@title.size + 4, 0, @shortcut, color.reverse.bold)
       (width - @title.size - @shortcut.size - 5).times do |i|
         print_char(@title.size + @shortcut.size + 4 + i, 0, style[:horizontal], color)
@@ -102,8 +104,16 @@ module TextUi
       title_bar_remain = 0 if title_bar_remain < 0
       print_line(title_bar_remain + 3 + @title.size + @shortcut.size, 0, "▓▒░", color)
 
+      title_chars = title_bar_remain + @title.size + @shortcut.size + 6
+      (width - title_chars - 1).times do |i|
+        print_char(title_chars + i, 0, ' ', color)
+      end
+
+      # Left
       (height - 2).times { |i| print_char(0, i + 1, '┃', color) }
       print_char(0, height - 2, '┇', color)
+      # Bottom
+      (width).times { |i| print_char(i + 1, height - 1, ' ', color) }
     end
   end
 end
