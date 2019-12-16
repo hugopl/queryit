@@ -4,6 +4,7 @@
 - Render focused boxes with different colors.
 - Cycle focus on TAB key.
 - Show full result value ENTER key on results table.
+- Save editor contents per database URI at exit.
 
 ## [0.3.0] - 2019-12-09
 ### Added

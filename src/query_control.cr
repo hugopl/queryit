@@ -5,9 +5,6 @@ class QueryControl
     @editor = TextUi::TextEditor.new(@query_box, 1, 1, 0, 0)
     @editor.show_line_numbers = true
     @editor.word_wrap = true
-    {% if !flag?(:release) %}
-      @editor.text = "SELECT * FROM users;"
-    {% end %}
     ui.focus(@editor)
 
     @dbs_box = TextUi::Box.new(ui, "Databases", "F3")

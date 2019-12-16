@@ -4,6 +4,7 @@ require "mysql"
 require "sqlite3"
 require "uri"
 
+require "./config"
 require "./results_control"
 require "./query_control"
 require "./sql_beautifier/sql_beautifier"
@@ -14,13 +15,18 @@ class App
   @db : DB::Database
   @focusable_widgets : Array(TextUi::Widget)?
 
+  @config = Config.new
+  @ui = TextUi::Ui.new
+
   def initialize(@db_uri : URI)
     @db = DB.open(@db_uri)
-    @ui = TextUi::Ui.new
     @ui.resized.on(&->handle_resize(Int32, Int32))
     @ui.key_typed.on(&->handle_key_input(Char, UInt16))
 
+    load_config
+
     @query_ctl = QueryControl.new(@ui)
+    @query_ctl.query = @config.last_query[@db_uri.to_s]?.to_s
     @query_ctl.on_database_selected = ->change_database(String)
     @results_ctl = ResultsControl.new(@ui)
     @status_bar = TextUi::StatusBar.new(@ui)
@@ -28,9 +34,25 @@ class App
     setup_shortcuts
   end
 
+  private def load_config
+    @config = Config.from_yaml(File.read(config_file_path))
+  rescue
+    nil
+  end
+
+  def config_file_path
+    Path.home.join(".queryit")
+  end
+
+  private def save_config
+    @config.last_query[@db_uri.to_s] = @query_ctl.query
+    File.write(config_file_path, @config.to_yaml)
+  end
+
   def main_loop
     populate_database_list
     @ui.main_loop
+    save_config
   rescue
     @ui.shutdown!
   end
