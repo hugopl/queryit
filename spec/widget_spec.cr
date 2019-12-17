@@ -37,6 +37,13 @@ describe TextUi::Widget do
       ui.print_lines(0, 0, "1234", width: 4)
       Terminal.to_s.should eq("1234\n")
     end
+
+    it "does not jump a line when linefeed is at width limits" do
+      ui = init_ui(4, 2)
+      ui.print_lines(0, 0, "1234\n5")
+      Terminal.to_s.should eq("1234\n" \
+                              "5   \n")
+    end
   end
 
   context "when rendering children" do

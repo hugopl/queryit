@@ -159,7 +159,7 @@ module TextUi
           y += 1
           x = origin_x
         else
-          if x == x_limit
+          if x > x_limit
             x = origin_x
             y += 1
           else
