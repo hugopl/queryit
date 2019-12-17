@@ -21,7 +21,7 @@ class App
   def initialize(@db_uri : URI)
     @db = DB.open(@db_uri)
     @ui.resized.on(&->handle_resize(Int32, Int32))
-    @ui.key_typed.on(&->handle_key_input(Char, UInt16))
+    @ui.key_typed.on(&->on_key_typed(TextUi::KeyEvent))
 
     load_config
 
@@ -79,8 +79,8 @@ class App
     @status_bar.add_shortcut("F1", "Help")
   end
 
-  private def handle_key_input(_chr, key) : Nil
-    case key
+  private def on_key_typed(event) : Nil
+    case event.key
     when TextUi::KEY_CTRL_X then @ui.shutdown!
     when TextUi::KEY_CTRL_C then copy_query
     when TextUi::KEY_CTRL_R then copy_results

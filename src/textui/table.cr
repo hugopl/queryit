@@ -149,11 +149,11 @@ module TextUi
       averages.sort! { |a, b| b[1] <=> a[1] }
     end
 
-    def handle_key_input(chr : Char, key : UInt16)
+    protected def on_key_event(event : KeyEvent)
       return if @rows.empty? || @column_widths.empty?
 
       super
-      case key
+      case event.key
       when KEY_ARROW_UP    then @cursor_y -= 1
       when KEY_ARROW_DOWN  then @cursor_y += 1
       when KEY_ARROW_LEFT  then @cursor_x -= 1

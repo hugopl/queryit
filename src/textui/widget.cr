@@ -196,7 +196,7 @@ module TextUi
       children.any?(&.children?(widget))
     end
 
-    def handle_key_input(chr : Char, key : UInt16)
+    protected def on_key_event(event : KeyEvent)
     end
 
     def invalidate

@@ -221,11 +221,11 @@ module TextUi
       end
     end
 
-    def handle_key_input(chr : Char, key : UInt16)
-      if is_cursor_movement?(key)
-        @cursors.each { |cursor| handle_cursor_movement(cursor, key) }
+    protected def on_key_event(event : KeyEvent)
+      if is_cursor_movement?(event.key)
+        @cursors.each { |cursor| handle_cursor_movement(cursor, event.key) }
       else
-        @cursors.each &.handle_key_input(chr, key)
+        @cursors.each &.on_key_event(event)
       end
 
       invalidate

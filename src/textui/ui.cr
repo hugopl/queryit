@@ -19,7 +19,7 @@ module TextUi
     @focused_widget : Widget?
 
     Cute.signal resized(width : Int32, height : Int32)
-    Cute.signal key_typed(chr : Char, key : UInt16)
+    Cute.signal key_typed(event : KeyEvent)
     Cute.signal focus_changed(old_widget : Widget?, new_widget : Widget?)
 
     def initialize(color_mode = ColorMode::Just256Colors)
@@ -110,7 +110,7 @@ module TextUi
 
     private def handle_event
       case @event.type
-      when Terminal::EVENT_KEY then handle_key_event(@event.ch.chr, @event.key)
+      when Terminal::EVENT_KEY then on_key_event(KeyEvent.new(@event.ch.chr, @event.key, @event.mod))
       when Terminal::EVENT_MOUSE
       when Terminal::EVENT_RESIZE then handle_resize(@event.w, @event.x)
       end
@@ -125,16 +125,16 @@ module TextUi
       self.resized.emit(width, height)
     end
 
-    private def handle_key_event(chr : Char, key : UInt16)
-      widget = @shortcuts[key]?
+    protected def on_key_event(event : KeyEvent)
+      widget = @shortcuts[event.key]?
       if widget
         focus(widget)
         return
       end
 
-      key_typed.emit(chr, key)
+      key_typed.emit(event)
       widget = @focused_widget
-      widget.handle_key_input(chr, key) if widget
+      widget.on_key_event(event) if widget && !event.accepted?
     end
   end
 end

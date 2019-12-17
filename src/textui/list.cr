@@ -66,11 +66,11 @@ module TextUi
       end
     end
 
-    def handle_key_input(chr : Char, key : UInt16)
+    protected def on_key_event(event : KeyEvent)
       super
       return if @items.empty?
 
-      case key
+      case event.key
       when KEY_ARROW_UP   then @cursor -= 1
       when KEY_ARROW_DOWN then @cursor += 1
       when KEY_ENTER

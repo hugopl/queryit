@@ -35,13 +35,13 @@ module TextUi
       @document.blocks[@line]
     end
 
-    def handle_key_input(chr : Char, key : UInt16) : Nil
+    protected def on_key_event(event : KeyEvent)
       return unless valid?
 
-      if key == KEY_INSERT
+      if event.key == KEY_INSERT
         @insert_mode = !@insert_mode
       else
-        handle_text_modification(chr, key, current_block)
+        handle_text_modification(event.char, event.key, current_block)
       end
     end
 

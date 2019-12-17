@@ -31,7 +31,7 @@ module TextUi
       move((parent.width - width) // 2, (parent.height - height) // 2)
     end
 
-    def handle_key_input(chr : Char, key : UInt16)
+    protected def on_key_event(_event : KeyEvent)
       dismiss
     end
 
