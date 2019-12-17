@@ -16,7 +16,7 @@ require "cute"
 
 module TextUi
   class Ui < Widget
-    @focused_widget : Widget?
+    getter focused_widget : Widget?
 
     Cute.signal resized(width : Int32, height : Int32)
     Cute.signal key_typed(event : KeyEvent)

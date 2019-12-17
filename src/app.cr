@@ -86,9 +86,11 @@ class App
     when TextUi::KEY_CTRL_R then copy_results
     when TextUi::KEY_CTRL_B then beautify
     when TextUi::KEY_CTRL_S then save_csv
-    when TextUi::KEY_F1     then show_help
-    when TextUi::KEY_F5     then execute_query(@query_ctl.query)
-    when TextUi::KEY_TAB    then cycle_focus
+    when TextUi::KEY_F1
+      event.accept
+      show_help
+    when TextUi::KEY_F5  then execute_query(@query_ctl.query)
+    when TextUi::KEY_TAB then cycle_focus
     end
   end
 
@@ -148,7 +150,28 @@ class App
   end
 
   private def show_help
-    info("Visit http://www.google.com ;-)")
+    help_text = <<-'HELP'
+                           SQL JOINS CHEATSHEET
+           _..----.._  _..----.._         A:
+        _-'          '-_         '-_      SELECT * FROM A
+      .'           .'   '.          '.      LEFT JOIN B ON A.key = B.key
+     /            /       \           \
+    |            |         |           |  B:
+    |      A     |    C    |     B     |  SELECT * FROM B
+    |            |         |           |    LEFT JOIN A ON B.key = A.key
+     \            \       /           /
+      '.           '.   .'          .'    C:
+        `-._        _--'_       _.-'      SELECT * FROM A
+            `"----"`     "----"`           INNER JOIN B ON A.key = B.key
+    HELP
+    size = TextUi::Widget.text_dimensions(help_text, @ui.width - 2, @ui.height - 2)
+    dialog = TextUi::Dialog.new(@ui, "Queryit v#{VERSION} - Help")
+    dialog.resize(size[:width] + 2, size[:height] + 2)
+    label = TextUi::Label.new(dialog, 1, 1, help_text)
+    label.resize(size[:width], size[:height])
+    old_focus = @ui.focused_widget
+    @ui.focus(dialog)
+    dialog.dismissed.on { @ui.focus(old_focus) }
   end
 
   private def execute_query(query)

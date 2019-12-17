@@ -203,5 +203,15 @@ module TextUi
       @render_pending = true
       @children.each(&.invalidate)
     end
+
+    def self.text_dimensions(text : String, max_width = -1, max_height = -1)
+      height = text.count("\n") + 1
+      height = max_height if max_height > 0 && max_height < height
+
+      line_max_width = text.each_line.map(&.size).max? || 0
+      width = line_max_width
+      width = max_width if max_width > 0 && max_width < width
+      {width: width, height: height}
+    end
   end
 end

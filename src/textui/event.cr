@@ -1,6 +1,10 @@
 module TextUi
   class Event
     getter? accepted : Bool = false
+
+    def accept
+      @accepted = true
+    end
   end
 
   class KeyEvent < Event
