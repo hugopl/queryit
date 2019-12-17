@@ -48,7 +48,7 @@ All this still in a very early development stage. Above is a todo list in no spe
 
 - [x] Basic query execution/show results.
 - [x] Save results to CSV.
-- [ ] Help screen.
+- [x] Help screen.
 - [x] Change database.
 - [x] Navigate through results.
 - [ ] Syntax highlight.
