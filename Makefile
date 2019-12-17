@@ -6,4 +6,4 @@ all:
 
 .PHONY: install
 install:
-	install -D -m 0755 bin/queryit $(DESTDIR)$(PREFIX)/bin
+	install -D -m 0755 bin/queryit $(DESTDIR)$(PREFIX)/bin/queryit
