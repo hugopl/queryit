@@ -32,19 +32,25 @@ $ sudo make install
 
 ## Usage
 
-On a rails project directory just run it.
+On a rails or amber project directory just run it, a connection will be made to the development database:
+
 ```
 $ queryit
 ```
 
-Or specify the database URI
+Or specify the database URI:
+
 ```
 $ queryit --uri postgres://localhost/database
 ```
 
+## Database support
+
+Despite of only be really tested with Postgres and SQLite, it should work with MySQL too.
+
 ## Development
 
-All this still in a very early development stage. Above is a todo list in no specific order:
+The application is already useful but still need some love. Above is a todo list in no specific order:
 
 - [x] Basic query execution/show results.
 - [x] Save results to CSV.
@@ -58,9 +64,10 @@ All this still in a very early development stage. Above is a todo list in no spe
 - [x] Install script/instructions.
 - [x] ArchLinux package.
 - [ ] Move TextUI code to their own shard.
-- [ ] Do not block UI when executing queries.
+- [ ] Do not block UI when executing long queries.
+- [ ] Show time spent to execute a query,
+- [ ] Show available table and their columns.
 - [ ] Have a manpage.
-- [ ] Display nice useless charts about the server like pgAdmin4 does.
 
 ## Contributing
 
