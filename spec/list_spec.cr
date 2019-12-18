@@ -1,7 +1,7 @@
 require "./spec_helper"
 
 describe TextUi::List do
-  it "set the cursor to the selected item" do
+  it "sets the cursor to the selected item" do
     ui = init_ui(7, 6)
     list = TextUi::List.new(ui, 2, 2, %w(one two three))
     list.resize(4, 3)
@@ -10,7 +10,7 @@ describe TextUi::List do
     list.cursor.should eq(1)
   end
 
-  it "render list without an arrow when there's no item selected" do
+  it "does not render an arrow when there's no item selected" do
     ui = init_ui(7, 6)
     list = TextUi::List.new(ui, 2, 2, %w(one two three))
     list.resize(5, 3)

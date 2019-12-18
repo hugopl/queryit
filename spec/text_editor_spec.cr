@@ -14,7 +14,7 @@ describe TextUi::TextEditor do
                             "~                   \n")
   end
 
-  it "invalidate extra cursors when text is replaced" do
+  it "invalidates extra cursors when text is replaced" do
     ui = init_ui(20, 6)
     editor = TextUi::TextEditor.new(ui, 0, 0, 20, 6)
     editor.open("spec/fixtures/query.sql")
@@ -62,13 +62,13 @@ describe TextUi::TextEditor do
   end
 
   context "when navigating with arrows" do
-    it "editor should start with a cursor" do
+    it "starts with a cursor" do
       ui = init_ui(20, 6)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 6)
       editor.cursors.size.should eq(1)
     end
 
-    it "go to end of line above on left key at column zero" do
+    it "goes to end of line above on left key at column zero" do
       ui = init_ui(20, 6)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 6)
       editor.text = "Line1\n\n\n"
@@ -88,7 +88,7 @@ describe TextUi::TextEditor do
       cursor.col.should eq(5)
     end
 
-    it "preserve cursor column navigating on lines with different length" do
+    it "preserves cursor column navigating on lines with different length" do
       ui = init_ui(20, 4)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 4)
       editor.open("spec/fixtures/10_lines.sql")
@@ -129,7 +129,7 @@ describe TextUi::TextEditor do
       cursor.col.should eq(2) # On end of "fo"
     end
 
-    it "go to next line on right arrow at end of a line" do
+    it "goes to next line on right arrow at end of a line" do
       ui = init_ui(20, 4)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 4)
       ui.focus(editor)
@@ -157,7 +157,7 @@ describe TextUi::TextEditor do
       cursor.col.should eq(4)
     end
 
-    it "don't loose the cursor when word-wrap is enabled" do
+    it "doesn't loose the cursor when word-wrap is enabled" do
       ui = init_ui(20, 7)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 7)
       ui.focus(editor)
@@ -239,7 +239,7 @@ describe TextUi::TextEditor do
       Terminal.cursor.should eq({x: 2, y: 2})
     end
 
-    it "don't loose the cursor when word-wrap is enabled - second round" do
+    it "doesn't loose the cursor when word-wrap is enabled - second round" do
       ui = init_ui(20, 7)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 7)
       ui.focus(editor)
@@ -363,7 +363,7 @@ describe TextUi::TextEditor do
                               "34                  \n")
     end
 
-    it "it can insert/delete letters and lines" do
+    it "inserts/deletes letters and lines" do
       ui = init_ui(20, 3)
       editor = TextUi::TextEditor.new(ui, 0, 0, 20, 3)
       ui.focus(editor)
