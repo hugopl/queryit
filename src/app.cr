@@ -152,7 +152,7 @@ class App
 
   private def show_help
     help_text = <<-'HELP'
-                           SQL JOINS CHEATSHEET
+                            SQL JOINS CHEATSHEET
            _..----.._  _..----.._         A:
         _-'          '-_         '-_      SELECT * FROM A
       .'           .'   '.          '.      LEFT JOIN B ON A.key = B.key
