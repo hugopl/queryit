@@ -49,27 +49,6 @@ $ queryit --uri postgres://localhost/database
 
 Despite of only be really tested with Postgres and SQLite, it should work with MySQL too.
 
-## Development
-
-The application is already useful but still need some love. Above is a todo list in no specific order:
-
-- [x] Basic query execution/show results.
-- [x] Save results to CSV.
-- [x] Help screen.
-- [x] Change database.
-- [x] Navigate through results.
-- [x] Syntax highlight.
-- [x] SQL beautifier.
-- [ ] SQL auto complete.
-- [x] Improved copy/paste support.
-- [x] Install script/instructions.
-- [x] ArchLinux package.
-- [ ] Move TextUI code to their own shard.
-- [ ] Do not block UI when executing long queries.
-- [x] Show time spent to execute a query,
-- [ ] Show available table and their columns.
-- [ ] Have a manpage.
-
 ## Contributing
 
 1. Fork it (<https://github.com/hugopl/queryit/fork>)
@@ -77,6 +56,8 @@ The application is already useful but still need some love. Above is a todo list
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+Feature suggestions are welcome, write them in github issues.
 
 ## Contributors
 
