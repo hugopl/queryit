@@ -179,24 +179,33 @@ class App
   end
 
   private def execute_query(query)
-    rows = Array(Array(String)).new
-    @db.query(query) do |rs|
-      @results_ctl.clear
-      rows << rs.column_names
-      rs.each do
-        row = [] of String
-        rs.column_count.times { row << rs.read.to_s }
-        rows << row
-      end
+    @results_ctl.clear
 
-      if query =~ /\A\s*explain\s+/i
-        @results_ctl.explain(rows.map(&.first).join("\n"))
-      else
-        @results_ctl.set_data(rows)
-      end
+    rows = Array(Array(String)).new
+    result_set = nil
+    elapsed_time = Time.measure do
+      result_set = @db.query(query)
     end
+    return if result_set.nil?
+
+    rows << result_set.column_names
+    result_set.each do
+      row = [] of String
+      result_set.column_count.times { row << result_set.read.to_s }
+      rows << row
+    end
+    result_set.close
+
+    if query =~ /\A\s*explain\s+/i
+      @results_ctl.explain(rows.map(&.first).join("\n"))
+    else
+      @results_ctl.set_data(rows)
+    end
+    @results_ctl.elapsed_time = elapsed_time
   rescue e
     @results_ctl.show_error(e.message.to_s)
+  ensure
+    result_set.try(&.close)
   end
 
   private def fetch_database_list

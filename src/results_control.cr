@@ -1,9 +1,6 @@
 require "csv"
 
 class ResultsControl
-  delegate clear, to: @table
-  delegate set_data, to: @table
-
   def initialize(ui : TextUi::Ui)
     @box = TextUi::Box.new(ui, "Results", "F4")
     @box.border_style = TextUi::Box::BorderStyle::Fancy
@@ -27,6 +24,11 @@ class ResultsControl
     @table.set_data(data)
     @table.visible = true
     @label.visible = false
+  end
+
+  def clear
+    @table.clear
+    @box.footer = ""
   end
 
   def to_csv
@@ -55,6 +57,17 @@ class ResultsControl
 
   def explain(sql_explain : String)
     show_text(sql_explain, TextUi::Format.new(TextUi::Color::White))
+  end
+
+  def elapsed_time=(time)
+    rows = @table.rows.size
+    @box.footer = if rows == 1
+                    "1 row in #{time.total_seconds.humanize}s"
+                  elsif rows > 0
+                    "#{rows} rows in #{time.total_seconds.humanize}s"
+                  else
+                    "#{time.total_seconds.humanize}s"
+                  end
   end
 
   private def show_text(text : String, format : TextUi::Format)

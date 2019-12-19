@@ -66,7 +66,7 @@ The application is already useful but still need some love. Above is a todo list
 - [x] ArchLinux package.
 - [ ] Move TextUI code to their own shard.
 - [ ] Do not block UI when executing long queries.
-- [ ] Show time spent to execute a query,
+- [x] Show time spent to execute a query,
 - [ ] Show available table and their columns.
 - [ ] Have a manpage.
 

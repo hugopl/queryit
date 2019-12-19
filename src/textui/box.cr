@@ -5,6 +5,8 @@ module TextUi
     property border_color : Format
     property focused_border_color : Format
     property border_style : BorderStyle
+    getter title : String
+    getter footer : String
 
     enum Docking
       None
@@ -21,6 +23,7 @@ module TextUi
     @border_color = Format.new(Color::Grey20)
     @focused_border_color = Format.new(Color::Silver)
     @border_style = BorderStyle::RoundedBorder
+    @footer = ""
 
     def initialize(parent, @title : String, @shortcut : String = "")
       super(parent)
@@ -49,6 +52,14 @@ module TextUi
       self.x = another.width - 1
       self.y = another.y
       @docking = Docking::Right
+    end
+
+    def title=(@title)
+      invalidate
+    end
+
+    def footer=(@footer)
+      invalidate
     end
 
     def render
@@ -113,7 +124,11 @@ module TextUi
       (height - 2).times { |i| print_char(0, i + 1, '┃', color) }
       print_char(0, height - 2, '┇', color)
       # Bottom
-      (width).times { |i| print_char(i + 1, height - 1, ' ', color) }
+      bottom_y = height - 1
+      2.times { |i| print_char(i, bottom_y, ' ', color) }
+      print_line(2, bottom_y, @footer)
+      start = footer.size + 2
+      (width - start).times { |i| print_char(start + i, bottom_y, ' ', color) }
     end
   end
 end
