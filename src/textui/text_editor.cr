@@ -11,6 +11,8 @@ module TextUi
     delegate save, to: @document
     delegate :syntax_highlighter=, to: @document
 
+    Cute.signal key_typed(event : KeyEvent)
+
     def initialize(parent, x, y, width, height)
       super
       @document = TextDocument.new
@@ -231,6 +233,7 @@ module TextUi
         @cursors.each &.on_key_event(event)
       end
 
+      key_typed.emit(event)
       invalidate
     end
 

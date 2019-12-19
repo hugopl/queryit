@@ -1,6 +1,7 @@
 ## Unreleased
 ### Added
 - Syntax highlighting.
+- When query editor focused, CTRL+L clear editor.
 
 ## [0.4.0] - 2019-12-17
 ### Added

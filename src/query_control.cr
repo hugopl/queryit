@@ -8,6 +8,7 @@ class QueryControl
     @editor.syntax_highlighter = SQLSyntaxHighlighter.new
     @editor.show_line_numbers = true
     @editor.word_wrap = true
+    @editor.key_typed.on(&->on_key_typed(TextUi::KeyEvent))
     ui.focus(@editor)
 
     @dbs_box = TextUi::Box.new(ui, "Databases", "F3")
@@ -54,5 +55,11 @@ class QueryControl
     @dbs_box.height = height//2
     @dbs_box.right_of(@query_box)
     @dbs_list.height = @dbs_box.height - 2
+  end
+
+  def on_key_typed(event : TextUi::KeyEvent)
+    case event.key
+    when TextUi::KEY_CTRL_L then self.query = ""
+    end
   end
 end

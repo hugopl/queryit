@@ -164,6 +164,8 @@ class App
       '.           '.   .'          .'    C:
         `-._        _--'_       _.-'      SELECT * FROM A
             `"----"`     "----"`           INNER JOIN B ON A.key = B.key
+                                SHORTCUTS
+      CTRL+L    Clear query editor
     HELP
     size = TextUi::Widget.text_dimensions(help_text, @ui.width - 2, @ui.height - 2)
     dialog = TextUi::Dialog.new(@ui, "Queryit v#{VERSION} - Help")
