@@ -1,21 +1,30 @@
 # Wrapper module around termbox to make terminal UIs testable.
 module TextUi
+  class TerminalError < Exception
+  end
+
   class Terminal
+    @@initiated = false
+
     def self.init(color_mode) : Void
       error = TermboxBindings.tb_init
       if error == TermboxBindings::E_UNSUPPORTED_TERMINAL
-        raise "Terminal is unsupported."
+        raise TerminalError.new("Terminal is unsupported.")
       elsif error == TermboxBindings::E_FAILED_TO_OPEN_TTY
-        raise "Failed to open terminal."
+        raise TerminalError.new("Failed to open terminal.")
       elsif error == TermboxBindings::E_PIPE_TRAP_ERROR
-        raise "Pipe trap error."
+        raise TerminalError.new("Pipe trap error.")
       end
 
       TermboxBindings.tb_select_output_mode(color_mode)
+      @@initiated = true
     end
 
     def self.shutdown
+      return unless @@initiated
+
       TermboxBindings.tb_shutdown
+      @@initiated = false
     end
 
     def self.width

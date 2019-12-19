@@ -49,7 +49,7 @@ def detect_database
   uri = detect_amber_database
   return uri unless uri.nil?
 
-  raise "Could not find rails or amber database configuration."
+  raise AppError.new("Could not find rails or amber database configuration.")
 end
 
 def main
@@ -60,13 +60,13 @@ def main
   app = App.new(uri)
   app.main_loop
 rescue DB::ConnectionRefused
-  puts "Database connection to #{uri} refused, are you sure this database exists?"
-rescue e : Exception
-  if e.message.nil?
-    puts "An error without a nice description: #{e.class.name}"
-  else
-    puts e.message
-  end
+  STDERR.puts "Database connection to #{uri} refused, are you sure this database exists?"
+  exit(1)
+rescue e : AppError | TextUi::TerminalError
+  STDERR.puts e.message
+  exit(1)
+ensure
+  TextUi::Ui.shutdown!
 end
 
 main

@@ -33,6 +33,10 @@ module TextUi
       Terminal.init(color_mode)
     end
 
+    def self.shutdown!
+      Terminal.shutdown
+    end
+
     def shutdown!
       @shutdown = true
       Terminal.shutdown unless @main_loop_running

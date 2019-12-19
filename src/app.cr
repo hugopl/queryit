@@ -9,6 +9,9 @@ require "./results_control"
 require "./query_control"
 require "./sql_beautifier/sql_beautifier"
 
+class AppError < Exception
+end
+
 class App
   delegate error, info, to: @status_bar
 
@@ -53,8 +56,6 @@ class App
     populate_database_list
     @ui.main_loop
     save_config
-  rescue
-    @ui.shutdown!
   end
 
   private def current_database_name
@@ -201,7 +202,7 @@ class App
             when "sqlite3"                then return [current_database_name]
             when "mysql"                  then "SHOW DATABASES"
             else
-              raise "Database not supported, please, file a bug."
+              raise AppError.new("Database not supported, please, file a bug.")
             end
 
     databases = [] of String
