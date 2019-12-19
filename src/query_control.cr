@@ -70,10 +70,13 @@ class QueryControl
       text = block.text
       if text.starts_with?("-- ")
         block.text = block.text[3..-1]
+        cursor.col -= 3
       elsif text.starts_with?("--")
         block.text = block.text[2..-1]
+        cursor.col -= 2
       else
         block.text = block.text.insert(0, "-- ")
+        cursor.col += 3
       end
     end
   end
