@@ -2,6 +2,7 @@
 ### Added
 - Syntax highlighting.
 - When query editor focused, CTRL+L clear editor.
+- When query editor focused, CTRL+/ comment/uncomment lines.
 
 ## [0.4.0] - 2019-12-17
 ### Added

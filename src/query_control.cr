@@ -59,7 +59,22 @@ class QueryControl
 
   def on_key_typed(event : TextUi::KeyEvent)
     case event.key
-    when TextUi::KEY_CTRL_L then self.query = ""
+    when TextUi::KEY_CTRL_L     then self.query = ""
+    when TextUi::KEY_CTRL_SLASH then comment_current_line
+    end
+  end
+
+  private def comment_current_line
+    @editor.cursors.each do |cursor|
+      block = cursor.current_block
+      text = block.text
+      if text.starts_with?("-- ")
+        block.text = block.text[3..-1]
+      elsif text.starts_with?("--")
+        block.text = block.text[2..-1]
+      else
+        block.text = block.text.insert(0, "-- ")
+      end
     end
   end
 end
