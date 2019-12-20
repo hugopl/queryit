@@ -77,9 +77,12 @@ module TextUi
         @selected_item = @cursor
         on_select = @on_select
         on_select.call(@items[@selected_item]) if on_select
+      else
+        return
       end
 
       @cursor = @cursor.clamp(0, @items.size - 1)
+      event.accept
       invalidate
     end
 
