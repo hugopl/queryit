@@ -3,7 +3,7 @@ require "./spec_helper"
 describe TextUi::List do
   it "sets the cursor to the selected item" do
     ui = init_ui(7, 6)
-    list = TextUi::List.new(ui, 2, 2, %w(one two three))
+    list = TextUi::List.new(ui, %w(one two three))
     list.resize(4, 3)
     list.cursor.should eq(0)
     list.select("two")
@@ -35,6 +35,49 @@ describe TextUi::List do
                             "   two \n" \
                             "  🠺thr…\n" \
                             "       \n")
+  end
+
+  it "adjusts the viewport to the cursor" do
+    ui = init_ui(4, 4)
+    list = TextUi::List.new(ui, (0..20).to_a.map(&.to_s))
+    list.resize(4, 4)
+    list.select(10)
+    ui.render
+    Terminal.to_s.should eq(" 7 ▲\n" \
+                            " 8  \n" \
+                            " 9  \n" \
+                            "🠺10▼\n")
+    list.select(3)
+    ui.render
+    Terminal.to_s.should eq("🠺3 ▲\n" \
+                            " 4  \n" \
+                            " 5  \n" \
+                            " 6 ▼\n")
+    list.select(4)
+    ui.render
+    Terminal.to_s.should eq(" 3 ▲\n" \
+                            "🠺4  \n" \
+                            " 5  \n" \
+                            " 6 ▼\n")
+    Terminal.clear
+    list.resize(4, 1)
+    ui.render
+    Terminal.to_s.should eq("🠺4 ▲\n" \
+                            "    \n" \
+                            "    \n" \
+                            "    \n")
+    list.select(20)
+    ui.render
+    Terminal.to_s.should eq("🠺20▲\n" \
+                            "    \n" \
+                            "    \n" \
+                            "    \n")
+    list.resize(4, 4)
+    ui.render
+    Terminal.to_s.should eq(" 17▲\n" \
+                            " 18 \n" \
+                            " 19 \n" \
+                            "🠺20 \n")
   end
 
   it "render focused item highlighted" do

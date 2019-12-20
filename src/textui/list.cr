@@ -37,12 +37,12 @@ module TextUi
     def cursor=(cursor : Int32) : Nil
       return if cursor < 0
 
-      @viewport = cursor if cursor < @viewport
       @cursor = cursor
       invalidate
     end
 
     def render
+      adjust_viewport
       has_scrollup = @viewport > 0
       has_scrolldown = @items.size - @viewport > height
 
@@ -80,13 +80,21 @@ module TextUi
       end
 
       @cursor = @cursor.clamp(0, @items.size - 1)
-
-      if @cursor - @viewport >= height
-        @viewport += 1
-      elsif @cursor < @viewport
-        @viewport -= 1
-      end
       invalidate
+    end
+
+    private def adjust_viewport
+      if @items.size <= height
+        @viewport = 0
+        return
+      end
+
+      if @cursor < @viewport
+        @viewport = @cursor
+      elsif @cursor >= @viewport + height
+        @viewport = @cursor - height + 1
+      end
+      @viewport = @viewport.clamp(0, @items.size - height)
     end
   end
 end
