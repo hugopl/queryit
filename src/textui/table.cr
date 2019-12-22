@@ -40,11 +40,6 @@ module TextUi
       invalidate
     end
 
-    def width=(value)
-      super
-      calc_viewport_x
-    end
-
     # First line is considered the header
     def set_data(rows : Array(Array(String))) : Nil
       @column_names = rows.shift
@@ -52,13 +47,13 @@ module TextUi
 
       @cursor_x = 0
       @cursor_y = 0
-      @viewport_y = 0
-      calc_viewport_x
     end
 
     def render
       erase
       return if rows.empty?
+
+      adjust_viewport
 
       @column_widths = calculate_column_widths if @column_widths.empty?
 
@@ -158,26 +153,43 @@ module TextUi
       when KEY_ARROW_DOWN  then @cursor_y += 1
       when KEY_ARROW_LEFT  then @cursor_x -= 1
       when KEY_ARROW_RIGHT then @cursor_x += 1
+      when KEY_PGUP        then @cursor_y -= height - 1 # just the data height, ignore the header
+      when KEY_PGDN        then @cursor_y += height - 1
       when KEY_ENTER
         enter_pressed.emit(@rows[@cursor_y][@cursor_x])
+        return
+      else
         return
       end
 
       @cursor_x = @cursor_x.clamp(0, @column_names.size - 1)
       @cursor_y = @cursor_y.clamp(0, @rows.size - 1)
 
-      if @cursor_y - @viewport_y >= height - 1
-        @viewport_y += 1
-      elsif @cursor_y < @viewport_y
-        @viewport_y -= 1
-      end
-
-      calc_viewport_x
-
+      event.accept
       invalidate
     end
 
-    private def calc_viewport_x
+    private def adjust_viewport
+      adjust_viewport_x
+      adjust_viewport_y
+    end
+
+    private def adjust_viewport_y
+      data_height = height - 1
+      if @rows.size <= data_height
+        @viewport_y = 0
+        return
+      end
+
+      if @cursor_y < @viewport_y
+        @viewport_y = @cursor_y
+      elsif @cursor_y >= @viewport_y + data_height
+        @viewport_y = @cursor_y - data_height + 1
+      end
+      @viewport_y = @viewport_y.clamp(0, @rows.size - data_height)
+    end
+
+    private def adjust_viewport_x
       cursor_x_range = calc_cursor_x_range
 
       if cursor_x_range.begin <= @viewport_x.begin
