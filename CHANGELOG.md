@@ -11,7 +11,7 @@
 - New fancy border box style.
 - Render focused boxes with different colors.
 - Cycle focus on TAB key.
-- Show full result value ENTER key on results table.
+- Show full result value when ENTER key is pressed on results table.
 - Save editor contents per database URI at exit.
 
 ## [0.3.0] - 2019-12-09
