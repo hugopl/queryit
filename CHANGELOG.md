@@ -5,6 +5,7 @@
 - When query editor focused, CTRL+/ comment/uncomment lines.
 - Show query excetuion time and number of rows in result set.
 - Page up/down can be used to scroll results table.
+- Query editor is now scrollable.
 
 ## [0.4.0] - 2019-12-17
 ### Added
