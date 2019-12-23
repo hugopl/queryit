@@ -23,6 +23,7 @@ module TextUi
       @border_color = Format.new(Color::Grey2)
       # Rendering
       @block_heights = [] of Int32
+      @viewport = 0
     end
 
     def invalidate
@@ -76,20 +77,21 @@ module TextUi
       cursor = @cursors.first
 
       x, y = map_line_col_to_viewport(cursor.line, cursor.col)
+      y -= @viewport
+
       x = y = -1 if x >= width || y >= height
       set_cursor(x, y)
     end
 
     private def map_line_col_to_viewport(line, col)
-      return [col, line] unless @word_wrap
+      border_width = calc_border_width
+      return [col + border_width, line] unless @word_wrap
 
       y = 0
       block_heights.each_with_index do |height, i|
         break if i >= line
         y += height
       end
-
-      border_width = calc_border_width
       width_available = width - border_width
       text = @document.blocks[line].text
 
@@ -135,6 +137,7 @@ module TextUi
       [line, col]
     end
 
+    # FIXME: We should store the sum of block heights to let algorithms using this to be O(1) instead of O(n).
     private def block_heights : Array(Int32)
       return @block_heights unless @block_heights.empty?
 
@@ -157,24 +160,29 @@ module TextUi
     end
 
     def render
+      adjust_viewport
       render_cursors if focused?
 
       border_width = calc_border_width
       line_tag_format = @show_line_numbers ? "%#{border_width - 1}d│" : ""
-
       width_available = width - border_width
       line_tag = ""
+
+      start_block, offset = map_viewport_to_line_col(border_width, @viewport)
       y = 0
-      @document.blocks.each_with_index do |block, line|
+      start_block.upto(@document.blocks.size - 1) do |line|
+        block = @document.blocks[line]
+        text = block.text
+        formats = block.formats
+
+        # line number printing
         if @show_line_numbers
           line_tag = line_tag_format % (line + 1)
           print_line(0, y, line_tag, @border_color)
         end
 
-        text = block.text
-        formats = block.formats
+        # Word wrap
         if @word_wrap && text.size > width_available
-          offset = 0
           line_tag = "#{" " * (border_width - 1)}│" if @show_line_numbers
           while y < height
             print_line(0, y, line_tag, @border_color) if @show_line_numbers && !offset.zero?
@@ -186,7 +194,9 @@ module TextUi
 
             y += 1
           end
+          offset = 0
         else
+          # Peace of cake of word wrap disabled
           print_line(border_width, y, text, formats, width: width_available)
         end
         y += 1
@@ -281,6 +291,26 @@ module TextUi
       width_available = width - border_width
       col = {col, cursor.col_hint}.max if cursor.current_block.size < width_available
       cursor.move(line, col)
+    end
+
+    private def adjust_viewport
+      max_height = block_heights.sum
+      if max_height <= height
+        @viewport = 0
+        return
+      end
+
+      min_cursor = cursors.min
+      max_cursor = cursors.max
+      min_y = map_line_col_to_viewport(min_cursor.line, min_cursor.col)[1]
+      max_y = map_line_col_to_viewport(max_cursor.line, max_cursor.col)[1]
+
+      if min_y < @viewport
+        @viewport = min_y
+      elsif max_y >= @viewport + height
+        @viewport = max_y - height + 1
+      end
+      @viewport = @viewport.clamp(0, max_height - 1)
     end
   end
 end

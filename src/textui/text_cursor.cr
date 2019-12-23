@@ -1,5 +1,7 @@
 module TextUi
   class TextCursor
+    include Comparable(TextCursor)
+
     getter line : Int32
     getter col : Int32
     property col_hint : Int32
@@ -29,6 +31,11 @@ module TextUi
 
     def col=(col)
       @col = col.clamp(0, current_block.size)
+    end
+
+    def <=>(other : TextCursor)
+      value = @line <=> other.line
+      value.zero? ? @col <=> other.col : 0
     end
 
     def current_block

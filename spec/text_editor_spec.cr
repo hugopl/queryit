@@ -507,6 +507,78 @@ describe TextUi::TextEditor do
                             "~                   \n")
   end
 
+  context "when scroll is needed" do
+    it "adjusts the viewport to the cursor with word-wrap disabled" do
+      ui = init_ui(5, 5)
+      editor = TextUi::TextEditor.new(ui, 0, 0, 5, 5)
+      editor.text = (0..10).map(&.to_s).join("\n")
+      editor.show_line_numbers = true
+      ui.focus(editor)
+      ui.render
+      Terminal.to_s.should eq(" 1│0 \n" \
+                              " 2│1 \n" \
+                              " 3│2 \n" \
+                              " 4│3 \n" \
+                              " 5│4 \n")
+      Terminal.cursor.should eq({x: 3, y: 0})
+
+      cursor = editor.cursor
+      cursor.move(10, 0)
+      editor.invalidate
+      ui.render
+      Terminal.to_s.should eq(" 7│6 \n" \
+                              " 8│7 \n" \
+                              " 9│8 \n" \
+                              "10│9 \n" \
+                              "11│10\n")
+      Terminal.cursor.should eq({x: 3, y: 4})
+    end
+
+    it "adjusts the viewport to the cursor with word-wrap enabled" do
+      ui = init_ui(10, 5)
+      editor = TextUi::TextEditor.new(ui, 0, 0, 10, 5)
+      editor.text = "line 0\n" \
+                    "line 1\n" \
+                    "line 2\n" \
+                    "big line that should be big.\n" \
+                    "line 4\n" \
+                    "line 5\n" \
+                    "line 6\n" \
+                    "line 7\n"
+      editor.word_wrap = true
+      editor.show_line_numbers = true
+      ui.focus(editor)
+      ui.render
+      Terminal.to_s.should eq("1│line 0  \n" \
+                              "2│line 1  \n" \
+                              "3│line 2  \n" \
+                              "4│big line\n" \
+                              " │ that   \n")
+      cursor = editor.cursor
+      cursor.move(3, 15) # cursor at "h of "should"
+      editor.invalidate
+      ui.render
+      Terminal.to_s.should eq("2│line 1  \n" \
+                              "3│line 2  \n" \
+                              "4│big line\n" \
+                              " │ that   \n" \
+                              " │should  \n")
+      Terminal.cursor.should eq({x: 3, y: 4})
+
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      Terminal.inject_key_event(key: TextUi::KEY_ARROW_DOWN)
+      ui.process_queued_events
+      ui.render
+      Terminal.to_s.should eq(" │ that   \n" \
+                              " │should  \n" \
+                              " │be big. \n" \
+                              "5│line 4  \n" \
+                              "6│line 5  \n")
+      ui.process_queued_events
+    end
+  end
+
   pending "can have multiple cursors"
   pending "can select text with keyboard"
   pending "can undo/redo"
