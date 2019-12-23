@@ -230,7 +230,10 @@ module TextUi
 
     private def is_cursor_movement?(key) : Bool
       case key
-      when KEY_HOME, KEY_END, KEY_ARROW_UP, KEY_ARROW_DOWN, KEY_ARROW_LEFT, KEY_ARROW_RIGHT then true
+      when KEY_HOME, KEY_END,
+           KEY_ARROW_UP, KEY_ARROW_DOWN,
+           KEY_ARROW_LEFT, KEY_ARROW_RIGHT,
+           KEY_PGUP, KEY_PGDN then true
       else
         false
       end
@@ -247,7 +250,7 @@ module TextUi
       invalidate
     end
 
-    def handle_cursor_movement(cursor, key)
+    private def handle_cursor_movement(cursor, key)
       return unless cursor.valid?
 
       line = cursor.line
@@ -269,7 +272,7 @@ module TextUi
         end
       when KEY_END  then col = block.size
       when KEY_HOME then col = 0
-      when KEY_ARROW_UP, KEY_ARROW_DOWN
+      when KEY_ARROW_UP, KEY_ARROW_DOWN, KEY_PGUP, KEY_PGDN
         handle_line_change(cursor, key)
         return
       end
@@ -277,13 +280,27 @@ module TextUi
       cursor.move(line, col)
     end
 
-    def handle_line_change(cursor, key) : Nil
+    private def line_increment_by_key(key)
+      case key
+      when KEY_ARROW_UP   then -1
+      when KEY_ARROW_DOWN then 1
+      when KEY_PGUP       then -height
+      when KEY_PGDN       then height
+      else
+        0
+      end
+    end
+
+    private def handle_line_change(cursor, key) : Nil
       x, y = map_line_col_to_viewport(cursor.line, cursor.col)
-      y += key == KEY_ARROW_UP ? -1 : 1
+      y += line_increment_by_key(key)
       y = 0 if y < 0
 
       line, col = map_viewport_to_line_col(x, y)
-      return if line < 0
+      if line < 0 # out of document, put on last line
+        line = @document.blocks.size - 1
+        col = 0
+      end
 
       cursor.line = line
 
