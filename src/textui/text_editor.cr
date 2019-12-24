@@ -294,13 +294,10 @@ module TextUi
     private def handle_line_change(cursor, key) : Nil
       x, y = map_line_col_to_viewport(cursor.line, cursor.col)
       y += line_increment_by_key(key)
-      y = 0 if y < 0
+      y = y.clamp(0, block_heights.sum - 1)
 
       line, col = map_viewport_to_line_col(x, y)
-      if line < 0 # out of document, put on last line
-        line = @document.blocks.size - 1
-        col = 0
-      end
+      return if line < 0
 
       cursor.line = line
 
