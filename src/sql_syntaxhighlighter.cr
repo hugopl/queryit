@@ -1,3 +1,20 @@
+class SQLTextBlockState < TextUi::TextBlock::State
+  getter? comment : Bool = false
+
+  def initialize
+    changed!
+  end
+
+  def comment=(comment : Bool)
+    self.changed = comment != @comment
+    @comment = comment
+  end
+
+  def inspect(io : IO)
+    io << "<BS comment: #{@comment.inspect}>"
+  end
+end
+
 class SQLSyntaxHighlighter < TextUi::SyntaxHighlighter
   KEYWORD_REGEXP = /\b(ABORT|ABS|ABSOLUTE|ACCESS|ACTION|ADA|ADD|ADMIN|AFTER|AGGREGATE|ALIAS|ALL|ALLOCATE|ALSO|ALTER|ALWAYS
                        |ANALYSE|ANALYZE|AND|ANY|ARE|ARRAY|AS|ASC|ASENSITIVE|ASSERTION|ASSIGNMENT|ASYMMETRIC|AT|ATOMIC
@@ -78,10 +95,46 @@ class SQLSyntaxHighlighter < TextUi::SyntaxHighlighter
   COMMENT_FORMAT = TextUi::Format.new(TextUi::Color::Grey22)
   STRING_FORMAT  = TextUi::Format.new(TextUi::Color::OrangeRed)
 
+  COMMENT_START = /\/\*/
+  COMMENT_END   = /\*\//
+
   def highlight_block(block : TextUi::TextBlock)
     highlight_keywords(block)
     highlight_strings(block)
     highlight_comments(block)
+    highlight_multiline_comments(block)
+  end
+
+  private def cast_block_state(block)
+    block.state.is_a?(SQLTextBlockState) ? block.state.as(SQLTextBlockState) : SQLTextBlockState.new
+  end
+
+  private def in_comment?(block)
+    prev_block = block.previous_block?
+    return false if prev_block.nil?
+
+    prev_block.state.as(SQLTextBlockState).comment?
+  end
+
+  private def highlight_multiline_comments(block)
+    comment_state = false
+    start_index = 0
+    end_index = 0
+    text = block.text
+    start_index = text.index(COMMENT_START) || -1 unless in_comment?(block)
+
+    while start_index >= 0
+      end_index = text.index(COMMENT_END, start_index)
+      comment_state = end_index.nil? # If true, the entire line still as comment
+      end_index = comment_state ? text.size : end_index.as(Int32) + 2
+
+      block.apply_format(start_index, end_index, COMMENT_FORMAT)
+      start_index = text.index(COMMENT_START, end_index) || -1
+    end
+
+    block_state = cast_block_state(block)
+    block_state.comment = comment_state
+    block.state = block_state
   end
 
   private def highlight_strings(block)

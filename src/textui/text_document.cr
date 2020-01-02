@@ -1,19 +1,29 @@
 module TextUi
   class TextBlock
+    # Class is used to associate custom state with TextBlocks
+    class State
+      property? changed : Bool = false
+
+      def changed!
+        @changed = true
+      end
+    end
+
     getter text : String
     getter formats : Array(Format)
     property! previous_block : TextBlock?
     property! next_block : TextBlock?
+    property state : State
     delegate size, to: @text
 
     @formats = [] of Format
+    @state = State.new
 
     def initialize(@document : TextDocument, @text = "", @previous_block = nil, @next_block = nil)
       reset_format
     end
 
     def text=(@text : String)
-      reset_format
       @document.highlight_block(self)
     end
 
@@ -34,7 +44,6 @@ module TextUi
 
   class TextDocument
     getter blocks : Array(TextBlock)
-    delegate highlight_block, to: @syntax_highlighter
 
     @blocks = [] of TextBlock
     @filename = ""
@@ -98,9 +107,16 @@ module TextUi
       reset_syntaxhighlighting
     end
 
+    def highlight_block(block)
+      block.state.changed = false
+      block.reset_format
+      @syntax_highlighter.highlight_block(block)
+      highlight_block(block.next_block) if block.state.changed? && block.next_block?
+    end
+
     def reset_syntaxhighlighting
       @blocks.each do |block|
-        highlight_block(block)
+        @syntax_highlighter.highlight_block(block)
       end
     end
   end
