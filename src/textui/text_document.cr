@@ -2,11 +2,13 @@ module TextUi
   class TextBlock
     getter text : String
     getter formats : Array(Format)
+    property! previous_block : TextBlock?
+    property! next_block : TextBlock?
     delegate size, to: @text
 
     @formats = [] of Format
 
-    def initialize(@document : TextDocument, @text = "")
+    def initialize(@document : TextDocument, @text = "", @previous_block = nil, @next_block = nil)
       reset_format
     end
 
@@ -43,7 +45,12 @@ module TextUi
     end
 
     def contents=(contents : String) : Nil
-      @blocks = contents.lines.map { |line| TextBlock.new(self, line) }
+      previous_block = nil
+      @blocks = contents.lines.map do |line|
+        block = TextBlock.new(self, line, previous_block)
+        previous_block.try(&.next_block = block)
+        previous_block = block
+      end
       @blocks << TextBlock.new(self) if @blocks.empty?
       reset_syntaxhighlighting
     end
@@ -64,14 +71,27 @@ module TextUi
     end
 
     def insert(line : Int32, text : String) : Nil
-      block = TextBlock.new(self, text)
+      previous_line = line - 1
+      block = TextBlock.new(self, text, block?(previous_line), block?(line))
+
+      block?(previous_line).try(&.next_block = block)
+      block?(line).try(&.previous_block = block)
       @blocks.insert(line, block)
 
       highlight_block(block)
     end
 
     def remove(line : Int32) : Nil
+      previous_block = block?(line - 1)
+      next_block = block?(line + 1)
+      previous_block.try(&.next_block = next_block)
+      next_block.try(&.previous_block = previous_block)
+
       @blocks.delete_at(line)
+    end
+
+    def block?(line) : TextBlock?
+      line < 0 ? nil : @blocks[line]?
     end
 
     def syntax_highlighter=(@syntax_highlighter : SyntaxHighlighter)
