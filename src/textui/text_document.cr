@@ -24,6 +24,10 @@ module TextUi
         @formats[i] = format
       end
     end
+
+    def inspect(io : IO)
+      io << "<Blk #{@text.inspect} #{@formats.inspect}>"
+    end
   end
 
   class TextDocument

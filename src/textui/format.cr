@@ -24,12 +24,33 @@ module TextUi
       Format.new(@foreground | REVERSE, @background)
     end
 
+    def reverse?
+      @foreground & REVERSE == REVERSE
+    end
+
     def underline
       Format.new(@foreground | UNDERLINE, @background)
     end
 
+    def underline?
+      @foreground & UNDERLINE == UNDERLINE
+    end
+
     def bold
       Format.new(@foreground | BOLD, @background)
+    end
+
+    def bold?
+      @foreground & BOLD == BOLD
+    end
+
+    def inspect(io : IO)
+      io << "<Fmt #{foreground & 0xF0FF}:#{@background & 0xF0FF}"
+      io << ' ' if @foreground > 0xFF
+      io << "r" if reverse?
+      io << "b" if bold?
+      io << "u" if underline?
+      io << '>'
     end
   end
 end
