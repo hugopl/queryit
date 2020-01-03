@@ -61,8 +61,8 @@ module TextUi
       elsif key == KEY_ENTER
         new_line = block.text[@col..-1]
         block.text = block.text[0...@col]
-        @document.insert(@line, new_line)
         @line += 1
+        @document.insert(@line, new_line)
         @col = 0
         return
       end

@@ -65,7 +65,7 @@ module TextUi
 
     def insert(line : Int32, text : String) : Nil
       block = TextBlock.new(self, text)
-      @blocks.insert(line + 1, block)
+      @blocks.insert(line, block)
 
       highlight_block(block)
     end
