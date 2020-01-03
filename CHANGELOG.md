@@ -1,11 +1,16 @@
-## Unreleased
+## [0.5.0] - 2020-01-03
 ### Added
-- Syntax highlighting.
+- Syntax highlighting!!
 - When query editor focused, CTRL+L clear editor.
 - When query editor focused, CTRL+/ comment/uncomment lines.
 - Show query excetuion time and number of rows in result set.
 - Page up/down can be used to scroll results table.
+- Page up/down can be used on query editor.
 - Query editor is now scrollable.
+
+### Fix
+- Adjust selected item on viewport on database list widget.
+- Do not re-render list widget on each key press.
 
 ## [0.4.0] - 2019-12-17
 ### Added
