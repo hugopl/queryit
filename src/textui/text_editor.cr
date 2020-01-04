@@ -240,6 +240,8 @@ module TextUi
     end
 
     protected def on_key_event(event : KeyEvent)
+      return if event.alt?
+
       if is_cursor_movement?(event.key)
         @cursors.each { |cursor| handle_cursor_movement(cursor, event.key) }
       else

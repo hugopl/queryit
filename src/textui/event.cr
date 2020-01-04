@@ -10,9 +10,13 @@ module TextUi
   class KeyEvent < Event
     getter char : Char
     getter key : UInt16
-    getter modifier : UInt8
+    getter alt : UInt8
 
-    def initialize(@char = '\0', @key = 0, @modifier = 0)
+    def initialize(@char = '\0', @key = 0, @alt = 0)
+    end
+
+    def alt?
+      @alt != 0
     end
   end
 end

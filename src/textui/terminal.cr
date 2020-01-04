@@ -51,10 +51,28 @@ module TextUi
 
     def self.poll_event(event : Pointer(Event)) : Nil
       TermboxBindings.tb_poll_event(event)
+      process_esc_events(event) if event.value.key == KEY_ESC
     end
 
     def self.peek_event(event : Pointer(Event), timeout : Int32) : Bool
-      TermboxBindings.tb_peek_event(event, timeout) > 0
+      ok = TermboxBindings.tb_peek_event(event, timeout) > 0
+      process_esc_events(event) if ok && event.value.key == KEY_ESC
+      ok
+    end
+
+    private def self.process_esc_events(event : Pointer(Event)) : Nil
+      ev = Event.new
+      sequence = [] of Event
+      while peek_event(pointerof(ev), 0)
+        sequence << ev
+      end
+
+      if sequence.size == 1
+        event.value = sequence.first
+        event.value.mod = 1
+      else
+        # FIXME: Identify escape sequences not recognized by termbox like CTRL+Arrow
+      end
     end
 
     def self.set_cursor(x, y)
