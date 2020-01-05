@@ -62,8 +62,8 @@ def main
 rescue DB::ConnectionRefused
   STDERR.puts "Database connection to #{uri} refused, are you sure this database exists?"
   exit(1)
-rescue e : AppError | TextUi::TerminalError
-  STDERR.puts e.message
+rescue e : AppError | TextUi::TerminalError | OptionParser::InvalidOption
+  STDERR.puts(e.message)
   exit(1)
 ensure
   TextUi::Ui.shutdown!

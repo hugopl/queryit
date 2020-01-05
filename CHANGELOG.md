@@ -1,3 +1,7 @@
+## Unreleased
+### Fix
+- Do not print a stacktrace when passing a invalid parameter.
+
 ## [0.5.0] - 2020-01-03
 ### Added
 - Syntax highlighting!!
