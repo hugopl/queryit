@@ -1,4 +1,4 @@
-require "./textui/*"
+require "textui"
 require "pg"
 require "mysql"
 require "sqlite3"

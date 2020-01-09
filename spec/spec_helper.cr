@@ -1,5 +1,5 @@
 require "spec"
-require "../src/textui/*"
+require "textui"
 require "../src/sql_beautifier/*"
 
 # Wrapper module around termbox to make terminal UIs testable.

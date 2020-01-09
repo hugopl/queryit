@@ -20,6 +20,10 @@ shards:
     github: crystal-lang/crystal-sqlite3
     version: 0.15.0
 
+  textui:
+    github: hugopl/textui
+    commit: f38e6c433dfcbc0ab7f513cb3908998be1dc5bdc
+
   version_from_shard:
     github: hugopl/version_from_shard
     version: 1.1.0

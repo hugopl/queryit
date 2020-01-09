@@ -1,4 +1,7 @@
 ## Unreleased
+### Changed
+- TextUI module (code used to render the UI) moved to its own shard.
+
 ### Fix
 - Do not print a stacktrace when passing a invalid parameter.
 

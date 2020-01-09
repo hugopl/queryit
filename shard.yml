@@ -17,12 +17,12 @@ libraries:
   libtermbox: '*'
 
 dependencies:
-  cute:
-    github: Papierkorb/cute
-    version: '~> 0.3.1'
   version_from_shard:
     github: hugopl/version_from_shard
     version: '~> 1.1.0'
+  textui:
+    github: hugopl/textui
+    commit: f38e6c433dfcbc0ab7f513cb3908998be1dc5bdc
   pg:
     github: will/crystal-pg
     version: '~> 0.20.0'
