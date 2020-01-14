@@ -4,8 +4,9 @@ class ResultsControl
   def initialize(ui : TextUi::Ui)
     @box = TextUi::Box.new(ui, "Results", "F4")
     @box.border_style = TextUi::Box::BorderStyle::Fancy
-    @table = TextUi::Table.new(@box, 1, 1)
-    @label = TextUi::Label.new(@box, 1, 1)
+    @stack = TextUi::StackedWidget.new(@box, 1, 1)
+    @table = TextUi::Table.new(@stack)
+    @label = TextUi::Label.new(@stack)
     @label.visible = false
     ui.add_focus_shortcut(TextUi::KEY_F4, @table)
 
@@ -22,8 +23,7 @@ class ResultsControl
 
   def set_data(data)
     @table.set_data(data)
-    @table.visible = true
-    @label.visible = false
+    @stack.current_widget = @table
   end
 
   def clear
@@ -44,11 +44,15 @@ class ResultsControl
     half_screen = height//2
     @box.y = half_screen
     @box.width = width
-    @table.width = width - 2
     @box.height = height - half_screen - 1
-    @table.height = @box.height - 2
-    @label.width = @table.width
-    @label.height = @table.height
+
+    @stack.width = width - 2
+    @stack.height = @box.height - 2
+
+    @table.width = @stack.width
+    @table.height = @stack.height
+    @label.width = @stack.width
+    @label.height = @stack.height
   end
 
   def show_error(message : String)
@@ -71,12 +75,9 @@ class ResultsControl
   end
 
   private def show_text(text : String, format : TextUi::Format)
-    @table.clear # clear old data
-    @table.erase
     @label.text = text
     @label.default_format = format
-    @label.visible = true
-    @table.visible = false
+    @stack.current_widget = @label
   end
 
   private def show_result_overlay(value)

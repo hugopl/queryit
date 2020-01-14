@@ -22,7 +22,7 @@ shards:
 
   textui:
     github: hugopl/textui
-    commit: f38e6c433dfcbc0ab7f513cb3908998be1dc5bdc
+    commit: d7ace70d53740912811705125fe6629b014c20da
 
   version_from_shard:
     github: hugopl/version_from_shard
