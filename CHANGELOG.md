@@ -4,6 +4,7 @@
 
 ### Fix
 - Do not print a stacktrace when passing a invalid parameter.
+- Save last used query in the same place for postgres://host/db and postgresql://host/db.
 
 ## [0.5.0] - 2020-01-03
 ### Added

@@ -42,23 +42,18 @@ def parse_options
   {uri: uri}
 end
 
-def detect_database
-  uri = detect_rails_database
-  return uri unless uri.nil?
+def detect_database(uri)
+  uri ||= detect_rails_database
+  uri ||= detect_amber_database
+  raise AppError.new("Could not find rails or amber database configuration.") if uri.nil?
 
-  uri = detect_amber_database
-  return uri unless uri.nil?
-
-  raise AppError.new("Could not find rails or amber database configuration.")
+  uri.gsub(/^postgresql/, "postgres")
 end
 
 def main
   options = parse_options
-
-  uri = URI.parse(options[:uri].empty? ? detect_database : options[:uri])
-
-  app = App.new(uri)
-  app.main_loop
+  uri = URI.parse(detect_database(options[:uri]))
+  App.new(uri).main_loop
 rescue DB::ConnectionRefused
   STDERR.puts "Database connection to #{uri} refused, are you sure this database exists?"
   exit(1)
@@ -69,4 +64,4 @@ ensure
   TextUi::Ui.shutdown!
 end
 
-main
+main if PROGRAM_NAME == __FILE__
