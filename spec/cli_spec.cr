@@ -1,5 +1,5 @@
 require "./spec_helper"
-require "../src/main"
+require "../src/detect_database"
 
 describe "Command line interface" do
   # This is needed because we use the database URI as key to store the last query.

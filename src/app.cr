@@ -9,9 +9,6 @@ require "./results_control"
 require "./query_control"
 require "./sql_beautifier/sql_beautifier"
 
-class AppError < Exception
-end
-
 class App
   delegate error, info, to: @status_bar
 
