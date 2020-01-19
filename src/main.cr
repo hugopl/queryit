@@ -8,7 +8,7 @@ VersionFromShard.declare
 
 def parse_options
   uri = nil
-  OptionParser.parse! do |parser|
+  OptionParser.parse do |parser|
     parser.banner = "Usage: queryit [arguments]"
     parser.on("--uri=URI", "Database server URI, e.g. postgres://localhost/database.") { |db_uri| uri = db_uri }
     parser.on("--version", "Show queryit version and exit.") do
