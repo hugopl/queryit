@@ -22,7 +22,7 @@ dependencies:
     version: '~> 1.1.0'
   textui:
     github: hugopl/textui
-    version: '0.1.1'
+    version: '0.1.2'
   pg:
     github: will/crystal-pg
     version: '~> 0.20.0'

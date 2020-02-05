@@ -1,3 +1,7 @@
+## Unreleased
+### Fix
+- Fix results box title not being highlighted when focused.
+
 ## [0.5.1] - 2020-01-19
 ### Changed
 - TextUI module (code used to render the UI) moved to its own shard.
