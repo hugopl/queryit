@@ -22,7 +22,7 @@ shards:
 
   textui:
     github: hugopl/textui
-    version: 0.1.2
+    version: 0.1.4
 
   version_from_shard:
     github: hugopl/version_from_shard

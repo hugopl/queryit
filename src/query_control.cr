@@ -6,6 +6,7 @@ class QueryControl
     @query_box.border_style = TextUi::Box::BorderStyle::Fancy
     @editor = TextUi::TextEditor.new(@query_box, 1, 1, 0, 0)
     @editor.syntax_highlighter = SQLSyntaxHighlighter.new
+    @editor.tab_width = 0
     @editor.show_line_numbers = true
     @editor.word_wrap = true
     @editor.key_typed.on(&->on_key_typed(TextUi::KeyEvent))

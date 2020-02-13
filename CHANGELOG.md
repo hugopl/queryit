@@ -1,6 +1,11 @@
-## Unreleased
+## [0.6.0] - 2020-02-13
+## Added
+- Added undo/redo to query editor!
+
 ### Fix
 - Fix results box title not being highlighted when focused.
+- Fix garbage on database list when resizing on certain occasions.
+- Do not crash if the terminal width/height is too tiny.
 
 ## [0.5.1] - 2020-01-19
 ### Changed
