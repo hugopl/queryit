@@ -50,4 +50,10 @@ describe SQLBeautifier do
              "WHERE someThing == 42"
     SQLBeautifier.beautify(ugly).should eq(beauty)
   end
+
+  it "does not uppcase SQL keywords in substrings" do
+    ugly = "select counter from some"
+    beauty = "SELECT counter\nFROM some"
+    SQLBeautifier.beautify(ugly).should eq(beauty)
+  end
 end

@@ -1,3 +1,7 @@
+## Unreleased
+### Fix
+- Fix SQL beautifier doing weird things like transforming "counter" into "COUNTer".
+
 ## [0.6.0] - 2020-02-13
 ## Added
 - Added undo/redo to query editor!
