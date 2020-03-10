@@ -115,4 +115,17 @@ describe SQLSyntaxHighlighter do
                                      SQLSyntaxHighlighter::STRING_FORMAT,
                                      SQLSyntaxHighlighter::STRING_FORMAT])
   end
+
+  it "highlight numbers" do
+    doc = TextUi::TextDocument.new
+    doc.syntax_highlighter = SQLSyntaxHighlighter.new
+    samples = %w(1402 14.2 .123 2e34 1e-3 2E34 1E-3 2e34 1e+3 2E34 1E+3)
+    samples.each do |sample|
+      doc.contents = sample
+      doc.blocks[0].formats.should(eq([SQLSyntaxHighlighter::NUMBER_FORMAT,
+                                       SQLSyntaxHighlighter::NUMBER_FORMAT,
+                                       SQLSyntaxHighlighter::NUMBER_FORMAT,
+                                       SQLSyntaxHighlighter::NUMBER_FORMAT]), "Contents: #{sample.inspect}")
+    end
+  end
 end

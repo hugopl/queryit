@@ -104,6 +104,7 @@ class SQLSyntaxHighlighter < TextUi::SyntaxHighlighter
     highlight_strings(block)
     highlight_comments(block)
     highlight_multiline_comments(block)
+    highlight_numbers(block)
   end
 
   private def cast_block_state(block)
@@ -148,6 +149,10 @@ class SQLSyntaxHighlighter < TextUi::SyntaxHighlighter
     highlight_with_regex(block, KEYWORD_REGEXP, KEYWORD_FORMAT)
   end
 
+  private def highlight_numbers(block)
+    highlight_with_regex(block, /(\.|\d+[eE][+-]?)?\d+/, NUMBER_FORMAT)
+  end
+
   private def highlight_with_regex(block, regexp, format)
     text = block.text
     offset = 0
@@ -160,7 +165,7 @@ class SQLSyntaxHighlighter < TextUi::SyntaxHighlighter
       break if match_end.nil? || match_start.nil?
 
       block.apply_format(match_start, match_end, format) unless already_highlighted?(block, match_start)
-      offset = match_end + 1
+      offset = match_end
     end
   end
 
