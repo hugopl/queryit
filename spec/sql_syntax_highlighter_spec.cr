@@ -76,4 +76,43 @@ describe SQLSyntaxHighlighter do
     doc.blocks[1].formats.should eq([TextUi::Format::DEFAULT,
                                      TextUi::Format::DEFAULT])
   end
+
+  it "do highlight SQL like line comments" do
+    doc = TextUi::TextDocument.new
+    doc.syntax_highlighter = SQLSyntaxHighlighter.new
+    doc.contents = " -- hi "
+    doc.blocks[0].formats.should eq([TextUi::Format::DEFAULT,
+                                     SQLSyntaxHighlighter::COMMENT_FORMAT,
+                                     SQLSyntaxHighlighter::COMMENT_FORMAT,
+                                     SQLSyntaxHighlighter::COMMENT_FORMAT,
+                                     SQLSyntaxHighlighter::COMMENT_FORMAT,
+                                     SQLSyntaxHighlighter::COMMENT_FORMAT,
+                                     SQLSyntaxHighlighter::COMMENT_FORMAT])
+  end
+
+  it "do not highlight SQL like line comments inside strings" do
+    doc = TextUi::TextDocument.new
+    doc.syntax_highlighter = SQLSyntaxHighlighter.new
+    doc.contents = "'-- hi'"
+    doc.blocks[0].formats.should eq([SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT])
+  end
+
+  it "do not highlight SQL like multiline comments inside strings" do
+    doc = TextUi::TextDocument.new
+    doc.syntax_highlighter = SQLSyntaxHighlighter.new
+    doc.contents = "'/* */'"
+    doc.blocks[0].formats.should eq([SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT,
+                                     SQLSyntaxHighlighter::STRING_FORMAT])
+  end
 end

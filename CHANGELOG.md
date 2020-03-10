@@ -1,6 +1,7 @@
 ## Unreleased
 ### Fix
 - Fix SQL beautifier doing weird things like transforming "counter" into "COUNTer".
+- Do not highlight SQL comments inside strings.
 
 ## [0.6.0] - 2020-02-13
 ## Added

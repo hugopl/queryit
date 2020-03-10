@@ -94,6 +94,7 @@ class SQLSyntaxHighlighter < TextUi::SyntaxHighlighter
   KEYWORD_FORMAT = TextUi::Format.new(TextUi::Color::Blue, bold: true)
   COMMENT_FORMAT = TextUi::Format.new(TextUi::Color::Grey22)
   STRING_FORMAT  = TextUi::Format.new(TextUi::Color::OrangeRed)
+  NUMBER_FORMAT  = TextUi::Format.new(TextUi::Color::Green)
 
   COMMENT_START = /\/\*/
   COMMENT_END   = /\*\//
@@ -122,6 +123,8 @@ class SQLSyntaxHighlighter < TextUi::SyntaxHighlighter
     end_index = 0
     text = block.text
     start_index = text.index(COMMENT_START) || -1 unless in_comment?(block)
+
+    return if start_index > 0 && already_highlighted?(block, start_index)
 
     while start_index >= 0
       end_index = text.index(COMMENT_END, start_index)
@@ -156,7 +159,7 @@ class SQLSyntaxHighlighter < TextUi::SyntaxHighlighter
       match_start = matcher.begin
       break if match_end.nil? || match_start.nil?
 
-      block.apply_format(match_start, match_end, format)
+      block.apply_format(match_start, match_end, format) unless already_highlighted?(block, match_start)
       offset = match_end + 1
     end
   end
@@ -164,6 +167,12 @@ class SQLSyntaxHighlighter < TextUi::SyntaxHighlighter
   private def highlight_comments(block)
     text = block.text
     comment_start = text.index("--")
-    block.apply_format(comment_start, text.size, COMMENT_FORMAT) unless comment_start.nil?
+    return if comment_start.nil? || already_highlighted?(block, comment_start)
+
+    block.apply_format(comment_start, text.size, COMMENT_FORMAT)
+  end
+
+  private def already_highlighted?(block, index)
+    block.formats[index] != TextUi::Format::DEFAULT
   end
 end
