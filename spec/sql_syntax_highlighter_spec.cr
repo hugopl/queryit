@@ -55,7 +55,7 @@ describe SQLSyntaxHighlighter do
     doc.blocks[0].formats.should eq([SQLSyntaxHighlighter::COMMENT_FORMAT,
                                      SQLSyntaxHighlighter::COMMENT_FORMAT])
     doc.blocks[0].text = "/**/"
-    doc.insert(1, "Hi")
+    doc.insert_line(1, "Hi")
     doc.blocks[1].formats.should eq([TextUi::Format::DEFAULT,
                                      TextUi::Format::DEFAULT])
   end
