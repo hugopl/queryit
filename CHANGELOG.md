@@ -1,5 +1,5 @@
 ## Unreleased
-- Added mouse support to query editor.
+- Added mouse support to query editor and database list.
 - You can focus query editor, database list and results view with a mouse click.
 - Do not show garbage on screen in some ocasions when viewing a table result cell.
 
