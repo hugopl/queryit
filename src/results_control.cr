@@ -89,7 +89,7 @@ class ResultsControl
     dialog = TextUi::Dialog.new(ui, "Value")
     dialog.resize(width, height)
     label = TextUi::Label.new(dialog, 1, 1, value)
-    label.resize(width - 2, height - 2)
+    label.resize(dialog.width - 2, dialog.height - 2)
     ui.focus(dialog)
     dialog.dismissed.on { ui.focus(@table) }
   end

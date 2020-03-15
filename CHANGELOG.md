@@ -1,6 +1,7 @@
 ## Unreleased
 - Added mouse support to query editor.
 - You can focus query editor, database list and results view with a mouse click.
+- Do not show garbage on screen in some ocasions when viewing a table result cell.
 
 ### Fix
 - Fix SQL beautifier doing weird things like transforming "counter" into "COUNTer".
