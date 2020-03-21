@@ -12,7 +12,7 @@ def parse_options
     parser.banner = "Usage: queryit [arguments]"
     parser.on("--uri=URI", "Database server URI, e.g. postgres://localhost/database.") { |db_uri| uri = db_uri }
     parser.on("--version", "Show queryit version and exit.") do
-      puts "queryit version #{VERSION}"
+      puts "queryit version #{VERSION} (TextUi v#{TextUi::VERSION})"
       exit
     end
     parser.on("-h", "--help", "Show this help.") do
