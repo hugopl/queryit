@@ -5,6 +5,7 @@ require "sqlite3"
 require "uri"
 
 require "./config"
+require "./help_dialog"
 require "./results_control"
 require "./query_control"
 require "./sql_beautifier/sql_beautifier"
@@ -151,34 +152,7 @@ class App
   end
 
   private def show_help
-    help_text = <<-'HELP'
-                            SQL JOINS CHEATSHEET
-           _..----.._  _..----.._         A:
-        _-'          '-_         '-_      SELECT * FROM A
-      .'           .'   '.          '.      LEFT JOIN B ON A.key = B.key
-     /            /       \           \
-    |            |         |           |  B:
-    |      A     |    C    |     B     |  SELECT * FROM B
-    |            |         |           |    LEFT JOIN A ON B.key = A.key
-     \            \       /           /
-      '.           '.   .'          .'    C:
-        `-._        _--'_       _.-'      SELECT * FROM A
-            `"----"`     "----"`           INNER JOIN B ON A.key = B.key
-                                SHORTCUTS
-      CTRL+L    Clear query editor
-      CTRL+/    (Un)Comment lines
-      CTRL+Z    Undo
-      CTRL+Y    Redo
-      TAB       Cycle views
-    HELP
-    size = TextUi::Widget.text_dimensions(help_text, @ui.width - 2, @ui.height - 2)
-    dialog = TextUi::Dialog.new(@ui, "Queryit v#{VERSION} - Help")
-    dialog.resize(size[:width] + 2, size[:height] + 2)
-    label = TextUi::Label.new(dialog, 1, 1, help_text)
-    label.resize(size[:width], size[:height])
-    old_focus = @ui.focused_widget
-    @ui.focus(dialog)
-    dialog.dismissed.on { @ui.focus(old_focus) }
+    HelpDialog.new(@ui)
   end
 
   private def execute_query(query)
