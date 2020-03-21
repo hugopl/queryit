@@ -8,13 +8,16 @@ class ResultsControl
     @table = TextUi::Table.new(@stack)
     @label = TextUi::Label.new(@stack)
     @label.visible = false
-    ui.add_focus_shortcut(TextUi::KEY_F4, @table)
 
     @table.enter_pressed.on(&->show_result_overlay(String))
   end
 
   def focusable_widgets
     [@table]
+  end
+
+  def focus_table
+    @table.focus
   end
 
   def empty?

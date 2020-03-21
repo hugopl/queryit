@@ -22,7 +22,7 @@ dependencies:
     version: '~> 1.2.0'
   textui:
     github: hugopl/textui
-    commit: 1f25feaf0c6f4e0ce51ab6728f7497fa5af0aac3
+    commit: 87289a0f5abfe845cdb88cbb1c1efd5c211ea631
   pg:
     github: will/crystal-pg
     version: '~> 0.20.0'

@@ -16,13 +16,18 @@ class QueryControl
     @dbs_box.border_style = TextUi::Box::BorderStyle::Fancy
     @dbs_list = TextUi::List.new(@dbs_box, 1, 1)
     @dbs_list.width = 18
-
-    ui.add_focus_shortcut(TextUi::KEY_F2, @editor)
-    ui.add_focus_shortcut(TextUi::KEY_F3, @dbs_list)
   end
 
   def focusable_widgets
     [@editor, @dbs_list]
+  end
+
+  def focus_editor
+    @editor.focus
+  end
+
+  def focus_database_list
+    @dbs_list.focus
   end
 
   def query

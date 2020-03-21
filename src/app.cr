@@ -87,6 +87,9 @@ class App
     when TextUi::KEY_F1
       event.accept
       show_help
+    when TextUi::KEY_F2  then @query_ctl.focus_editor
+    when TextUi::KEY_F3  then @query_ctl.focus_database_list
+    when TextUi::KEY_F4  then @results_ctl.focus_table
     when TextUi::KEY_F5  then execute_query(@query_ctl.query)
     when TextUi::KEY_TAB then cycle_focus
     end
