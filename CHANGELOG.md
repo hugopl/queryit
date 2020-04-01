@@ -1,4 +1,5 @@
-## Unreleased
+## [0.7.0] - 2020-03-31
+### Added
 - Added mouse support to query editor and database list.
 - You can focus query editor, database list and results view with a mouse click.
 - Do not show garbage on screen in some ocasions when viewing a table result cell.
