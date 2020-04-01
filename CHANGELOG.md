@@ -4,16 +4,16 @@
 - You can focus query editor, database list and results view with a mouse click.
 - Do not show garbage on screen in some ocasions when viewing a table result cell.
 
-### Fix
+### Fixed
 - Fix SQL beautifier doing weird things like transforming "counter" into "COUNTer".
 - Do not highlight SQL comments inside strings.
 - Highlight numbers on SQL editor.
 
 ## [0.6.0] - 2020-02-13
-## Added
+### Added
 - Added undo/redo to query editor!
 
-### Fix
+### Fixed
 - Fix results box title not being highlighted when focused.
 - Fix garbage on database list when resizing on certain occasions.
 - Do not crash if the terminal width/height is too tiny.
@@ -22,7 +22,7 @@
 ### Changed
 - TextUI module (code used to render the UI) moved to its own shard.
 
-### Fix
+### Fixed
 - Do not print a stacktrace when passing a invalid parameter.
 - Save last used query in the same place for postgres://host/db and postgresql://host/db.
 - Do not print ANSI escape sequences when pressing CTRL + LEFT/RIGHT ARROW.
@@ -38,7 +38,7 @@
 - Page up/down can be used on query editor.
 - Query editor is now scrollable.
 
-### Fix
+### Fixed
 - Adjust selected item on viewport on database list widget.
 - Do not re-render list widget on each key press.
 
@@ -57,6 +57,7 @@
 - SQL beautifier implemented, still not perfect, but helps!
 
 ## [0.2.1] - 2019-11-18
+### Changed
 - User version_from_shard v1.0.0.
 
 ## [0.2.0] - 2019-11-18
@@ -66,7 +67,7 @@
 ### Changed
 - Show SQL errors on results table instead of the status bar.
 
-### Fix
+### Fixed
 - SQLite3 databases now works.
 - Results table navigation should work.
 - Let the SQL editor empty at start.
