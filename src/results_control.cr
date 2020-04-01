@@ -43,6 +43,16 @@ class ResultsControl
     end
   end
 
+  def export_output : String
+    if @label.visible?
+      @label.text
+    elsif empty?
+      ""
+    else
+      to_csv
+    end
+  end
+
   def handle_resize(width, height)
     half_screen = height//2
     @box.y = half_screen

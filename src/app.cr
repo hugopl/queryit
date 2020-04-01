@@ -2,6 +2,7 @@ require "textui"
 require "pg"
 require "mysql"
 require "sqlite3"
+require "pg_query"
 require "uri"
 
 require "./config"
@@ -112,14 +113,17 @@ class App
 
   private def copy_query
     copy_to_clipboard(@query_ctl.query)
-    info("Query copied to clipboard!")
+    info("Query copied to clipboard.")
   end
 
   private def copy_results
-    return if @results_ctl.empty?
-
-    copy_to_clipboard(@results_ctl.to_csv.to_s)
-    info("Results copied to clipboard!")
+    results = @results_ctl.export_output
+    if results.empty?
+      error("Nothing to copy to clipboard.")
+    else
+      copy_to_clipboard(results)
+      info("Results copied to clipboard.")
+    end
   end
 
   private def copy_to_clipboard(contents : String)
@@ -173,7 +177,7 @@ class App
     end
     result_set.close
 
-    if query =~ /\A\s*explain\s+/i
+    if explain_query?(query)
       @results_ctl.explain(rows.map(&.first).join("\n"))
     else
       @results_ctl.set_data(rows)
@@ -220,5 +224,11 @@ class App
   rescue e : DB::ConnectionRefused
     error("Unable to connect to #{database_name}!")
     @query_ctl.selected_database = current_database_name
+  end
+
+  def explain_query?(query)
+    PgQuery.parse(query).explain?
+  rescue PgQuery::Error
+    query =~ /\A\s*explain\s+/i # If the query fail to be parsed by postgres parser, use a dumb regexp.
   end
 end

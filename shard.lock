@@ -16,6 +16,10 @@ shards:
     github: will/crystal-pg
     version: 0.20.0
 
+  pg_query:
+    github: hugopl/pg_query.cr
+    commit: 2f46dbbc450eb8233a6d3f28997ab01a11d16a01
+
   sqlite3:
     github: crystal-lang/crystal-sqlite3
     version: 0.15.0

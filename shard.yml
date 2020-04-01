@@ -23,6 +23,10 @@ dependencies:
   textui:
     github: hugopl/textui
     commit: 87289a0f5abfe845cdb88cbb1c1efd5c211ea631
+  pg_query:
+    github: hugopl/pg_query.cr
+    branch: master
+#    path: /home/hugo/src/pg_query
   pg:
     github: will/crystal-pg
     version: '~> 0.20.0'

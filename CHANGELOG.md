@@ -1,3 +1,7 @@
+## Unreleased
+### Fixed
+- Use libpg_query to parse SQL queries and check if they are explain queries, going to use this parser on beautifier soon.
+
 ## [0.7.0] - 2020-03-31
 ### Added
 - Added mouse support to query editor and database list.
