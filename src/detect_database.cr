@@ -9,14 +9,14 @@ def detect_rails_database
   adapter = config.dig(env, "adapter")
 
   "#{adapter}://#{hostname}/#{database}"
-rescue e : Errno
+rescue File::Error
   nil
 end
 
 def detect_amber_database
   config = YAML.parse(File.read("./config/environments/development.yml"))
   config["database_url"].to_s
-rescue
+rescue File::Error
   nil
 end
 

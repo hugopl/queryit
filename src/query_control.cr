@@ -66,6 +66,8 @@ class QueryControl
     case event.key
     when TextUi::KEY_CTRL_L     then self.query = ""
     when TextUi::KEY_CTRL_SLASH then comment_current_line
+    else
+      # Key not handled
     end
   end
 

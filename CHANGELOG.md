@@ -1,3 +1,11 @@
+## [0.8.0] - 2020-04-10
+### Changed
+- Compile our own version of libtermibox and static link to it, so there's no need to install termbox anymore.
+
+### Fixed
+- Updated dependencies and fix warning to compile with Crystal 0.34.
+- Few UI fixes from TextUi shard.
+
 ## [0.7.0] - 2020-03-31
 ### Added
 - Added mouse support to query editor and database list.

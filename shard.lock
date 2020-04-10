@@ -6,25 +6,25 @@ shards:
 
   db:
     github: crystal-lang/crystal-db
-    version: 0.8.0
+    version: 0.9.0
 
   mysql:
     github: crystal-lang/crystal-mysql
-    version: 0.10.0
+    version: 0.11.0
 
   pg:
     github: will/crystal-pg
-    version: 0.20.0
+    version: 0.21.0
 
   sqlite3:
     github: crystal-lang/crystal-sqlite3
-    version: 0.15.0
+    version: 0.16.0
 
   textui:
     github: hugopl/textui
-    commit: 87289a0f5abfe845cdb88cbb1c1efd5c211ea631
+    version: 0.3.0
 
   version_from_shard:
     github: hugopl/version_from_shard
-    version: 1.2.0
+    version: 1.2.1
 

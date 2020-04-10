@@ -20,12 +20,6 @@ $ yay -S queryit
 
 ### else
 
-You need the project dependencies installed on your system:
-
- * Termbox C library - https://github.com/nsf/termbox
- * Crystal language compiler
- * Shards, the crystal language package manager
-
 ```
 $ make
 $ sudo make install

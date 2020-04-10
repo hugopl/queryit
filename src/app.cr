@@ -93,6 +93,8 @@ class App
     when TextUi::KEY_F4  then @results_ctl.focus_table
     when TextUi::KEY_F5  then execute_query(@query_ctl.query)
     when TextUi::KEY_TAB then cycle_focus
+    else
+      # Key not handled
     end
   end
 
