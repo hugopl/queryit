@@ -1,6 +1,6 @@
 name: queryit
-version: 0.8.0
-crystal: 0.34.0
+version: 0.8.1
+crystal: 0.35.0
 license: MIT
 authors:
   - Hugo Parente Lima <hugo.pl@gmail.com>
@@ -22,7 +22,7 @@ dependencies:
     version: '~> 0.3.0'
   pg:
     github: will/crystal-pg
-    version: '~> 0.21.0'
+    version: '~> 0.21.1'
   mysql:
     github: crystal-lang/crystal-mysql
     version: '~> 0.11.0'

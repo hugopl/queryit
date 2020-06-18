@@ -1,3 +1,7 @@
+## [0.8.1] - 2020-06-18
+### Fixed
+- Fixed compilation with Crystal 0.35.
+
 ## [0.8.0] - 2020-04-10
 ### Changed
 - Compile our own version of libtermibox and static link to it, so there's no need to install termbox anymore.
