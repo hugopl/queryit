@@ -1,3 +1,7 @@
+## [0.8.2] - 2020-06-18
+### Fixed
+- Fixed compilation problems with TextUI.
+
 ## [0.8.1] - 2020-06-18
 ### Fixed
 - Fixed compilation with Crystal 0.35.

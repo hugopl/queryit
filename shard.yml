@@ -1,5 +1,5 @@
 name: queryit
-version: 0.8.1
+version: 0.8.2
 crystal: 0.35.0
 license: MIT
 authors:
@@ -16,16 +16,16 @@ targets:
 dependencies:
   version_from_shard:
     github: hugopl/version_from_shard
-    version: '~> 1.2.1'
+    version: ~> 1.2.1
   textui:
     github: hugopl/textui
-    version: '~> 0.3.0'
+    version: ~> 0.3.1
   pg:
     github: will/crystal-pg
-    version: '~> 0.21.1'
+    version: ~> 0.21.1
   mysql:
     github: crystal-lang/crystal-mysql
-    version: '~> 0.11.0'
+    version: ~> 0.11.0
   sqlite3:
     github: crystal-lang/crystal-sqlite3
-    version: '~> 0.16.0'
+    version: ~> 0.16.0
