@@ -1,9 +1,9 @@
 require "yaml"
 
 class Config
-  YAML.mapping(
-    last_query: Hash(String, String)?
-  )
+  include YAML::Serializable
+
+  property last_query : Hash(String, String)?
 
   def initialize
   end
