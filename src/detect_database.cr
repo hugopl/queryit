@@ -5,10 +5,12 @@ def detect_rails_database
   config = YAML.parse(File.read("./config/database.yml"))
   env = "development"
   hostname = config.dig?(env, "hostname") || "localhost"
+  username = config.dig?(env, "username") || ""
   database = config.dig(env, "database")
   adapter = config.dig(env, "adapter")
 
-  "#{adapter}://#{hostname}/#{database}"
+  username = "#{username}@" if username
+  "#{adapter}://#{username}#{hostname}/#{database}"
 rescue File::Error
   nil
 end

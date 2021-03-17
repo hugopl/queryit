@@ -1,3 +1,7 @@
+## Unreleased
+### Added
+- Parse and use database username from rails database.yml file.
+
 ## [0.8.2] - 2020-06-18
 ### Fixed
 - Fixed compilation problems with TextUI.
