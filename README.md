@@ -1,4 +1,4 @@
-[Build Status](https://github.com/hugopl/queryit/actions/workflows/ci.yml/badge.svg?branch=master)
+![Build Status](https://github.com/hugopl/queryit/actions/workflows/ci.yml/badge.svg?branch=master)
 [![AUR](https://img.shields.io/aur/version/queryit)](https://aur.archlinux.org/packages/queryit)
 
 # Queryit
