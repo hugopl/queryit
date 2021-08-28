@@ -20,6 +20,16 @@ $ yay -S queryit
 
 ### else
 
+Install the dependencies (dev packages if your distro split development files in separated packages):
+
+ - Crystal compiler >= 1.0.
+ - libyaml (for rails/amber database configuration detection).
+ - python (compile time dependency used as build system for libtermbox).
+ - libevent.
+ - libsqlite3 (for sqlite support).
+ - mysql-client (for mysql support).
+ - postgresql-libs (for postgres support).
+
 ```
 $ make
 $ sudo make install
