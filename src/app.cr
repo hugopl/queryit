@@ -17,10 +17,11 @@ class App
   @focusable_widgets : Array(TextUi::Widget)?
 
   @config = Config.new
-  @ui = TextUi::Ui.new
+  @ui : TextUi::Ui
 
   def initialize(@db_uri : URI)
     @db = DB.open(@db_uri)
+    @ui = TextUi::Ui.new
     @ui.resized.on(&->handle_resize(Int32, Int32))
     @ui.key_typed.on(&->on_key_typed(TextUi::KeyEvent))
 
