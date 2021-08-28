@@ -10,7 +10,7 @@ def parse_options
   uri = nil
   OptionParser.parse do |parser|
     parser.banner = "Usage: queryit [arguments]"
-    parser.on("--uri=URI", "Database server URI, e.g. postgres://localhost/database.") { |db_uri| uri = db_uri }
+    parser.on("--uri=URI", "Database server URI, e.g. postgres://localhost/database.") { |db_uri| uri = URI.new(db_uri) }
     parser.on("--version", "Show queryit version and exit.") do
       puts "queryit version #{VERSION} (TextUi v#{TextUi::VERSION})"
       exit
@@ -25,7 +25,7 @@ end
 
 def main
   options = parse_options
-  uri = URI.parse(detect_database(options[:uri]))
+  uri = options[:uri] || detect_database
   App.new(uri).main_loop
 rescue DB::ConnectionRefused
   STDERR.puts "Database connection to #{uri} refused, are you sure this database exists?"
