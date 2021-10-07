@@ -1,7 +1,7 @@
 version: 2.0
 shards:
   cute:
-    git: https://github.com/Papierkorb/cute.git
+    git: https://github.com/papierkorb/cute.git
     version: 0.3.1
 
   db:
@@ -14,7 +14,7 @@ shards:
 
   pg:
     git: https://github.com/will/crystal-pg.git
-    version: 0.23.2
+    version: 0.24.0
 
   sqlite3:
     git: https://github.com/crystal-lang/crystal-sqlite3.git
