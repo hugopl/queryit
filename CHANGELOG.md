@@ -1,6 +1,12 @@
-## Unreleased
-### Added
+## [0.8.3] - 2021-10-07
+### Fixed
 - Parse and use database username from rails database.yml file.
+- Don't mess with terminal with a database connection error happen at startup.
+- Better guess database driver in rails config files.
+
+## [0.8.3] - 2020-08-22
+### Fixed
+- Compilation fixes for newer Crystal compiler version.
 
 ## [0.8.2] - 2020-06-18
 ### Fixed
