@@ -22,7 +22,7 @@ shards:
 
   textui:
     git: https://github.com/hugopl/textui.git
-    version: 0.3.2
+    version: 0.3.3
 
   version_from_shard:
     git: https://github.com/hugopl/version_from_shard.git

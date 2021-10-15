@@ -1,4 +1,8 @@
-## [0.8.3] - 2021-10-07
+## [0.8.5] - 2021-10-14
+### Fixed
+- Fixed compilation with MAKEFLAGS environment variable set to -jn, when n > 1.
+
+## [0.8.4] - 2021-10-07
 ### Fixed
 - Parse and use database username from rails database.yml file.
 - Don't mess with terminal with a database connection error happen at startup.
