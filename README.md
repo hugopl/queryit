@@ -1,3 +1,9 @@
+# Archived
+
+I'm not using or writing this anymore, when I need to do SQL stuff nowadays I'm using
+[beekeeper-studio](https://github.com/beekeeper-studio/beekeeper-studio), yet another electron
+app eating all our beloved memory, however feature complete :-)
+
 ![Build Status](https://github.com/hugopl/queryit/actions/workflows/ci.yml/badge.svg?branch=master)
 [![AUR](https://img.shields.io/aur/version/queryit)](https://aur.archlinux.org/packages/queryit)
 
